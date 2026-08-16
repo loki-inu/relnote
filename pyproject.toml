@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "relnote"
+version = "0.1.0"
+description = "Turn a git range into clean GitHub release notes."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "loki-inu"}]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+relnote = "relnote.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/loki-inu/relnote"
+Repository = "https://github.com/loki-inu/relnote"
+
+[tool.setuptools]
+packages = ["relnote"]
