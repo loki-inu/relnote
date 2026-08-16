@@ -68,6 +68,31 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 
 Exit `1` if the path is not a git repo, a ref does not exist, or nothing remains after filters.
 
+## GitHub Action
+
+Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.1.1` or `@main`. The `v0.1.0` tag is CLI-only.
+
+```yaml
+name: Release notes
+
+on:
+  workflow_dispatch:
+
+jobs:
+  notes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.1.1
+      - name: Print notes
+        run: printf '%s\n' "${{ steps.relnote.outputs.notes }}"
+```
+
+Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`.
+
 ## What it is not
 
 - Not git-cliff, conventional-changelog, release-please, or semantic-release. No config file, no plugin host, no changelog on disk.

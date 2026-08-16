@@ -1,0 +1,76 @@
+name: relnote
+description: Generate GitHub release notes from conventional commits
+author: loki-inu
+
+inputs:
+  since:
+    description: Start ref (default: latest tag, or full history if untagged)
+    required: false
+  until:
+    description: End ref (default: HEAD)
+    required: false
+  max:
+    description: Include at most N commits after filters
+    required: false
+  format:
+    description: Output format (github or plain)
+    required: false
+    default: github
+  no-bots:
+    description: Drop dependabot, renovate, and authors containing [bot]
+    required: false
+    default: "true"
+  repo:
+    description: Path to the git working tree
+    required: false
+
+outputs:
+  notes:
+    description: Generated release notes
+    value: ${{ steps.run.outputs.notes }}
+
+runs:
+  using: composite
+  steps:
+    - name: Generate release notes
+      id: run
+      shell: bash
+      env:
+        INPUT_SINCE: ${{ inputs.since }}
+        INPUT_UNTIL: ${{ inputs.until }}
+        INPUT_MAX: ${{ inputs.max }}
+        INPUT_FORMAT: ${{ inputs.format }}
+        INPUT_NO_BOTS: ${{ inputs.no-bots }}
+        INPUT_REPO: ${{ inputs.repo }}
+      run: |
+        set -euo pipefail
+        args=()
+        if [ -n "${INPUT_SINCE:-}" ]; then
+          args+=(--since "${INPUT_SINCE}")
+        fi
+        if [ -n "${INPUT_UNTIL:-}" ]; then
+          args+=(--until "${INPUT_UNTIL}")
+        fi
+        if [ -n "${INPUT_MAX:-}" ]; then
+          args+=(--max "${INPUT_MAX}")
+        fi
+        if [ -n "${INPUT_FORMAT:-}" ]; then
+          args+=(--format "${INPUT_FORMAT}")
+        fi
+        if [ "${INPUT_NO_BOTS:-}" = "true" ]; then
+          args+=(--no-bots)
+        fi
+        if [ -n "${INPUT_REPO:-}" ]; then
+          args+=(--repo "${INPUT_REPO}")
+        fi
+
+        notes="$(python3 "${{ github.action_path }}/relnote/__main__.py" "${args[@]}")"
+
+        delimiter="RELNOTE_EOF"
+        {
+          echo "notes<<${delimiter}"
+          printf '%s\n' "${notes}"
+          echo "${delimiter}"
+        } >> "${GITHUB_OUTPUT}"
+
+        echo "Generated release notes ($(printf '%s\n' "${notes}" | wc -l) lines)."
