@@ -64,13 +64,13 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--no-bots` | off | drop dependabot, renovate, `[bot]` |
 | `--repo PATH` | `.` | git working tree |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.1.0` |
+| `--version` | | print `relnote 0.1.2` |
 
 Exit `1` if the path is not a git repo, a ref does not exist, or nothing remains after filters.
 
 ## GitHub Action
 
-Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.1.1` or `@main`. The `v0.1.0` tag is CLI-only.
+Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.1.2` or `@main` for current. The `v0.1.0` tag is CLI-only.
 
 ```yaml
 name: Release notes
@@ -86,7 +86,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.1.1
+        uses: loki-inu/relnote@v0.1.2
       - name: Print notes
         run: printf '%s\n' "${{ steps.relnote.outputs.notes }}"
 ```
