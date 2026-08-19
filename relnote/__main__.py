@@ -39,14 +39,16 @@ Safety
   Co-authored-by trailers are listed; names are not invented.
 
 Exit status
-  0  notes written to stdout
-  1  not a git repository, unknown ref, or no commits after filters
+  0  notes written to stdout (and to --output FILE, if given)
+  1  not a git repository, unknown ref, no commits after filters,
+     or --output parent directory does not exist
 
 examples:
   python3 -m relnote
   python3 -m relnote --since v1.2.0
   python3 -m relnote --since v1.0.0 --max 25 --no-bots
   python3 -m relnote --format plain --include-merges
+  python3 -m relnote --output /tmp/notes.md
   python3 relnote/__main__.py --repo /path/to/project
 """.strip()
 
@@ -107,6 +109,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="repository path (default: current directory)",
     )
     parser.add_argument(
+        "--output",
+        metavar="FILE",
+        help="also write notes to FILE (UTF-8); still print to stdout",
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version=f"relnote {__version__}",
@@ -164,9 +171,23 @@ def main(argv: list[str] | None = None) -> int:
             compare_url=github_compare_url(since, args.until, cwd=args.repo),
             omitted=omitted,
         )
-        sys.stdout.write(text)
         if text and not text.endswith("\n"):
-            sys.stdout.write("\n")
+            text += "\n"
+        if args.output:
+            dest = Path(args.output)
+            parent = dest.parent
+            if not parent.exists():
+                print(
+                    f"relnote: output directory does not exist: {parent}",
+                    file=sys.stderr,
+                )
+                return 1
+            try:
+                dest.write_text(text, encoding="utf-8")
+            except OSError as exc:
+                print(f"relnote: cannot write {dest}: {exc}", file=sys.stderr)
+                return 1
+        sys.stdout.write(text)
         return 0
     except GitError as exc:
         print(f"relnote: {exc}", file=sys.stderr)

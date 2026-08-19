@@ -1,0 +1,23 @@
+# Copy into .github/workflows/ to open a draft GitHub Release on tag push.
+name: Draft release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.1.3
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          body: ${{ steps.relnote.outputs.notes }}
