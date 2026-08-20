@@ -2,6 +2,43 @@
 
 Turn a git range into clean GitHub release notes.
 
+```bash
+python3 -m relnote
+```
+
+```markdown
+## What's changed
+
+### Breaking
+
+- replace JSON store with SQLite (`a11a11a`) — Ada Lovelace, Sam Rivera
+  - BREAKING CHANGE: harbor dump --json now writes NDJSON.
+
+### Features
+
+- **cli:** add harbor sync --dry-run (`b22b22b`) — Ada Lovelace
+- import Netscape bookmark files (`c33c33c`) — Grace Hopper
+
+### Fixes
+
+- do not drop tags that contain commas (`d44d44d`) — Ada Lovelace
+- **parser:** accept single-quoted hrefs (`e55e55e`) — Sam Rivera, Grace Hopper
+
+### Other
+
+- **docs:** document the XBEL importer (`f66f66f`) — Grace Hopper
+- **refactor:** split store module from cli (`333cccc`) — Ada Lovelace
+- Initial floating-window layout for the TUI (`555eeee`) — Sam Rivera
+
+---
+
+Range: `v0.9.0` → `v1.0.0`.
+
+_3 commit(s) omitted (bots or secret-looking subjects)._
+```
+
+Synthetic example from a fake commit list for a fictional CLI called harbor — not taken from any real repository. See [samples/example-output.md](samples/example-output.md).
+
 ## Install
 
 Python 3.11+, git on PATH, no third-party packages.
@@ -12,12 +49,16 @@ From a checkout of this repository:
 python3 -m relnote --help
 ```
 
-Or install the `relnote` console script from GitHub:
+Or install the `relnote` console script from GitHub ([optional download on itch.io](https://loki-inu.itch.io/relnote)):
 
 ```bash
 pip install git+https://github.com/loki-inu/relnote.git
 relnote --help
 ```
+
+## Why not git log
+
+Conventional commits already have the grouping; relnote just prints a Release body. stdlib-only, no config file.
 
 ## What it does
 
@@ -52,7 +93,7 @@ python3 -m relnote --output /tmp/notes.md
 python3 relnote/__main__.py --repo /path/to/project
 ```
 
-Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the footer includes a compare URL. See [samples/example-output.md](samples/example-output.md) for a generated example from a **synthetic** commit list (a fictional CLI called harbor — not scraped from anyone's history).
+Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the footer includes a compare URL.
 
 ## Flags
 
@@ -101,7 +142,6 @@ A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [e
 
 ## What it is not
 
-- Not git-cliff, conventional-changelog, release-please, or semantic-release. No config file, no plugin host, no changelog on disk.
 - Not a GitHub App. It does not create the Release, open a PR, or bump versions.
 - Not a secret scanner for the tree. It only refuses to *print* commit subjects that look like tokens.
 - Not a rewrite of your history and not a substitute for reading the diff.
