@@ -2,6 +2,10 @@ name: relnote
 description: Generate GitHub release notes from conventional commits
 author: loki-inu
 
+branding:
+  icon: file-text
+  color: blue
+
 inputs:
   since:
     description: Start ref (default: latest tag, or full history if untagged)
