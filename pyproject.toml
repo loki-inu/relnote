@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "relnote"
-version = "0.1.3"
+version = "0.1.4"
 description = "Turn a git range into clean GitHub release notes."
 readme = "README.md"
 license = {text = "MIT"}
