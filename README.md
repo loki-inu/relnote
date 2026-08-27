@@ -95,6 +95,9 @@ python3 -m relnote --format plain --include-merges
 # write a file (still prints to stdout)
 python3 -m relnote --output /tmp/notes.md
 
+# CI: write a file, no stdout
+python3 -m relnote --output notes.md --quiet
+
 # another checkout
 python3 relnote/__main__.py --repo /path/to/project
 ```
@@ -113,15 +116,16 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--include-merges` | off | keep merge commits |
 | `--no-bots` | off | drop dependabot, renovate, `[bot]` |
 | `--repo PATH` | `.` | git working tree |
-| `--output FILE` | off | also write notes to FILE (UTF-8); still print to stdout |
+| `--output FILE` | off | also write notes to FILE (UTF-8); still print to stdout unless `--quiet` |
+| `--quiet` / `-q` | off | with `--output`, do not print notes to stdout |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.1.4` |
+| `--version` | | print `relnote 0.1.5` |
 
-Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, or `--output` points at a missing parent directory.
+Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, or `--output` points at a missing parent directory. Exit `2` if `--quiet` is set without `--output`.
 
 ## GitHub Action
 
-Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.1.4` or `@main` for current. The `v0.1.0` tag is CLI-only.
+Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.1.5` or `@main` for current. The `v0.1.0` tag is CLI-only.
 
 ```yaml
 name: Release notes
@@ -137,7 +141,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.1.4
+        uses: loki-inu/relnote@v0.1.5
       - name: Print notes
         run: printf '%s\n' "${{ steps.relnote.outputs.notes }}"
 ```

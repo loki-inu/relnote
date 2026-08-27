@@ -39,9 +39,10 @@ Safety
   Co-authored-by trailers are listed; names are not invented.
 
 Exit status
-  0  notes written to stdout (and to --output FILE, if given)
+  0  notes written to stdout (and/or --output FILE)
   1  not a git repository, unknown ref, no commits after filters,
      or --output parent directory does not exist
+  2  --quiet given without --output
 
 examples:
   python3 -m relnote
@@ -49,6 +50,7 @@ examples:
   python3 -m relnote --since v1.0.0 --max 25 --no-bots
   python3 -m relnote --format plain --include-merges
   python3 -m relnote --output /tmp/notes.md
+  python3 -m relnote --output notes.md --quiet
   python3 relnote/__main__.py --repo /path/to/project
 """.strip()
 
@@ -111,7 +113,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--output",
         metavar="FILE",
-        help="also write notes to FILE (UTF-8); still print to stdout",
+        help="also write notes to FILE (UTF-8); still print to stdout unless --quiet",
+    )
+    parser.add_argument(
+        "--quiet",
+        "-q",
+        action="store_true",
+        help="do not print notes to stdout (requires --output)",
     )
     parser.add_argument(
         "--version",
@@ -124,6 +132,9 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.quiet and not args.output:
+        print("relnote: --quiet requires --output", file=sys.stderr)
+        return 2
     if args.max_n is not None and args.max_n < 1:
         print("relnote: --max must be >= 1", file=sys.stderr)
         return 1
@@ -187,7 +198,8 @@ def main(argv: list[str] | None = None) -> int:
             except OSError as exc:
                 print(f"relnote: cannot write {dest}: {exc}", file=sys.stderr)
                 return 1
-        sys.stdout.write(text)
+        if not args.quiet:
+            sys.stdout.write(text)
         return 0
     except GitError as exc:
         print(f"relnote: {exc}", file=sys.stderr)
