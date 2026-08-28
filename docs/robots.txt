@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://loki-inu.github.io/relnote/sitemap.xml

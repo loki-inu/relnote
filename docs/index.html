@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>relnote — conventional-commit GitHub release notes (CLI + Action)</title>
+  <meta name="description" content="Offline Python CLI and GitHub Action that turns a git range into conventional-commit release notes. stdlib only, no GitHub API, no config file.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/">
+  <meta property="og:title" content="relnote — conventional-commit release notes">
+  <meta property="og:description" content="Offline CLI and GitHub Action. Groups feat, fix, and BREAKING CHANGE from a git range. stdlib Python, no API.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/">
+  <meta name="twitter:card" content="summary">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.5rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>relnote</h1>
+    <p class="tag">Turn a git range into clean GitHub release notes.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      <a href="https://github.com/loki-inu/relnote/releases/tag/v0.1.5">v0.1.5</a>
+      <a href="https://loki-inu.itch.io/relnote">itch.io download</a>
+    </div>
+
+    <h2>Install</h2>
+    <pre><code>pip install git+https://github.com/loki-inu/relnote.git
+relnote --help</code></pre>
+    <p>Python 3.11+, git on PATH, no third-party packages. Or run from a checkout: <code>python3 -m relnote</code>.</p>
+
+    <h2>What it does</h2>
+    <p>Reads the current repository, from the latest tag (or <code>--since</code>) to HEAD, and prints a GitHub Release body grouped from conventional commits:</p>
+    <ul>
+      <li><strong>Features</strong> — <code>feat</code></li>
+      <li><strong>Fixes</strong> — <code>fix</code></li>
+      <li><strong>Breaking</strong> — <code>type!</code> or a <code>BREAKING CHANGE:</code> footer</li>
+      <li><strong>Other</strong> — docs, chore, refactor, and everything else</li>
+    </ul>
+    <p>Merge commits are omitted by default. Bot authors can be dropped with <code>--no-bots</code>. Subjects that look like tokens are never printed. For CI, write a file and stay quiet: <code>relnote --output notes.md --quiet</code>.</p>
+
+    <h2>GitHub Action</h2>
+    <pre><code>- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+- id: relnote
+  uses: loki-inu/relnote@v0.1.5</code></pre>
+    <p>Pin <code>loki-inu/relnote@v0.1.5</code>. A draft-release workflow is in the repo under <code>examples/</code>.</p>
+
+    <h2>Compared to the usual tools</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Use it when</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>relnote</td>
+          <td>You want offline, stdlib-only notes grouped by conventional commits, with no config and no GitHub API.</td>
+        </tr>
+        <tr>
+          <td><code>gh release create --generate-notes</code></td>
+          <td>You want GitHub's official, PR-linked notes and you are already online with <code>gh</code>.</td>
+        </tr>
+        <tr>
+          <td>git-cliff</td>
+          <td>You want a full changelog file, Tera templates, and a config. Heavier, more control.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <footer>
+      <p>MIT. Copyright 2026 loki-inu. Same files on GitHub and itch. Not a GitHub App and not a hosted service.</p>
+    </footer>
+  </main>
+</body>
+</html>

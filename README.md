@@ -39,11 +39,13 @@ _3 commit(s) omitted (bots or secret-looking subjects)._
 
 Synthetic example from a fake commit list for a fictional CLI called harbor — not taken from any real repository. See [samples/example-output.md](samples/example-output.md).
 
-## Compared to `gh release create --generate-notes`
+## Compared to `gh` and git-cliff
 
 relnote runs offline, stdlib-only, with no GitHub API and no config file. It groups conventional commits into Features, Fixes, and Breaking.
 
-Keep using `gh` when you want GitHub's official, PR-linked release notes.
+Keep using `gh release create --generate-notes` when you want GitHub's official, PR-linked notes. Use [git-cliff](https://git-cliff.org/) when you want a full changelog file, Tera templates, and a config. relnote is the smaller offline alternative.
+
+Docs: https://loki-inu.github.io/relnote/
 
 ## Install
 
