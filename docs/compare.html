@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>relnote vs git-cliff vs gh --generate-notes — offline Python alternative</title>
+  <meta name="description" content="Honest comparison: relnote as a git-cliff alternative and a gh release create --generate-notes alternative. Conventional-commit release notes in offline stdlib Python.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/compare.html">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="relnote vs git-cliff vs gh --generate-notes">
+  <meta property="og:description" content="Offline Python CLI for conventional-commit release notes. Compared honestly with git-cliff and gh release create --generate-notes.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/compare.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="relnote vs git-cliff vs gh --generate-notes">
+  <meta name="twitter:description" content="Offline Python CLI for conventional-commit release notes. Compared honestly with git-cliff and gh release create --generate-notes.">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>relnote compared</h1>
+    <p class="tag">A git-cliff alternative and a <code>gh release create --generate-notes</code> alternative — when you want conventional-commit release notes from offline Python.</p>
+    <div class="links">
+      <a href="./">Docs</a>
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      <a href="https://github.com/loki-inu/relnote/releases/tag/v0.1.5">v0.1.5</a>
+      <a href="https://loki-inu.itch.io/relnote">itch.io download</a>
+    </div>
+
+    <h2>What you are choosing between</h2>
+    <p>Three tools get asked about in the same breath. They overlap, but they are not the same job.</p>
+    <ul>
+      <li><strong>relnote</strong> — stdlib Python CLI and GitHub Action. Reads a git range, groups conventional commits, prints a Release body. No config file, no GitHub API.</li>
+      <li><strong><code>gh release create --generate-notes</code></strong> — GitHub’s official notes. Online, PR-linked, and it creates the Release for you.</li>
+      <li><strong><a href="https://git-cliff.org/">git-cliff</a></strong> — changelog generator with <code>cliff.toml</code>, Tera templates, and optional version bump. Heavier, more control.</li>
+    </ul>
+    <p>relnote is the smaller offline alternative. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file.</p>
+
+    <h2>Comparison</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>relnote</th>
+            <th><code>gh --generate-notes</code></th>
+            <th>git-cliff</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Runs offline</td>
+            <td>Yes. Needs Python 3.11+ and git on PATH.</td>
+            <td>No. Talks to the GitHub API and needs <code>gh</code> auth.</td>
+            <td>Yes for local git history. Remote extras are optional.</td>
+          </tr>
+          <tr>
+            <td>Config file</td>
+            <td>None.</td>
+            <td>None. Flags and GitHub repo settings.</td>
+            <td><code>cliff.toml</code> plus Tera templates.</td>
+          </tr>
+          <tr>
+            <td>Install / language</td>
+            <td>Python stdlib. <code>pip install git+https://github.com/loki-inu/relnote.git</code> or <code>python3 -m relnote</code>.</td>
+            <td>GitHub CLI. Already common in many workflows.</td>
+            <td>Rust binary (package manager, cargo, or a release asset).</td>
+          </tr>
+          <tr>
+            <td>Conventional commits</td>
+            <td>Yes. Groups <code>feat</code>, <code>fix</code>, <code>type!</code> / <code>BREAKING CHANGE:</code>, and everything else.</td>
+            <td>No. Groups merged pull requests, not commit types.</td>
+            <td>Yes, if you configure parsers for that.</td>
+          </tr>
+          <tr>
+            <td>What it writes</td>
+            <td>A GitHub Release body on stdout (or <code>--output</code>). You paste or attach it.</td>
+            <td>The GitHub Release itself.</td>
+            <td>A changelog file, typically <code>CHANGELOG.md</code>.</td>
+          </tr>
+          <tr>
+            <td>Creates the GitHub Release</td>
+            <td>No. Not a GitHub App and not a hosted service.</td>
+            <td>Yes. That is the command.</td>
+            <td>No, unless you wrap it with <code>gh</code> or another step.</td>
+          </tr>
+          <tr>
+            <td>PR links and new contributors</td>
+            <td>No. Local commits only. Compare URL if <code>origin</code> is github.com.</td>
+            <td>Yes. Official PR-linked notes.</td>
+            <td>Optional, via GitHub / GitLab integration.</td>
+          </tr>
+          <tr>
+            <td>Templates</td>
+            <td>Fixed Features / Fixes / Breaking / Other layout.</td>
+            <td>GitHub’s generated-notes format.</td>
+            <td>Tera templates. Full control over sections and wording.</td>
+          </tr>
+          <tr>
+            <td>Version bump</td>
+            <td>No.</td>
+            <td>No.</td>
+            <td>Yes (<code>--bumped-version</code> and related flags).</td>
+          </tr>
+          <tr>
+            <td>Third-party packages</td>
+            <td>None. stdlib only.</td>
+            <td>The <code>gh</code> binary and GitHub.</td>
+            <td>The git-cliff binary (and a config you maintain).</td>
+          </tr>
+          <tr>
+            <td>CI hook</td>
+            <td><code>loki-inu/relnote@v0.1.5</code>. Draft-release example in the repo.</td>
+            <td>Call <code>gh release create --generate-notes</code> in a workflow.</td>
+            <td>Community Action and native CLI in CI.</td>
+          </tr>
+          <tr>
+            <td>Use it when</td>
+            <td>You want offline, no-config, conventional-commit notes to paste into a Release.</td>
+            <td>You want GitHub’s official notes and you are already online with <code>gh</code>.</td>
+            <td>You want a changelog file, templates, and a config.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Install relnote</h2>
+    <pre><code>pip install git+https://github.com/loki-inu/relnote.git
+relnote --help</code></pre>
+    <p>Python 3.11+, git on PATH, no third-party packages. Or from a checkout: <code>python3 -m relnote</code>.</p>
+
+    <h2>What relnote will not do</h2>
+    <ul>
+      <li>It does not create the Release, open a PR, or bump versions.</li>
+      <li>It does not write a changelog file back into the repository.</li>
+      <li>It does not replace git-cliff if you need Tera templates or a living <code>CHANGELOG.md</code>.</li>
+      <li>It does not replace <code>gh --generate-notes</code> if you want PR-linked official notes.</li>
+    </ul>
+
+    <footer>
+      <p><a href="./">relnote docs</a>. MIT. Copyright 2026 loki-inu. Same files on GitHub and itch. Not a GitHub App and not a hosted service.</p>
+    </footer>
+  </main>
+</body>
+</html>

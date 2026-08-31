@@ -7,11 +7,62 @@
   <title>relnote — conventional-commit GitHub release notes (CLI + Action)</title>
   <meta name="description" content="Offline Python CLI and GitHub Action that turns a git range into conventional-commit release notes. stdlib only, no GitHub API, no config file.">
   <link rel="canonical" href="https://loki-inu.github.io/relnote/">
+  <meta property="og:site_name" content="relnote">
   <meta property="og:title" content="relnote — conventional-commit release notes">
   <meta property="og:description" content="Offline CLI and GitHub Action. Groups feat, fix, and BREAKING CHANGE from a git range. stdlib Python, no API.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://loki-inu.github.io/relnote/">
   <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="relnote — conventional-commit release notes">
+  <meta name="twitter:description" content="Offline CLI and GitHub Action. Groups feat, fix, and BREAKING CHANGE from a git range. stdlib Python, no API.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "relnote",
+        "description": "Offline Python CLI and GitHub Action that turns a git range into conventional-commit release notes. stdlib only, no GitHub API, no config file.",
+        "url": "https://github.com/loki-inu/relnote",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, macOS, Windows",
+        "programmingLanguage": "Python",
+        "softwareVersion": "0.1.5",
+        "license": "https://opensource.org/licenses/MIT",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "softwareHelp": {
+          "@type": "WebPage",
+          "name": "relnote docs",
+          "url": "https://loki-inu.github.io/relnote/"
+        },
+        "sameAs": [
+          "https://loki-inu.itch.io/relnote"
+        ],
+        "author": {
+          "@type": "Person",
+          "name": "loki-inu",
+          "url": "https://github.com/loki-inu"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "name": "relnote",
+        "url": "https://loki-inu.github.io/relnote/",
+        "description": "Docs for relnote, an offline stdlib Python CLI and GitHub Action for conventional-commit release notes.",
+        "publisher": {
+          "@type": "Person",
+          "name": "loki-inu",
+          "url": "https://github.com/loki-inu"
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     :root {
       color-scheme: light dark;
@@ -95,6 +146,7 @@
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
       <a href="https://github.com/loki-inu/relnote/releases/tag/v0.1.5">v0.1.5</a>
       <a href="https://loki-inu.itch.io/relnote">itch.io download</a>
+      <a href="compare.html">Compare to git-cliff and gh</a>
     </div>
 
     <h2>Install</h2>
@@ -121,6 +173,7 @@ relnote --help</code></pre>
     <p>Pin <code>loki-inu/relnote@v0.1.5</code>. A draft-release workflow is in the repo under <code>examples/</code>.</p>
 
     <h2>Compared to the usual tools</h2>
+    <p>Short version below. The <a href="compare.html">full comparison</a> covers a git-cliff alternative, a <code>gh release create --generate-notes</code> alternative, and offline Python conventional-commit notes.</p>
     <table>
       <thead>
         <tr>
