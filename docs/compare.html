@@ -4,17 +4,105 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>relnote vs git-cliff vs gh --generate-notes — offline Python alternative</title>
-  <meta name="description" content="Honest comparison: relnote as a git-cliff alternative and a gh release create --generate-notes alternative. Conventional-commit release notes in offline stdlib Python.">
+  <title>git-cliff alternative and gh --generate-notes alternative — relnote</title>
+  <meta name="description" content="Compare relnote to git-cliff, gh release create --generate-notes, and swapnanil/relnotes. Offline stdlib Python changelog CLI plus a GitHub Action for conventional-commit release notes.">
   <link rel="canonical" href="https://loki-inu.github.io/relnote/compare.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
   <meta property="og:site_name" content="relnote">
-  <meta property="og:title" content="relnote vs git-cliff vs gh --generate-notes">
-  <meta property="og:description" content="Offline Python CLI for conventional-commit release notes. Compared honestly with git-cliff and gh release create --generate-notes.">
+  <meta property="og:title" content="git-cliff alternative and gh --generate-notes alternative — relnote">
+  <meta property="og:description" content="Offline stdlib Python changelog CLI and GitHub Action. Honest comparison with git-cliff, gh --generate-notes, and swapnanil/relnotes.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://loki-inu.github.io/relnote/compare.html">
+  <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="relnote vs git-cliff vs gh --generate-notes">
-  <meta name="twitter:description" content="Offline Python CLI for conventional-commit release notes. Compared honestly with git-cliff and gh release create --generate-notes.">
+  <meta name="twitter:title" content="git-cliff alternative and gh --generate-notes alternative — relnote">
+  <meta name="twitter:description" content="Offline stdlib Python changelog CLI and GitHub Action. Honest comparison with git-cliff, gh --generate-notes, and swapnanil/relnotes.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/compare.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/compare.html",
+        "name": "git-cliff alternative and gh --generate-notes alternative — relnote",
+        "description": "Compare relnote to git-cliff, gh release create --generate-notes, and swapnanil/relnotes. Offline stdlib Python changelog CLI plus a GitHub Action.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "relnote",
+          "url": "https://loki-inu.github.io/relnote/"
+        },
+        "about": {
+          "@type": "SoftwareApplication",
+          "name": "relnote",
+          "url": "https://github.com/loki-inu/relnote"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "relnote docs",
+            "item": "https://loki-inu.github.io/relnote/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Compare",
+            "item": "https://loki-inu.github.io/relnote/compare.html"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is relnote a git-cliff alternative?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a living CHANGELOG.md. Keep git-cliff when you want a maintained changelog file, templates, and optional version bump."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is relnote a gh release create --generate-notes alternative?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, when you want offline notes grouped by commit type. Keep gh release create --generate-notes when you want official PR-linked notes and the Release created for you."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a stdlib Python changelog CLI for conventional commits?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. relnote is a stdlib Python changelog CLI: Python 3.11+, git on PATH, no third-party packages. It prints offline conventional-commit release notes from local git history."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I generate conventional-commit release notes in a GitHub Action?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Use loki-inu/relnote@v0.1.5 after actions/checkout with fetch-depth: 0. The action writes grouped notes to an output. A draft-release example is in the repo."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does relnote differ from swapnanil/relnotes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Both are offline stdlib Python CLIs that group conventional commits. Pick relnote for the GitHub Action, --quiet/--output CI, and bot or secret-looking subject filters. Pick swapnanil/relnotes for optional .relnotes.toml, inferred semver bump, or --from/--to range names."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   <style>
     :root {
       color-scheme: light dark;
@@ -51,6 +139,10 @@
     h2 {
       font-size: 1.15rem;
       margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
     }
     p, li { max-width: 40rem; }
     a { color: var(--accent); }
@@ -101,7 +193,7 @@
 <body>
   <main>
     <h1>relnote compared</h1>
-    <p class="tag">A git-cliff alternative and a <code>gh release create --generate-notes</code> alternative — when you want conventional-commit release notes from offline Python.</p>
+    <p class="tag">A git-cliff alternative and a <code>gh release create --generate-notes</code> alternative — offline conventional-commit release notes from a stdlib Python changelog CLI and GitHub Action.</p>
     <div class="links">
       <a href="./">Docs</a>
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
@@ -110,13 +202,14 @@
     </div>
 
     <h2>What you are choosing between</h2>
-    <p>Three tools get asked about in the same breath. They overlap, but they are not the same job.</p>
+    <p>Four tools get asked about in the same breath. They overlap, but they are not the same job.</p>
     <ul>
-      <li><strong>relnote</strong> — stdlib Python CLI and GitHub Action. Reads a git range, groups conventional commits, prints a Release body. No config file, no GitHub API.</li>
+      <li><strong>relnote</strong> — stdlib Python changelog CLI and GitHub Action. Reads a git range, groups conventional commits, prints a Release body. No config file, no GitHub API.</li>
       <li><strong><code>gh release create --generate-notes</code></strong> — GitHub’s official notes. Online, PR-linked, and it creates the Release for you.</li>
       <li><strong><a href="https://git-cliff.org/">git-cliff</a></strong> — changelog generator with <code>cliff.toml</code>, Tera templates, and optional version bump. Heavier, more control.</li>
+      <li><strong><a href="https://github.com/swapnanil/relnotes">swapnanil/relnotes</a></strong> — another offline stdlib Python CLI for conventional-commit notes. Optional <code>.relnotes.toml</code>, inferred semver bump, <code>--from</code> / <code>--to</code>.</li>
     </ul>
-    <p>relnote is the smaller offline alternative. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file.</p>
+    <p>relnote is the smaller offline alternative when you want a GitHub Action and zero-config CI. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file.</p>
 
     <h2>Comparison</h2>
     <div class="table-wrap">
@@ -198,7 +291,7 @@
           </tr>
           <tr>
             <td>Use it when</td>
-            <td>You want offline, no-config, conventional-commit notes to paste into a Release.</td>
+            <td>You want offline, no-config, conventional-commit notes to paste into a Release — plus a GitHub Action.</td>
             <td>You want GitHub’s official notes and you are already online with <code>gh</code>.</td>
             <td>You want a changelog file, templates, and a config.</td>
           </tr>
@@ -206,10 +299,18 @@
       </table>
     </div>
 
+    <h2>relnote and swapnanil/relnotes</h2>
+    <p>There is another stdlib Python conventional-commit notes CLI: <a href="https://github.com/swapnanil/relnotes">swapnanil/relnotes</a>. Same job — offline, no runtime dependencies, grouped Features / Fixes / Breaking / Other. Different extras.</p>
+    <ul>
+      <li>Pick <strong>relnote</strong> when you want a GitHub Action, zero-config CI (<code>--quiet</code> / <code>--output</code>), and filters for bot authors and secret-looking subjects.</li>
+      <li>Pick <strong>swapnanil/relnotes</strong> when you want an optional <code>.relnotes.toml</code>, inferred semver bump, or <code>--from</code> / <code>--to</code> range names.</li>
+    </ul>
+    <p>relnote uses <code>--since</code> / <code>--until</code> for the same kind of range, and also has <code>--format plain</code>. Neither tool creates the GitHub Release.</p>
+
     <h2>Install relnote</h2>
     <pre><code>pip install git+https://github.com/loki-inu/relnote.git
 relnote --help</code></pre>
-    <p>Python 3.11+, git on PATH, no third-party packages. Or from a checkout: <code>python3 -m relnote</code>.</p>
+    <p>Python 3.11+, git on PATH, no third-party packages. Or from a checkout: <code>python3 -m relnote</code>. For CI, the GitHub Action is <code>loki-inu/relnote@v0.1.5</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>.</p>
 
     <h2>What relnote will not do</h2>
     <ul>
@@ -217,10 +318,23 @@ relnote --help</code></pre>
       <li>It does not write a changelog file back into the repository.</li>
       <li>It does not replace git-cliff if you need Tera templates or a living <code>CHANGELOG.md</code>.</li>
       <li>It does not replace <code>gh --generate-notes</code> if you want PR-linked official notes.</li>
+      <li>It does not replace swapnanil/relnotes if you want a config file or inferred semver bump.</li>
     </ul>
 
+    <h2>Common questions</h2>
+    <h3>Is relnote a git-cliff alternative?</h3>
+    <p>Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a living <code>CHANGELOG.md</code>. Keep git-cliff when you want a maintained changelog file, templates, and optional version bump.</p>
+    <h3>Is relnote a <code>gh release create --generate-notes</code> alternative?</h3>
+    <p>Yes, when you want offline notes grouped by commit type. Keep <code>gh release create --generate-notes</code> when you want official PR-linked notes and the Release created for you.</p>
+    <h3>Is there a stdlib Python changelog CLI for conventional commits?</h3>
+    <p>Yes. relnote is a stdlib Python changelog CLI: Python 3.11+, git on PATH, no third-party packages. It prints offline conventional-commit release notes from local git history.</p>
+    <h3>How do I generate conventional-commit release notes in a GitHub Action?</h3>
+    <p>Use <code>loki-inu/relnote@v0.1.5</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>. The action writes grouped notes to an output. A draft-release example is in the repo.</p>
+    <h3>How does relnote differ from swapnanil/relnotes?</h3>
+    <p>Both are offline stdlib Python CLIs that group conventional commits. Pick relnote for the GitHub Action, <code>--quiet</code>/<code>--output</code> CI, and bot or secret-looking subject filters. Pick swapnanil/relnotes for optional <code>.relnotes.toml</code>, inferred semver bump, or <code>--from</code>/<code>--to</code> range names.</p>
+
     <footer>
-      <p><a href="./">relnote docs</a>. MIT. Copyright 2026 loki-inu. Same files on GitHub and itch. Not a GitHub App and not a hosted service.</p>
+      <p><a href="./">relnote docs</a>. MIT. Copyright 2026 loki-inu. Same files on GitHub and itch. Not a GitHub App and not a hosted service. <a href="llms.txt">llms.txt</a></p>
     </footer>
   </main>
 </body>

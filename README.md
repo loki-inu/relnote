@@ -39,13 +39,15 @@ _3 commit(s) omitted (bots or secret-looking subjects)._
 
 Synthetic example from a fake commit list for a fictional CLI called harbor — not taken from any real repository. See [samples/example-output.md](samples/example-output.md).
 
-## Compared to `gh` and git-cliff
+## Compared to `gh`, git-cliff, and swapnanil/relnotes
 
-relnote runs offline, stdlib-only, with no GitHub API and no config file. It groups conventional commits into Features, Fixes, and Breaking.
+relnote is a stdlib Python changelog CLI (and GitHub Action) for offline conventional-commit release notes: no GitHub API, no config file. It groups commits into Features, Fixes, and Breaking.
 
-Keep using `gh release create --generate-notes` when you want GitHub's official, PR-linked notes. Use [git-cliff](https://git-cliff.org/) when you want a full changelog file, Tera templates, and a config. relnote is the smaller offline alternative.
+Keep using `gh release create --generate-notes` when you want GitHub's official, PR-linked notes. Use [git-cliff](https://git-cliff.org/) when you want a full changelog file, Tera templates, and a config.
 
-Docs: https://loki-inu.github.io/relnote/
+[swapnanil/relnotes](https://github.com/swapnanil/relnotes) is another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action and zero-config CI (`--quiet` / `--output`); pick that CLI if you want an optional `.relnotes.toml` or inferred semver bump.
+
+Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html
 
 ## Install
 

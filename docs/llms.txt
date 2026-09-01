@@ -1,10 +1,22 @@
 # relnote
 
-> Offline stdlib Python CLI and GitHub Action that turns a git range into conventional-commit release notes.
+> Offline stdlib Python changelog CLI and GitHub Action for conventional-commit release notes.
 
 relnote reads the current repository from the latest tag (or --since) to HEAD and prints a GitHub Release body grouped as Features (feat), Fixes (fix), Breaking (type! or BREAKING CHANGE:), and Other. Merge commits are omitted by default. No GitHub API, no config file, no third-party packages. Python 3.11+ and git on PATH.
 
-It does not create the Release, bump versions, or write a CHANGELOG.md. Keep gh release create --generate-notes for official PR-linked notes. Keep git-cliff for a templated changelog file.
+It is a small git-cliff alternative when you want a Release body rather than a templated CHANGELOG.md. It is a gh release create --generate-notes alternative when you want offline notes grouped by commit type instead of official PR-linked notes.
+
+It does not create the Release, bump versions, or write a CHANGELOG.md.
+
+## GitHub Action
+
+loki-inu/relnote@v0.1.5 after actions/checkout with fetch-depth: 0. The notes output is the Release body. CI can also run: relnote --output notes.md --quiet
+
+## Compared to nearby tools
+
+- git-cliff: keep it for CHANGELOG.md, Tera templates, and version bump. relnote prints a Release body and needs no config.
+- gh release create --generate-notes: keep it for official PR-linked notes. relnote runs offline and groups by conventional-commit type.
+- swapnanil/relnotes: another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action, --quiet/--output CI, and bot or secret-looking subject filters. Pick that CLI for optional .relnotes.toml, inferred semver bump, or --from/--to.
 
 ## Install
 
@@ -13,12 +25,10 @@ relnote --help
 
 Or from a checkout: python3 -m relnote
 
-GitHub Action: loki-inu/relnote@v0.1.5 (needs actions/checkout with fetch-depth: 0)
-
 ## Links
 
 - Docs: https://loki-inu.github.io/relnote/
-- Compare (git-cliff / gh --generate-notes): https://loki-inu.github.io/relnote/compare.html
+- Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html
 - Source: https://github.com/loki-inu/relnote
 - Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.1.5
 - itch.io: https://loki-inu.itch.io/relnote
