@@ -32,4 +32,5 @@ Or from a checkout: python3 -m relnote
 - Source: https://github.com/loki-inu/relnote
 - Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.1.5
 - itch.io: https://loki-inu.itch.io/relnote
+- OSSDrop: https://ossdrop.com/tool/relnote
 - License: MIT
