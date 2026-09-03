@@ -1,5 +1,7 @@
 # relnote
 
+[![relnote on OSSDrop](https://ossdrop.com/badge/relnote)](https://ossdrop.com/tool/relnote)
+
 Turn a git range into clean GitHub release notes.
 
 ```bash
@@ -47,7 +49,7 @@ Keep using `gh release create --generate-notes` when you want GitHub's official,
 
 [swapnanil/relnotes](https://github.com/swapnanil/relnotes) is another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action and zero-config CI (`--quiet` / `--output`); pick that CLI if you want an optional `.relnotes.toml` or inferred semver bump.
 
-Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html
+Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · OSSDrop: https://ossdrop.com/tool/relnote
 
 ## Install
 
