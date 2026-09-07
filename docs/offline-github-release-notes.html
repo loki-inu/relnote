@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Offline GitHub release notes from Conventional Commits — relnote</title>
+  <meta name="description" content="Generate GitHub release notes offline from Conventional Commits with a stdlib Python CLI and GitHub Action. No GitHub API, no config file.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/offline-github-release-notes.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Offline GitHub release notes from Conventional Commits — relnote">
+  <meta property="og:description" content="Stdlib Python CLI and GitHub Action for conventional-commit release notes. Offline, no API, no config.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/offline-github-release-notes.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Offline GitHub release notes from Conventional Commits — relnote">
+  <meta name="twitter:description" content="Stdlib Python CLI and GitHub Action for conventional-commit release notes. Offline, no API, no config.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/offline-github-release-notes.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/offline-github-release-notes.html",
+        "name": "Offline GitHub release notes from Conventional Commits — relnote",
+        "description": "Generate GitHub release notes offline from Conventional Commits with a stdlib Python CLI and GitHub Action.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "url": "https://github.com/loki-inu/relnote" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "Offline GitHub release notes", "item": "https://loki-inu.github.io/relnote/offline-github-release-notes.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Generate offline GitHub release notes with relnote",
+        "description": "Turn a git range of Conventional Commits into a GitHub Release body without calling the GitHub API.",
+        "step": [
+          { "@type": "HowToStep", "name": "Install or check out", "text": "Use Python 3.11+ with git on PATH. pip install git+https://github.com/loki-inu/relnote.git or run from a checkout." },
+          { "@type": "HowToStep", "name": "Run from the latest tag", "text": "python3 -m relnote prints a GitHub Release body from the latest tag to HEAD." },
+          { "@type": "HowToStep", "name": "Paste into a release", "text": "Paste stdout into a GitHub Release, or use --output notes.md --quiet in CI." }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./" >relnote docs</a> · <a href="compare.html">Compare</a></p>
+    <h1>Offline GitHub release notes from Conventional Commits</h1>
+    <p class="tag">relnote is a stdlib Python changelog CLI and GitHub Action. It reads local git history, groups <code>feat</code>, <code>fix</code>, and <code>BREAKING CHANGE</code>, and prints a Release body — no GitHub API and no config file.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://ossdrop.com/tool/relnote">OSSDrop</a>
+      · <a href="compare.html">Compare to git-cliff and gh</a>
+    </div>
+
+    <h2>Why offline</h2>
+    <p><code>gh release create --generate-notes</code> needs the GitHub API and builds notes around PRs. That is the right default on GitHub.com. relnote is for air-gapped CI, mirrors, or repos that already speak Conventional Commits and want a Release body from <code>git log</code> alone.</p>
+
+    <h2>Quick start</h2>
+    <pre><code>pip install git+https://github.com/loki-inu/relnote.git
+relnote --help
+python3 -m relnote --since v0.1.0 --output notes.md --quiet</code></pre>
+
+    <h2>GitHub Action</h2>
+    <p>After <code>actions/checkout</code> with <code>fetch-depth: 0</code>, use <code>loki-inu/relnote@v0.1.5</code>. The action writes grouped notes for the release job. See the repo README for a draft-release example.</p>
+
+    <h2>When to pick something else</h2>
+    <ul>
+      <li><a href="https://git-cliff.org/">git-cliff</a> — full changelog files, Tera templates, rich config.</li>
+      <li><code>gh release create --generate-notes</code> — official GitHub notes linked to PRs.</li>
+      <li><a href="https://github.com/swapnanil/relnotes">swapnanil/relnotes</a> — another stdlib Python CLI if you want optional <code>.relnotes.toml</code> or inferred semver bump.</li>
+    </ul>
+    <p>More detail on the <a href="compare.html">comparison page</a>.</p>
+  </main>
+</body>
+</html>
