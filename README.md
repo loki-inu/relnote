@@ -2,6 +2,8 @@
 
 [![relnote on OSSDrop](https://ossdrop.com/badge/relnote)](https://ossdrop.com/tool/relnote)
 
+Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators).
+
 Turn a git range into clean GitHub release notes.
 
 ```bash
