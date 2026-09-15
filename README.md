@@ -2,7 +2,7 @@
 
 [![relnote on OSSDrop](https://ossdrop.com/badge/relnote)](https://ossdrop.com/tool/relnote)
 
-Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators).
+Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators) and [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git).
 
 Turn a git range into clean GitHub release notes.
 
@@ -169,3 +169,4 @@ A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [e
 MIT. Copyright (c) 2026 loki-inu.
 
 The useful core is here. A later paid band of **$9–15** (or free OSS plus Polar extras such as a workflow wrapper) is a listing decision, not part of this tree. No wallet, no signup, no checkout in this product.
+
