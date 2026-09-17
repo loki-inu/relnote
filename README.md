@@ -2,7 +2,7 @@
 
 [![relnote on OSSDrop](https://ossdrop.com/badge/relnote)](https://ossdrop.com/tool/relnote)
 
-Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators) and [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git).
+Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), and [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools).
 
 Turn a git range into clean GitHub release notes.
 
