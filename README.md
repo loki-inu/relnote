@@ -2,7 +2,7 @@
 
 [![relnote on OSSDrop](https://ossdrop.com/badge/relnote)](https://ossdrop.com/tool/relnote)
 
-Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools), [git-extra-commands](https://github.com/unixorn/git-extra-commands) (External Git Utilities), [awesome-docs](https://github.com/testthedocs/awesome-docs) (GitHub Actions), [awesome-cli-tui-software](https://github.com/lgaggini/awesome-cli-tui-software) (git), and [awesome-github](https://github.com/fffaraz/awesome-github) (Git).
+Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools), [git-extra-commands](https://github.com/unixorn/git-extra-commands) (External Git Utilities), [awesome-docs](https://github.com/testthedocs/awesome-docs) (GitHub Actions), [awesome-cli-tui-software](https://github.com/lgaggini/awesome-cli-tui-software) (git), [awesome-github](https://github.com/fffaraz/awesome-github) (Git), and [awesome-devops](https://github.com/frimik/awesome-devops) (Command Line and Tooling).
 
 Turn a git range into clean GitHub release notes.
 
