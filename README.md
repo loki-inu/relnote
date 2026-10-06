@@ -70,6 +70,14 @@ pip install git+https://github.com/loki-inu/relnote.git
 relnote --help
 ```
 
+If you use the GitHub CLI, install it as a `gh` extension ([gh-relnote](https://github.com/loki-inu/gh-relnote)), which can also create the release:
+
+```bash
+gh extension install loki-inu/gh-relnote
+gh relnote
+gh relnote create v1.3.0 --draft
+```
+
 ## Why not git log
 
 Conventional commits already have the grouping; relnote just prints a Release body. stdlib-only, no config file.
