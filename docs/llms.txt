@@ -25,11 +25,17 @@ relnote --help
 
 Or from a checkout: python3 -m relnote
 
+## GitHub CLI extension
+
+gh extension install loki-inu/gh-relnote
+gh relnote prints the notes; gh relnote create TAG [gh release create flags] [-- relnote flags] creates the Release with them. Bundles relnote, needs gh, git, Python 3.11+.
+
 ## Links
 
 - Docs: https://loki-inu.github.io/relnote/
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html
 - Source: https://github.com/loki-inu/relnote
+- gh extension: https://github.com/loki-inu/gh-relnote (docs: https://loki-inu.github.io/relnote/gh-extension.html)
 - Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.1.5
 - itch.io: https://loki-inu.itch.io/relnote
 - OSSDrop: https://ossdrop.com/tool/relnote

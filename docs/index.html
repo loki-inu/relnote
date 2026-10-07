@@ -235,12 +235,14 @@
       <a href="https://ossdrop.com/tool/relnote">OSSDrop</a>
       <a href="compare.html">Compare to git-cliff, gh, and relnotes</a>
       <a href="offline-github-release-notes.html">Offline GitHub release notes</a>
+      <a href="gh-extension.html">gh relnote (GitHub CLI extension)</a>
     </div>
 
     <h2>Install</h2>
     <pre><code>pip install git+https://github.com/loki-inu/relnote.git
 relnote --help</code></pre>
     <p>Python 3.11+, git on PATH, no third-party packages. Or run from a checkout: <code>python3 -m relnote</code>.</p>
+    <p>Using the GitHub CLI? <code>gh extension install loki-inu/gh-relnote</code>, then <code>gh relnote create v1.3.0 --draft</code>. See <a href="gh-extension.html">gh relnote</a>.</p>
 
     <h2>What it does</h2>
     <p>relnote is an offline conventional-commits release notes tool in Python. It reads the current repository, from the latest tag (or <code>--since</code>) to HEAD, and prints a GitHub Release body grouped from conventional commits:</p>
