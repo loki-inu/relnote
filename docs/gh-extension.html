@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>gh release notes from Conventional Commits: gh relnote extension — relnote</title>
+  <meta name="description" content="gh relnote is a GitHub CLI extension that builds a GitHub Release body from conventional commits in your clone, then runs gh release create with it. No config, stdlib Python.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/gh-extension.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="gh release notes from Conventional Commits: gh relnote extension — relnote">
+  <meta property="og:description" content="gh relnote is a GitHub CLI extension that builds a GitHub Release body from conventional commits in your clone, then runs gh release create with it. No config, stdlib Python.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/gh-extension.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="gh release notes from Conventional Commits: gh relnote extension — relnote">
+  <meta name="twitter:description" content="gh relnote is a GitHub CLI extension that builds a GitHub Release body from conventional commits in your clone, then runs gh release create with it. No config, stdlib Python.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/gh-extension.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/gh-extension.html",
+        "name": "gh release notes from Conventional Commits: gh relnote extension — relnote",
+        "description": "gh relnote is a GitHub CLI extension that builds a GitHub Release body from conventional commits in your clone, then runs gh release create with it. No config, stdlib Python.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "gh-relnote", "applicationCategory": "DeveloperApplication", "url": "https://github.com/loki-inu/gh-relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "gh relnote extension", "item": "https://loki-inu.github.io/relnote/gh-extension.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Create a GitHub Release with conventional-commit notes using gh relnote",
+        "step": [
+          { "@type": "HowToStep", "name": "Install the extension", "text": "gh extension install loki-inu/gh-relnote (needs gh, git, and Python 3.11+ on PATH)." },
+          { "@type": "HowToStep", "name": "Preview the notes", "text": "Run gh relnote to print a Release body from the latest tag to HEAD." },
+          { "@type": "HowToStep", "name": "Create the release", "text": "Run gh relnote create v1.3.0 --draft to call gh release create with the generated notes file." }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="compare.html">Compare</a> · <a href="offline-github-release-notes.html">Offline notes</a></p>
+    <h1>gh relnote: release notes from conventional commits, inside the GitHub CLI</h1>
+    <p class="tag"><a href="https://github.com/loki-inu/gh-relnote">gh-relnote</a> is a GitHub CLI extension that bundles relnote. It reads commit messages in your clone, groups <code>feat</code>, <code>fix</code>, and breaking changes, and hands the result to <code>gh release create</code>.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/gh-relnote">gh-relnote on GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote">relnote</a>
+      · <a href="compare.html">Compare to git-cliff and gh --generate-notes</a>
+    </div>
+
+    <h2>Install</h2>
+    <pre><code>gh extension install loki-inu/gh-relnote
+gh relnote --help</code></pre>
+    <p>Needs <code>gh</code>, <code>git</code>, and Python 3.11+ on <code>PATH</code>. No pip install and no third-party packages: relnote v0.1.5 is vendored in the extension. Set <code>PYTHON=/path/to/python3</code> to pick an interpreter. Upgrade with <code>gh extension upgrade relnote</code>.</p>
+
+    <h2>Preview the notes</h2>
+    <pre><code>gh relnote                          # latest tag → HEAD
+gh relnote --since v1.2.0 --no-bots
+gh relnote --output notes.md --quiet</code></pre>
+    <p>Output is Markdown for a GitHub Release body, grouped as Features, Fixes, Breaking, and Other. Merge commits are skipped by default, <code>--no-bots</code> drops dependabot and renovate, and subjects that look like tokens or keys are never printed.</p>
+
+    <h2>Create the release in one step</h2>
+    <pre><code>gh relnote create v1.3.0 --draft
+gh relnote create v1.3.0 --title "v1.3.0" -- --no-bots --max 50</code></pre>
+    <p><code>create</code> runs relnote for the latest tag to <code>HEAD</code>, writes the notes to a temp file, then runs <code>gh release create TAG … --notes-file</code>. Flags before <code>--</code> go to <code>gh release create</code> (<code>--draft</code>, <code>--prerelease</code>, <code>--title</code>, <code>--target</code>, asset paths). Flags after <code>--</code> go to relnote.</p>
+
+    <h2>gh relnote vs gh release create --generate-notes</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th><code>gh relnote</code></th><th><code>--generate-notes</code></th></tr></thead>
+        <tbody>
+          <tr><td>Source</td><td>Commit messages in your local clone</td><td>Merged pull requests on GitHub</td></tr>
+          <tr><td>Grouping</td><td>Conventional Commit type (feat, fix, breaking)</td><td>PR labels via <code>.github/release.yml</code></td></tr>
+          <tr><td>Works for direct-to-main repos</td><td>Yes</td><td>Lists little or nothing without PRs</td></tr>
+          <tr><td>Preview before pushing a tag</td><td>Yes, offline</td><td>Online only, via the GitHub API</td></tr>
+          <tr><td>Contributor and PR links</td><td>Author names and short SHAs</td><td>Yes, with @-mentions and PR links</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>If your team merges through PRs with good labels, <code>--generate-notes</code> is the better default. If your history already speaks Conventional Commits, or you push straight to main, <code>gh relnote</code> gives a cleaner body.</p>
+
+    <h2>Not using gh?</h2>
+    <p>The same notes are available as a plain CLI (<code>pip install git+https://github.com/loki-inu/relnote.git</code>) and as a GitHub Action (<code>loki-inu/relnote@v0.1.5</code>). See the <a href="./">relnote docs</a>.</p>
+
+    <footer>MIT licensed. <a href="https://github.com/loki-inu/gh-relnote">Source</a> · <a href="https://github.com/loki-inu/gh-relnote/issues">Issues</a></footer>
+  </main>
+</body>
+</html>
