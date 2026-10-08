@@ -140,7 +140,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./" >relnote docs</a> · <a href="compare.html">Compare</a> · <a href="gh-extension.html">gh relnote</a></p>
+    <p class="tag"><a href="./" >relnote docs</a> · <a href="compare.html">Compare</a> · <a href="gh-extension.html">gh relnote</a> · <a href="changelog.html">CHANGELOG.md</a></p>
     <h1>Offline GitHub release notes from Conventional Commits</h1>
     <p class="tag">relnote is a stdlib Python changelog CLI and GitHub Action. It reads local git history, groups <code>feat</code>, <code>fix</code>, and <code>BREAKING CHANGE</code>, and prints a Release body — no GitHub API and no config file.</p>
     <div class="links">
@@ -158,7 +158,7 @@ relnote --help
 python3 -m relnote --since v0.1.0 --output notes.md --quiet</code></pre>
 
     <h2>GitHub Action</h2>
-    <p>After <code>actions/checkout</code> with <code>fetch-depth: 0</code>, use <code>loki-inu/relnote@v0.1.5</code>. The action writes grouped notes for the release job. See the repo README for a draft-release example.</p>
+    <p>After <code>actions/checkout</code> with <code>fetch-depth: 0</code>, use <code>loki-inu/relnote@v0.2.0</code>. The action writes grouped notes for the release job. See the repo README for a draft-release example.</p>
 
     <h2>When to pick something else</h2>
     <ul>

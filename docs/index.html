@@ -31,7 +31,7 @@
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, macOS, Windows",
         "programmingLanguage": "Python",
-        "softwareVersion": "0.1.5",
+        "softwareVersion": "0.2.0",
         "license": "https://opensource.org/licenses/MIT",
         "isAccessibleForFree": true,
         "keywords": "conventional commits, release notes, changelog CLI, git-cliff alternative, gh release create --generate-notes alternative, GitHub Action, stdlib Python, offline",
@@ -100,7 +100,7 @@
           {
             "@type": "HowToStep",
             "name": "Run loki-inu/relnote",
-            "text": "Add a step that uses loki-inu/relnote@v0.1.5. The notes output is a GitHub Release body grouped from conventional commits."
+            "text": "Add a step that uses loki-inu/relnote@v0.2.0. The notes output is a GitHub Release body grouped from conventional commits."
           }
         ]
       },
@@ -112,7 +112,7 @@
             "name": "Is relnote a git-cliff alternative?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a living CHANGELOG.md. Keep git-cliff when you want a maintained changelog file."
+              "text": "Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a fully regenerated CHANGELOG.md. Keep git-cliff when you want templated changelogs rebuilt from full history. relnote 0.2.0 can prepend each release to CHANGELOG.md with --changelog."
             }
           },
           {
@@ -136,7 +136,7 @@
             "name": "How do I generate conventional-commit release notes in a GitHub Action?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Use loki-inu/relnote@v0.1.5 after actions/checkout with fetch-depth: 0. The action writes grouped notes to an output. A draft-release workflow is in the repo under examples/."
+              "text": "Use loki-inu/relnote@v0.2.0 after actions/checkout with fetch-depth: 0. The action writes grouped notes to an output. A draft-release workflow is in the repo under examples/."
             }
           }
         ]
@@ -230,12 +230,13 @@
     <p>A stdlib Python changelog CLI and GitHub Action for offline conventional-commit release notes. No config file, no GitHub API, no third-party packages.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
-      <a href="https://github.com/loki-inu/relnote/releases/tag/v0.1.5">v0.1.5</a>
+      <a href="https://github.com/loki-inu/relnote/releases/tag/v0.2.0">v0.2.0</a>
       <a href="https://loki-inu.itch.io/relnote">itch.io download</a>
       <a href="https://ossdrop.com/tool/relnote">OSSDrop</a>
       <a href="compare.html">Compare to git-cliff, gh, and relnotes</a>
       <a href="offline-github-release-notes.html">Offline GitHub release notes</a>
       <a href="gh-extension.html">gh relnote (GitHub CLI extension)</a>
+      <a href="changelog.html">CHANGELOG.md from conventional commits</a>
     </div>
 
     <h2>Install</h2>
@@ -243,6 +244,7 @@
 relnote --help</code></pre>
     <p>Python 3.11+, git on PATH, no third-party packages. Or run from a checkout: <code>python3 -m relnote</code>.</p>
     <p>Using the GitHub CLI? <code>gh extension install loki-inu/gh-relnote</code>, then <code>gh relnote create v1.3.0 --draft</code>. See <a href="gh-extension.html">gh relnote</a>.</p>
+    <p>Keeping a <code>CHANGELOG.md</code>? <code>relnote --changelog CHANGELOG.md --changelog-title v1.3.0</code> prepends the new release above the last one. See <a href="changelog.html">CHANGELOG.md from conventional commits</a>.</p>
 
     <h2>What it does</h2>
     <p>relnote is an offline conventional-commits release notes tool in Python. It reads the current repository, from the latest tag (or <code>--since</code>) to HEAD, and prints a GitHub Release body grouped from conventional commits:</p>
@@ -259,8 +261,8 @@ relnote --help</code></pre>
   with:
     fetch-depth: 0
 - id: relnote
-  uses: loki-inu/relnote@v0.1.5</code></pre>
-    <p>Pin <code>loki-inu/relnote@v0.1.5</code>. The <code>notes</code> output is the Release body. A draft-release workflow is in the repo under <code>examples/</code>.</p>
+  uses: loki-inu/relnote@v0.2.0</code></pre>
+    <p>Pin <code>loki-inu/relnote@v0.2.0</code>. The <code>notes</code> output is the Release body. A draft-release workflow is in the repo under <code>examples/</code>.</p>
 
     <h2>Compared to the usual tools</h2>
     <p>Short version below. See also <a href="offline-github-release-notes.html">offline GitHub release notes</a>. The <a href="compare.html">full comparison</a> covers a git-cliff alternative, a <code>gh release create --generate-notes</code> alternative, and another stdlib Python CLI (<a href="https://github.com/swapnanil/relnotes">swapnanil/relnotes</a>).</p>
@@ -293,13 +295,13 @@ relnote --help</code></pre>
 
     <h2>Common questions</h2>
     <h3>Is relnote a git-cliff alternative?</h3>
-    <p>Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a living <code>CHANGELOG.md</code>. Keep git-cliff when you want a maintained changelog file.</p>
+    <p>Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a fully regenerated <code>CHANGELOG.md</code>. Keep git-cliff when you want templated changelogs rebuilt from full history. relnote 0.2.0 can prepend each release to CHANGELOG.md with --changelog.</p>
     <h3>Is relnote a <code>gh release create --generate-notes</code> alternative?</h3>
     <p>Yes, when you want offline notes grouped by commit type. Keep <code>gh release create --generate-notes</code> when you want official PR-linked notes and the Release created for you.</p>
     <h3>Can I generate conventional-commit release notes offline in Python?</h3>
     <p>Yes. relnote is a stdlib Python changelog CLI. It reads local git history only — no GitHub API and no network. Python 3.11+ and git on PATH.</p>
     <h3>How do I generate conventional-commit release notes in a GitHub Action?</h3>
-    <p>Use <code>loki-inu/relnote@v0.1.5</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>. The action writes grouped notes to an output. A draft-release workflow is in the repo under <code>examples/</code>.</p>
+    <p>Use <code>loki-inu/relnote@v0.2.0</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>. The action writes grouped notes to an output. A draft-release workflow is in the repo under <code>examples/</code>.</p>
 
     <footer>
       <p>MIT. Copyright 2026 loki-inu. Same files on GitHub and itch. Not a GitHub App and not a hosted service. <a href="llms.txt">llms.txt</a></p>

@@ -104,7 +104,7 @@ class OutputFlagTests(unittest.TestCase):
         with redirect_stdout(buf), redirect_stderr(err):
             code = main(["--quiet"])
         self.assertEqual(code, 2)
-        self.assertIn("relnote: --quiet requires --output", err.getvalue())
+        self.assertIn("relnote: --quiet requires --output or --changelog", err.getvalue())
         self.assertEqual(buf.getvalue(), "")
 
 

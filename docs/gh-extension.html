@@ -139,7 +139,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./">relnote docs</a> · <a href="compare.html">Compare</a> · <a href="offline-github-release-notes.html">Offline notes</a></p>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="compare.html">Compare</a> · <a href="offline-github-release-notes.html">Offline notes</a> · <a href="changelog.html">CHANGELOG.md</a></p>
     <h1>gh relnote: release notes from conventional commits, inside the GitHub CLI</h1>
     <p class="tag"><a href="https://github.com/loki-inu/gh-relnote">gh-relnote</a> is a GitHub CLI extension that bundles relnote. It reads commit messages in your clone, groups <code>feat</code>, <code>fix</code>, and breaking changes, and hands the result to <code>gh release create</code>.</p>
     <div class="links">
@@ -151,7 +151,7 @@
     <h2>Install</h2>
     <pre><code>gh extension install loki-inu/gh-relnote
 gh relnote --help</code></pre>
-    <p>Needs <code>gh</code>, <code>git</code>, and Python 3.11+ on <code>PATH</code>. No pip install and no third-party packages: relnote v0.1.5 is vendored in the extension. Set <code>PYTHON=/path/to/python3</code> to pick an interpreter. Upgrade with <code>gh extension upgrade relnote</code>.</p>
+    <p>Needs <code>gh</code>, <code>git</code>, and Python 3.11+ on <code>PATH</code>. No pip install and no third-party packages: relnote v0.2.0 is vendored in the extension. Set <code>PYTHON=/path/to/python3</code> to pick an interpreter. Upgrade with <code>gh extension upgrade relnote</code>.</p>
 
     <h2>Preview the notes</h2>
     <pre><code>gh relnote                          # latest tag → HEAD
@@ -161,7 +161,8 @@ gh relnote --output notes.md --quiet</code></pre>
 
     <h2>Create the release in one step</h2>
     <pre><code>gh relnote create v1.3.0 --draft
-gh relnote create v1.3.0 --title "v1.3.0" -- --no-bots --max 50</code></pre>
+gh relnote create v1.3.0 --title "v1.3.0" -- --no-bots --max 50
+gh relnote create v1.3.0 -- --changelog CHANGELOG.md --changelog-title v1.3.0</code></pre>
     <p><code>create</code> runs relnote for the latest tag to <code>HEAD</code>, writes the notes to a temp file, then runs <code>gh release create TAG … --notes-file</code>. Flags before <code>--</code> go to <code>gh release create</code> (<code>--draft</code>, <code>--prerelease</code>, <code>--title</code>, <code>--target</code>, asset paths). Flags after <code>--</code> go to relnote.</p>
 
     <h2>gh relnote vs gh release create --generate-notes</h2>
@@ -180,7 +181,7 @@ gh relnote create v1.3.0 --title "v1.3.0" -- --no-bots --max 50</code></pre>
     <p>If your team merges through PRs with good labels, <code>--generate-notes</code> is the better default. If your history already speaks Conventional Commits, or you push straight to main, <code>gh relnote</code> gives a cleaner body.</p>
 
     <h2>Not using gh?</h2>
-    <p>The same notes are available as a plain CLI (<code>pip install git+https://github.com/loki-inu/relnote.git</code>) and as a GitHub Action (<code>loki-inu/relnote@v0.1.5</code>). See the <a href="./">relnote docs</a>.</p>
+    <p>The same notes are available as a plain CLI (<code>pip install git+https://github.com/loki-inu/relnote.git</code>) and as a GitHub Action (<code>loki-inu/relnote@v0.2.0</code>). See the <a href="./">relnote docs</a>.</p>
 
     <footer>MIT licensed. <a href="https://github.com/loki-inu/gh-relnote">Source</a> · <a href="https://github.com/loki-inu/gh-relnote/issues">Issues</a></footer>
   </main>

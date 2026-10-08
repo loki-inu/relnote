@@ -6,15 +6,15 @@ relnote reads the current repository from the latest tag (or --since) to HEAD an
 
 It is a small git-cliff alternative when you want a Release body rather than a templated CHANGELOG.md. It is a gh release create --generate-notes alternative when you want offline notes grouped by commit type instead of official PR-linked notes.
 
-It does not create the Release, bump versions, or write a CHANGELOG.md.
+It does not create the Release or bump versions. Since v0.2.0, --changelog CHANGELOG.md prepends a Keep a Changelog style "## [TITLE] - DATE" section for the new release (older entries untouched; duplicate titles refused).
 
 ## GitHub Action
 
-loki-inu/relnote@v0.1.5 after actions/checkout with fetch-depth: 0. The notes output is the Release body. CI can also run: relnote --output notes.md --quiet
+loki-inu/relnote@v0.2.0 after actions/checkout with fetch-depth: 0. The notes output is the Release body. CI can also run: relnote --output notes.md --quiet
 
 ## Compared to nearby tools
 
-- git-cliff: keep it for CHANGELOG.md, Tera templates, and version bump. relnote prints a Release body and needs no config.
+- git-cliff: keep it for templated CHANGELOG.md rebuilt from history and version bump. relnote prints a Release body, can prepend one release to CHANGELOG.md, and needs no config.
 - gh release create --generate-notes: keep it for official PR-linked notes. relnote runs offline and groups by conventional-commit type.
 - swapnanil/relnotes: another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action, --quiet/--output CI, and bot or secret-looking subject filters. Pick that CLI for optional .relnotes.toml, inferred semver bump, or --from/--to.
 
@@ -33,10 +33,11 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 ## Links
 
 - Docs: https://loki-inu.github.io/relnote/
+- CHANGELOG.md from conventional commits: https://loki-inu.github.io/relnote/changelog.html
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html
 - Source: https://github.com/loki-inu/relnote
 - gh extension: https://github.com/loki-inu/gh-relnote (docs: https://loki-inu.github.io/relnote/gh-extension.html)
-- Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.1.5
+- Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.2.0
 - itch.io: https://loki-inu.itch.io/relnote
 - OSSDrop: https://ossdrop.com/tool/relnote
 - License: MIT

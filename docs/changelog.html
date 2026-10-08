@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Generate CHANGELOG.md from conventional commits, offline — relnote</title>
+  <meta name="description" content="relnote --changelog prepends a Keep a Changelog style section for each release to CHANGELOG.md, grouped from conventional commits in your git history. No config, no API, stdlib Python. CLI, GitHub Action, and gh extension.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/changelog.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Generate CHANGELOG.md from conventional commits, offline — relnote">
+  <meta property="og:description" content="relnote --changelog prepends a Keep a Changelog style section for each release to CHANGELOG.md, grouped from conventional commits in your git history. No config, no API, stdlib Python. CLI, GitHub Action, and gh extension.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/changelog.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Generate CHANGELOG.md from conventional commits, offline — relnote">
+  <meta name="twitter:description" content="relnote --changelog prepends a Keep a Changelog style section for each release to CHANGELOG.md, grouped from conventional commits in your git history. No config, no API, stdlib Python. CLI, GitHub Action, and gh extension.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/changelog.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/changelog.html",
+        "name": "Generate CHANGELOG.md from conventional commits, offline — relnote",
+        "description": "relnote --changelog prepends a Keep a Changelog style section for each release to CHANGELOG.md, grouped from conventional commits in your git history. No config, no API, stdlib Python. CLI, GitHub Action, and gh extension.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.2.0", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "CHANGELOG.md from conventional commits", "item": "https://loki-inu.github.io/relnote/changelog.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Add a release to CHANGELOG.md from conventional commits with relnote",
+        "step": [
+          { "@type": "HowToStep", "name": "Install relnote", "text": "pip install git+https://github.com/loki-inu/relnote.git (Python 3.11+, git on PATH, no dependencies)." },
+          { "@type": "HowToStep", "name": "Prepend the release", "text": "Run relnote --changelog CHANGELOG.md --changelog-title v1.3.0 before tagging. It groups commits since the latest tag into Features, Fixes, Breaking, and Other." },
+          { "@type": "HowToStep", "name": "Commit and tag", "text": "Review the diff, commit CHANGELOG.md, then tag v1.3.0. Re-running for the same title is refused, so CI cannot duplicate a section." }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="compare.html">Compare</a> · <a href="offline-github-release-notes.html">Offline notes</a> · <a href="gh-extension.html">gh relnote</a></p>
+    <h1>Generate CHANGELOG.md from conventional commits, without a config file</h1>
+    <p class="tag">relnote reads your git history from the latest tag to <code>HEAD</code>, groups <code>feat</code>, <code>fix</code>, and breaking changes, and prepends one release section to <code>CHANGELOG.md</code>. Your header and older entries are left exactly as they were.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.2.0">v0.2.0 release</a>
+      · <a href="compare.html">Compare to git-cliff</a>
+    </div>
+
+    <h2>Install</h2>
+    <pre><code>pip install git+https://github.com/loki-inu/relnote.git
+relnote --version   # relnote 0.2.0</code></pre>
+    <p>Python 3.11+ and git on <code>PATH</code>. No third-party packages, no network calls, no config file.</p>
+
+    <h2>Add the next release</h2>
+    <pre><code>relnote --changelog CHANGELOG.md --changelog-title v1.3.0
+git add CHANGELOG.md &amp;&amp; git commit -m "docs: changelog for v1.3.0"
+git tag v1.3.0</code></pre>
+    <p>stdout still prints the GitHub Release body, so one run gives you both. Add <code>-q</code> to only touch the file. Pass <code>--since v1.2.0</code> to pick the range by hand and <code>--date 2026-10-08</code> to pin the date (default is today in UTC). Without <code>--changelog-title</code>, the title is the <code>--until</code> ref, or <code>Unreleased</code> when that is <code>HEAD</code>.</p>
+
+    <h2>What gets written</h2>
+    <pre><code># Changelog
+
+All notable changes to this project are documented in this file.
+
+## [v1.3.0] - 2026-10-08
+
+### Breaking
+
+- **api:** drop the v1 endpoint (`a1b2c3d`) — Ada Lovelace
+  - BREAKING CHANGE: clients must call /v2
+
+### Features
+
+- **cli:** add --json output (`d4e5f6a`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config (`b7c8d9e`) — Grace Hopper
+
+**Full changelog:** https://github.com/you/project/compare/v1.2.0...v1.3.0
+
+## [v1.2.0] - 2026-09-01
+…</code></pre>
+    <p>Illustrative output from a made-up history. A missing file is created with the <code># Changelog</code> header. The new section goes above the first <code>## </code> heading, after any preamble. The compare link appears when <code>origin</code> is a <code>github.com</code> remote.</p>
+
+    <h2>Safe to re-run</h2>
+    <ul>
+      <li>If <code>CHANGELOG.md</code> already has <code>## [v1.3.0]</code>, relnote exits 1 and changes nothing. A retried CI job cannot add the release twice.</li>
+      <li>An empty range (no commits after filters) exits 1 before the file is touched.</li>
+      <li>Merge commits are skipped by default, <code>--no-bots</code> drops dependabot and renovate, and subjects that look like tokens or keys are never written.</li>
+    </ul>
+
+    <h2>In GitHub Actions</h2>
+    <pre><code>- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+- id: relnote
+  uses: loki-inu/relnote@v0.2.0
+  with:
+    changelog: CHANGELOG.md
+    changelog-title: ${{ github.ref_name }}
+# then commit CHANGELOG.md in a later step or open a PR with it</code></pre>
+    <p>The <code>notes</code> output is still the Release body. The action edits the file in the runner only; committing it is up to your workflow.</p>
+
+    <h2>With the GitHub CLI</h2>
+    <pre><code>gh extension install loki-inu/gh-relnote
+gh relnote create v1.3.0 --draft -- --changelog CHANGELOG.md --changelog-title v1.3.0</code></pre>
+    <p>Creates the draft Release and updates <code>CHANGELOG.md</code> from the same notes. See <a href="gh-extension.html">gh relnote</a>.</p>
+
+    <h2>relnote vs git-cliff for CHANGELOG.md</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>relnote <code>--changelog</code></th><th>git-cliff</th></tr></thead>
+        <tbody>
+          <tr><td>Config</td><td>None</td><td><code>cliff.toml</code> with Tera templates</td></tr>
+          <tr><td>How the file changes</td><td>Prepends the new release only</td><td>Regenerates from history, or prepends with <code>--prepend</code></td></tr>
+          <tr><td>Install</td><td>Stdlib Python, or the gh extension</td><td>Rust binary, cargo, npm, pip, and more</td></tr>
+          <tr><td>Release body too</td><td>Yes, same run, on stdout</td><td>Separate invocation or template</td></tr>
+          <tr><td>Version bump</td><td>No</td><td>Yes, <code>--bump</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Pick git-cliff if you want custom templates, commit parsers, or a computed next version. Pick relnote if you want sensible Keep a Changelog sections and a Release body with nothing to configure.</p>
+
+    <footer>MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/issues">Issues</a> · <a href="llms.txt">llms.txt</a></footer>
+  </main>
+</body>
+</html>
