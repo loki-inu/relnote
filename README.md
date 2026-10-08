@@ -114,6 +114,9 @@ python3 -m relnote --output /tmp/notes.md
 # CI: write a file, no stdout
 python3 -m relnote --output notes.md --quiet
 
+# keep CHANGELOG.md up to date (prepends "## [v1.3.0] - YYYY-MM-DD")
+python3 -m relnote --since v1.2.0 --changelog CHANGELOG.md --changelog-title v1.3.0
+
 # another checkout
 python3 relnote/__main__.py --repo /path/to/project
 ```
@@ -133,15 +136,22 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--no-bots` | off | drop dependabot, renovate, `[bot]` |
 | `--repo PATH` | `.` | git working tree |
 | `--output FILE` | off | also write notes to FILE (UTF-8); still print to stdout unless `--quiet` |
-| `--quiet` / `-q` | off | with `--output`, do not print notes to stdout |
+| `--changelog FILE` | off | prepend a `## [TITLE] - DATE` section to FILE (created with a `# Changelog` header if missing) |
+| `--changelog-title TITLE` | `--until` if not `HEAD`, else `Unreleased` | section title for `--changelog` |
+| `--date YYYY-MM-DD` | today (UTC) | section date for `--changelog` |
+| `--quiet` / `-q` | off | with `--output` or `--changelog`, do not print notes to stdout |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.1.5` |
+| `--version` | | print `relnote 0.2.0` |
 
-Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, or `--output` points at a missing parent directory. Exit `2` if `--quiet` is set without `--output`.
+Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, `--output` / `--changelog` points at a missing parent directory, or the changelog already has a section with that title. Exit `2` if `--quiet` is set without `--output` or `--changelog`.
+
+### CHANGELOG.md
+
+`--changelog` writes the same grouped notes into a Keep a Changelog style file. The new section goes above the newest `## ` entry; your header and older entries stay byte-for-byte the same. Running it twice for the same title is refused, so a re-run in CI cannot duplicate a release.
 
 ## GitHub Action
 
-Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.1.5` or `@main` for current. The `v0.1.0` tag is CLI-only.
+Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.2.0` or `@main` for current. The `v0.1.0` tag is CLI-only.
 
 ```yaml
 name: Release notes
@@ -157,18 +167,18 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.1.5
+        uses: loki-inu/relnote@v0.2.0
       - name: Print notes
         run: printf '%s\n' "${{ steps.relnote.outputs.notes }}"
 ```
 
-Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`.
+Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`, `changelog` (path to prepend a section to, from v0.2.0), `changelog-title`.
 
 A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [examples/draft-release.yml](examples/draft-release.yml).
 
 ## What it is not
 
-- Not a GitHub App. It does not create the Release, open a PR, or bump versions.
+- Not a GitHub App. It does not create the Release, open a PR, commit, or bump versions. `--changelog` only edits the file on disk.
 - Not a secret scanner for the tree. It only refuses to *print* commit subjects that look like tokens.
 - Not a rewrite of your history and not a substitute for reading the diff.
 

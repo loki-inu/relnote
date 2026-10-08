@@ -63,7 +63,7 @@
             "name": "Is relnote a git-cliff alternative?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a living CHANGELOG.md. Keep git-cliff when you want a maintained changelog file, templates, and optional version bump."
+              "text": "Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a fully regenerated CHANGELOG.md. Keep git-cliff when you want templated changelogs rebuilt from full history and optional version bump."
             }
           },
           {
@@ -87,7 +87,7 @@
             "name": "How do I generate conventional-commit release notes in a GitHub Action?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Use loki-inu/relnote@v0.1.5 after actions/checkout with fetch-depth: 0. The action writes grouped notes to an output. A draft-release example is in the repo."
+              "text": "Use loki-inu/relnote@v0.2.0 after actions/checkout with fetch-depth: 0. The action writes grouped notes to an output. A draft-release example is in the repo."
             }
           },
           {
@@ -197,7 +197,7 @@
     <div class="links">
       <a href="./">Docs</a>
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
-      <a href="https://github.com/loki-inu/relnote/releases/tag/v0.1.5">v0.1.5</a>
+      <a href="https://github.com/loki-inu/relnote/releases/tag/v0.2.0">v0.2.0</a>
       <a href="https://loki-inu.itch.io/relnote">itch.io download</a>
       <a href="https://ossdrop.com/tool/relnote">OSSDrop</a>
     </div>
@@ -250,7 +250,7 @@
           </tr>
           <tr>
             <td>What it writes</td>
-            <td>A GitHub Release body on stdout (or <code>--output</code>). You paste or attach it.</td>
+            <td>A GitHub Release body on stdout (or <code>--output</code>). With <code>--changelog</code>, also a new section at the top of <code>CHANGELOG.md</code>.</td>
             <td>The GitHub Release itself.</td>
             <td>A changelog file, typically <code>CHANGELOG.md</code>.</td>
           </tr>
@@ -286,7 +286,7 @@
           </tr>
           <tr>
             <td>CI hook</td>
-            <td><code>loki-inu/relnote@v0.1.5</code>. Draft-release example in the repo.</td>
+            <td><code>loki-inu/relnote@v0.2.0</code>. Draft-release example in the repo.</td>
             <td>Call <code>gh release create --generate-notes</code> in a workflow.</td>
             <td>Community Action and native CLI in CI.</td>
           </tr>
@@ -311,26 +311,26 @@
     <h2>Install relnote</h2>
     <pre><code>pip install git+https://github.com/loki-inu/relnote.git
 relnote --help</code></pre>
-    <p>Python 3.11+, git on PATH, no third-party packages. Or from a checkout: <code>python3 -m relnote</code>. For CI, the GitHub Action is <code>loki-inu/relnote@v0.1.5</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>.</p>
+    <p>Python 3.11+, git on PATH, no third-party packages. Or from a checkout: <code>python3 -m relnote</code>. For CI, the GitHub Action is <code>loki-inu/relnote@v0.2.0</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>.</p>
 
     <h2>What relnote will not do</h2>
     <ul>
       <li>It does not create the Release, open a PR, or bump versions.</li>
-      <li>It does not write a changelog file back into the repository.</li>
-      <li>It does not replace git-cliff if you need Tera templates or a living <code>CHANGELOG.md</code>.</li>
+      <li>It does not regenerate or reformat older <code>CHANGELOG.md</code> entries. <code>--changelog</code> only prepends the new release (<a href="changelog.html">details</a>).</li>
+      <li>It does not replace git-cliff if you need Tera templates or a fully regenerated <code>CHANGELOG.md</code>.</li>
       <li>It does not replace <code>gh --generate-notes</code> if you want PR-linked official notes.</li>
       <li>It does not replace swapnanil/relnotes if you want a config file or inferred semver bump.</li>
     </ul>
 
     <h2>Common questions</h2>
     <h3>Is relnote a git-cliff alternative?</h3>
-    <p>Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a living <code>CHANGELOG.md</code>. Keep git-cliff when you want a maintained changelog file, templates, and optional version bump.</p>
+    <p>Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a fully regenerated <code>CHANGELOG.md</code>. Keep git-cliff when you want templated changelogs rebuilt from full history and optional version bump.</p>
     <h3>Is relnote a <code>gh release create --generate-notes</code> alternative?</h3>
     <p>Yes, when you want offline notes grouped by commit type. Keep <code>gh release create --generate-notes</code> when you want official PR-linked notes and the Release created for you.</p>
     <h3>Is there a stdlib Python changelog CLI for conventional commits?</h3>
     <p>Yes. relnote is a stdlib Python changelog CLI: Python 3.11+, git on PATH, no third-party packages. It prints offline conventional-commit release notes from local git history.</p>
     <h3>How do I generate conventional-commit release notes in a GitHub Action?</h3>
-    <p>Use <code>loki-inu/relnote@v0.1.5</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>. The action writes grouped notes to an output. A draft-release example is in the repo.</p>
+    <p>Use <code>loki-inu/relnote@v0.2.0</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>. The action writes grouped notes to an output. A draft-release example is in the repo.</p>
     <h3>How does relnote differ from swapnanil/relnotes?</h3>
     <p>Both are offline stdlib Python CLIs that group conventional commits. Pick relnote for the GitHub Action, <code>--quiet</code>/<code>--output</code> CI, and bot or secret-looking subject filters. Pick swapnanil/relnotes for optional <code>.relnotes.toml</code>, inferred semver bump, or <code>--from</code>/<code>--to</code> range names.</p>
 

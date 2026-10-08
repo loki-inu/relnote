@@ -3,19 +3,24 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from relnote import __version__
+    from relnote.changelog import ChangelogError, update_changelog
     from relnote.format import classify, group_commits, render, select
     from relnote.git import GitError, collect_commits, github_compare_url, last_tag
 else:
     from . import __version__
+    from .changelog import ChangelogError, update_changelog
     from .format import classify, group_commits, render, select
     from .git import GitError, collect_commits, github_compare_url, last_tag
 
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 EPILOG = """
 relnote reads the current git repository (or --repo) and turns a commit
@@ -41,8 +46,15 @@ Safety
 Exit status
   0  notes written to stdout (and/or --output FILE)
   1  not a git repository, unknown ref, no commits after filters,
-     or --output parent directory does not exist
-  2  --quiet given without --output
+     --output parent directory does not exist,
+     or --changelog already has a section with the same title
+  2  --quiet given without --output or --changelog
+
+Changelog file
+  --changelog CHANGELOG.md prepends a "## [TITLE] - DATE" section above
+  the newest entry and keeps the rest of the file as is. TITLE defaults
+  to --until when it is not HEAD, otherwise "Unreleased". DATE defaults
+  to today (UTC). A missing file is created with a "# Changelog" header.
 
 examples:
   python3 -m relnote
@@ -51,6 +63,7 @@ examples:
   python3 -m relnote --format plain --include-merges
   python3 -m relnote --output /tmp/notes.md
   python3 -m relnote --output notes.md --quiet
+  python3 -m relnote --changelog CHANGELOG.md --changelog-title v1.3.0 -q
   python3 relnote/__main__.py --repo /path/to/project
 """.strip()
 
@@ -116,10 +129,25 @@ def build_parser() -> argparse.ArgumentParser:
         help="also write notes to FILE (UTF-8); still print to stdout unless --quiet",
     )
     parser.add_argument(
+        "--changelog",
+        metavar="FILE",
+        help="prepend a release section to FILE (e.g. CHANGELOG.md)",
+    )
+    parser.add_argument(
+        "--changelog-title",
+        metavar="TITLE",
+        help='section title (default: --until if not HEAD, else "Unreleased")',
+    )
+    parser.add_argument(
+        "--date",
+        metavar="YYYY-MM-DD",
+        help="section date for --changelog (default: today, UTC)",
+    )
+    parser.add_argument(
         "--quiet",
         "-q",
         action="store_true",
-        help="do not print notes to stdout (requires --output)",
+        help="do not print notes to stdout (requires --output or --changelog)",
     )
     parser.add_argument(
         "--version",
@@ -132,9 +160,12 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.quiet and not args.output:
-        print("relnote: --quiet requires --output", file=sys.stderr)
+    if args.quiet and not (args.output or args.changelog):
+        print("relnote: --quiet requires --output or --changelog", file=sys.stderr)
         return 2
+    if args.date is not None and not DATE_RE.match(args.date):
+        print("relnote: --date must look like YYYY-MM-DD", file=sys.stderr)
+        return 1
     if args.max_n is not None and args.max_n < 1:
         print("relnote: --max must be >= 1", file=sys.stderr)
         return 1
@@ -197,6 +228,26 @@ def main(argv: list[str] | None = None) -> int:
                 dest.write_text(text, encoding="utf-8")
             except OSError as exc:
                 print(f"relnote: cannot write {dest}: {exc}", file=sys.stderr)
+                return 1
+        if args.changelog:
+            title = args.changelog_title or (
+                args.until if args.until and args.until != "HEAD" else "Unreleased"
+            )
+            date = args.date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            section_notes = text
+            if args.format != "github":
+                section_notes = render(
+                    group_commits(chosen),
+                    format="github",
+                    since=since,
+                    until=args.until,
+                    compare_url=github_compare_url(since, args.until, cwd=args.repo),
+                    omitted=omitted,
+                )
+            try:
+                update_changelog(args.changelog, section_notes, title=title, date=date)
+            except ChangelogError as exc:
+                print(f"relnote: {exc}", file=sys.stderr)
                 return 1
         if not args.quiet:
             sys.stdout.write(text)

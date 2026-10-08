@@ -27,6 +27,12 @@ inputs:
   repo:
     description: Path to the git working tree
     required: false
+  changelog:
+    description: Also prepend a release section to this file (e.g. CHANGELOG.md)
+    required: false
+  changelog-title:
+    description: Section title for the changelog (default until ref, or Unreleased)
+    required: false
 
 outputs:
   notes:
@@ -46,6 +52,8 @@ runs:
         INPUT_FORMAT: ${{ inputs.format }}
         INPUT_NO_BOTS: ${{ inputs.no-bots }}
         INPUT_REPO: ${{ inputs.repo }}
+        INPUT_CHANGELOG: ${{ inputs.changelog }}
+        INPUT_CHANGELOG_TITLE: ${{ inputs.changelog-title }}
       run: |
         set -euo pipefail
         args=()
@@ -66,6 +74,12 @@ runs:
         fi
         if [ -n "${INPUT_REPO:-}" ]; then
           args+=(--repo "${INPUT_REPO}")
+        fi
+        if [ -n "${INPUT_CHANGELOG:-}" ]; then
+          args+=(--changelog "${INPUT_CHANGELOG}")
+        fi
+        if [ -n "${INPUT_CHANGELOG_TITLE:-}" ]; then
+          args+=(--changelog-title "${INPUT_CHANGELOG_TITLE}")
         fi
 
         notes="$(python3 "${{ github.action_path }}/relnote/__main__.py" "${args[@]}")"
