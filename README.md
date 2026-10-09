@@ -70,6 +70,12 @@ pip install git+https://github.com/loki-inu/relnote.git
 relnote --help
 ```
 
+With Homebrew on macOS or Linux ([loki-inu/homebrew-tap](https://github.com/loki-inu/homebrew-tap)):
+
+```bash
+brew install loki-inu/tap/relnote
+```
+
 If you use the GitHub CLI, install it as a `gh` extension ([gh-relnote](https://github.com/loki-inu/gh-relnote)), which can also create the release:
 
 ```bash

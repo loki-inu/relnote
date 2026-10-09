@@ -25,6 +25,8 @@ relnote --help
 
 Or from a checkout: python3 -m relnote
 
+Homebrew (macOS or Linux): brew install loki-inu/tap/relnote (tap: https://github.com/loki-inu/homebrew-tap)
+
 ## GitHub CLI extension
 
 gh extension install loki-inu/gh-relnote
