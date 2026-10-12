@@ -123,6 +123,16 @@ python3 -m relnote --output notes.md --quiet
 # keep CHANGELOG.md up to date (prepends "## [v1.3.0] - YYYY-MM-DD")
 python3 -m relnote --since v1.2.0 --changelog CHANGELOG.md --changelog-title v1.3.0
 
+# what should the next tag be? (feat → minor, fix → patch, breaking → major)
+python3 -m relnote --next-version          # e.g. v1.4.0
+
+# changelog section titled with the computed version
+python3 -m relnote --changelog CHANGELOG.md --changelog-title "$(python3 -m relnote --next-version)"
+
+# monorepo: one package's commits since its own tag (api/v1.2.0 → HEAD)
+python3 -m relnote --path packages/api --tag-prefix api/v
+python3 -m relnote --path packages/api --tag-prefix api/v --next-version   # api/v1.3.0
+
 # another checkout
 python3 relnote/__main__.py --repo /path/to/project
 ```
@@ -140,6 +150,9 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--exclude-merges` | on | skip merge commits |
 | `--include-merges` | off | keep merge commits |
 | `--no-bots` | off | drop dependabot, renovate, `[bot]` |
+| `--path DIR` | whole repo | only commits touching DIR; repeat for several (monorepos) |
+| `--tag-prefix PREFIX` | any tag | only tags starting with PREFIX (e.g. `api/v`, `web@`) count for the default `--since` and `--next-version` |
+| `--next-version` | off | print the next semver tag instead of notes |
 | `--repo PATH` | `.` | git working tree |
 | `--output FILE` | off | also write notes to FILE (UTF-8); still print to stdout unless `--quiet` |
 | `--changelog FILE` | off | prepend a `## [TITLE] - DATE` section to FILE (created with a `# Changelog` header if missing) |
@@ -147,9 +160,19 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--date YYYY-MM-DD` | today (UTC) | section date for `--changelog` |
 | `--quiet` / `-q` | off | with `--output` or `--changelog`, do not print notes to stdout |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.2.0` |
+| `--version` | | print `relnote 0.3.0` |
 
-Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, `--output` / `--changelog` points at a missing parent directory, or the changelog already has a section with that title. Exit `2` if `--quiet` is set without `--output` or `--changelog`.
+Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, `--output` / `--changelog` points at a missing parent directory, the changelog already has a section with that title, or `--next-version` finds a base tag that is not `x.y.z`. Exit `2` if `--quiet` is set without `--output` or `--changelog`.
+
+If `--until` (default `HEAD`) is itself tagged, the default range starts at the tag before it, so running relnote right after `git tag v1.4.0` (or in a tag-push workflow) gives that release's notes.
+
+### Next version
+
+`--next-version` reads the same range and prints one line: the previous tag bumped by the commits in it. Any breaking change (`type!:` or a `BREAKING CHANGE:` footer) bumps major, any `feat` bumps minor, anything else bumps patch. While the major version is `0`, a breaking change bumps minor. The `v` (and any `--tag-prefix`) is kept; with no previous tag it prints `v0.1.0`. relnote never creates the tag.
+
+### Monorepos
+
+`--path packages/api` keeps only commits that touch that directory (repeat `--path` for more). `--tag-prefix api/v` makes the default range start at the newest `api/v*` tag instead of the newest tag of any package. Together they give per-package notes, changelog sections, and next versions from one repo.
 
 ### CHANGELOG.md
 
@@ -157,7 +180,7 @@ Exit `1` if the path is not a git repo, a ref does not exist, nothing remains af
 
 ## GitHub Action
 
-Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.2.0` or `@main` for current. The `v0.1.0` tag is CLI-only.
+Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.3.0` or `@main` for current. The `v0.1.0` tag is CLI-only.
 
 ```yaml
 name: Release notes
@@ -173,18 +196,20 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.2.0
+        uses: loki-inu/relnote@v0.3.0
       - name: Print notes
-        run: printf '%s\n' "${{ steps.relnote.outputs.notes }}"
+        run: |
+          echo "next: ${{ steps.relnote.outputs.next-version }}"
+          printf '%s\n' "${{ steps.relnote.outputs.notes }}"
 ```
 
-Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`, `changelog` (path to prepend a section to, from v0.2.0), `changelog-title`.
+Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`, `changelog` (path to prepend a section to, from v0.2.0), `changelog-title`, `path` (one directory per line, from v0.3.0), `tag-prefix`. Outputs: `notes`, and `next-version` (from v0.3.0; empty if the base tag is not semver).
 
 A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [examples/draft-release.yml](examples/draft-release.yml).
 
 ## What it is not
 
-- Not a GitHub App. It does not create the Release, open a PR, commit, or bump versions. `--changelog` only edits the file on disk.
+- Not a GitHub App. It does not create the Release or the tag, open a PR, or commit. `--next-version` only prints a suggestion. `--changelog` only edits the file on disk.
 - Not a secret scanner for the tree. It only refuses to *print* commit subjects that look like tokens.
 - Not a rewrite of your history and not a substitute for reading the diff.
 

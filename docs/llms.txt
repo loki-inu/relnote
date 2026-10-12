@@ -6,11 +6,11 @@ relnote reads the current repository from the latest tag (or --since) to HEAD an
 
 It is a small git-cliff alternative when you want a Release body rather than a templated CHANGELOG.md. It is a gh release create --generate-notes alternative when you want offline notes grouped by commit type instead of official PR-linked notes.
 
-It does not create the Release or bump versions. Since v0.2.0, --changelog CHANGELOG.md prepends a Keep a Changelog style "## [TITLE] - DATE" section for the new release (older entries untouched; duplicate titles refused).
+It does not create the Release or the tag. Since v0.3.0, --next-version prints the next semver tag (breaking → major, feat → minor, else patch; 0.x breaking → minor), and --path DIR / --tag-prefix PREFIX scope notes and versions to one package in a monorepo. Since v0.2.0, --changelog CHANGELOG.md prepends a Keep a Changelog style "## [TITLE] - DATE" section for the new release (older entries untouched; duplicate titles refused).
 
 ## GitHub Action
 
-loki-inu/relnote@v0.2.0 after actions/checkout with fetch-depth: 0. The notes output is the Release body. CI can also run: relnote --output notes.md --quiet
+loki-inu/relnote@v0.3.0 after actions/checkout with fetch-depth: 0. The notes output is the Release body. CI can also run: relnote --output notes.md --quiet
 
 ## Compared to nearby tools
 
@@ -36,10 +36,11 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 
 - Docs: https://loki-inu.github.io/relnote/
 - CHANGELOG.md from conventional commits: https://loki-inu.github.io/relnote/changelog.html
+- Next version and monorepos: https://loki-inu.github.io/relnote/next-version.html
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html
 - Source: https://github.com/loki-inu/relnote
 - gh extension: https://github.com/loki-inu/gh-relnote (docs: https://loki-inu.github.io/relnote/gh-extension.html)
-- Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.2.0
+- Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.3.0
 - itch.io: https://loki-inu.itch.io/relnote
 - OSSDrop: https://ossdrop.com/tool/relnote
 - License: MIT

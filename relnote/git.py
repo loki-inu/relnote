@@ -59,12 +59,44 @@ def repo_root(path: str | Path | None = None) -> Path:
     return Path(result.stdout.strip())
 
 
-def last_tag(cwd: str | Path | None = None) -> str | None:
-    result = run_git(["describe", "--tags", "--abbrev=0"], cwd=cwd)
+def _describe(ref: str, prefix: str | None, cwd: str | Path | None) -> str | None:
+    args = ["describe", "--tags", "--abbrev=0"]
+    if prefix:
+        args += ["--match", f"{prefix}*"]
+    args.append(ref)
+    result = run_git(args, cwd=cwd)
     if result.returncode != 0:
         return None
     tag = result.stdout.strip()
     return tag or None
+
+
+def last_tag(
+    cwd: str | Path | None = None,
+    *,
+    until: str = "HEAD",
+    prefix: str | None = None,
+) -> str | None:
+    """Newest tag reachable from *until* (optionally matching *prefix*).
+
+    If that tag points at *until* itself (you just tagged the release), the
+    tag before it is returned instead, so the range covers the new release.
+    """
+    tag = _describe(until, prefix, cwd)
+    if tag is None:
+        return None
+    tagged = run_git(["rev-parse", "--verify", f"{tag}^{{commit}}"], cwd=cwd)
+    target = run_git(["rev-parse", "--verify", f"{until}^{{commit}}"], cwd=cwd)
+    if (
+        tagged.returncode == 0
+        and target.returncode == 0
+        and tagged.stdout.strip() == target.stdout.strip()
+    ):
+        parent = run_git(["rev-parse", "--verify", f"{until}^1"], cwd=cwd)
+        if parent.returncode != 0:
+            return None
+        return _describe(f"{until}^1", prefix, cwd)
+    return tag
 
 
 def resolve_ref(ref: str, cwd: str | Path | None = None) -> str:
@@ -136,6 +168,7 @@ def collect_commits(
     since: str | None = None,
     until: str = "HEAD",
     exclude_merges: bool = True,
+    paths: list[str] | None = None,
     cwd: str | Path | None = None,
 ) -> list[Commit]:
     """Return commits in since..until (newest first). Raises GitError on failure."""
@@ -150,6 +183,8 @@ def collect_commits(
     args = ["log", rev_range, f"--pretty=format:{PRETTY}"]
     if exclude_merges:
         args.insert(1, "--no-merges")
+    if paths:
+        args += ["--", *paths]
     result = run_git(args, cwd=cwd)
     if result.returncode != 0:
         detail = (result.stderr or result.stdout or "git log failed").strip()

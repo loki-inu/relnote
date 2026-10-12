@@ -33,11 +33,20 @@ inputs:
   changelog-title:
     description: Section title for the changelog (default until ref, or Unreleased)
     required: false
+  path:
+    description: Only commits touching these directories (one per line; for monorepos)
+    required: false
+  tag-prefix:
+    description: Only tags starting with this prefix count as the previous release (e.g. api/v)
+    required: false
 
 outputs:
   notes:
     description: Generated release notes
     value: ${{ steps.run.outputs.notes }}
+  next-version:
+    description: Suggested next semver tag (empty if the previous tag is not x.y.z)
+    value: ${{ steps.run.outputs.next-version }}
 
 runs:
   using: composite
@@ -54,6 +63,8 @@ runs:
         INPUT_REPO: ${{ inputs.repo }}
         INPUT_CHANGELOG: ${{ inputs.changelog }}
         INPUT_CHANGELOG_TITLE: ${{ inputs.changelog-title }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_TAG_PREFIX: ${{ inputs.tag-prefix }}
       run: |
         set -euo pipefail
         args=()
@@ -75,6 +86,20 @@ runs:
         if [ -n "${INPUT_REPO:-}" ]; then
           args+=(--repo "${INPUT_REPO}")
         fi
+        if [ -n "${INPUT_PATH:-}" ]; then
+          while IFS= read -r p; do
+            p="${p#"${p%%[![:space:]]*}"}"
+            p="${p%"${p##*[![:space:]]}"}"
+            if [ -n "${p}" ]; then
+              args+=(--path "${p}")
+            fi
+          done <<< "${INPUT_PATH}"
+        fi
+        if [ -n "${INPUT_TAG_PREFIX:-}" ]; then
+          args+=(--tag-prefix "${INPUT_TAG_PREFIX}")
+        fi
+        next="$(python3 "${{ github.action_path }}/relnote/__main__.py" "${args[@]}" --next-version 2>/dev/null || true)"
+        echo "next-version=${next}" >> "${GITHUB_OUTPUT}"
         if [ -n "${INPUT_CHANGELOG:-}" ]; then
           args+=(--changelog "${INPUT_CHANGELOG}")
         fi
