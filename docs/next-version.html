@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Next semver version and monorepo release notes from conventional commits — relnote</title>
+  <meta name="description" content="relnote --next-version prints the next tag (major, minor, or patch) from conventional commits since the last release. --path and --tag-prefix give per-package notes, changelogs, and versions in a monorepo. No config, no API, stdlib Python.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/next-version.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Next semver version and monorepo release notes from conventional commits — relnote">
+  <meta property="og:description" content="relnote --next-version prints the next tag (major, minor, or patch) from conventional commits since the last release. --path and --tag-prefix give per-package notes, changelogs, and versions in a monorepo. No config, no API, stdlib Python.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/next-version.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Next semver version and monorepo release notes from conventional commits — relnote">
+  <meta name="twitter:description" content="relnote --next-version prints the next tag (major, minor, or patch) from conventional commits since the last release. --path and --tag-prefix give per-package notes, changelogs, and versions in a monorepo. No config, no API, stdlib Python.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/next-version.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/next-version.html",
+        "name": "Next semver version and monorepo release notes from conventional commits — relnote",
+        "description": "relnote --next-version prints the next tag (major, minor, or patch) from conventional commits since the last release. --path and --tag-prefix give per-package notes, changelogs, and versions in a monorepo. No config, no API, stdlib Python.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.0", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "Next version and monorepos", "item": "https://loki-inu.github.io/relnote/next-version.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Work out the next semantic version from conventional commits with relnote",
+        "step": [
+          { "@type": "HowToStep", "name": "Install relnote", "text": "brew install loki-inu/tap/relnote, or pip install git+https://github.com/loki-inu/relnote.git (Python 3.11+, git on PATH, no dependencies)." },
+          { "@type": "HowToStep", "name": "Print the next version", "text": "Run relnote --next-version. A breaking change bumps major, any feat bumps minor, anything else bumps patch. The v prefix is kept." },
+          { "@type": "HowToStep", "name": "Tag and release", "text": "Use the printed tag with git tag, gh release create, or relnote --changelog CHANGELOG.md --changelog-title. relnote never creates the tag itself." }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="compare.html">Compare</a> · <a href="gh-extension.html">gh relnote</a></p>
+    <h1>Next semver version and monorepo release notes from conventional commits</h1>
+    <p class="tag">Since v0.3.0, relnote can tell you what the next tag should be, and it can scope notes, changelog sections, and versions to one package in a monorepo. It still reads only your local git history: no config file, no API token, no Node.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.0">v0.3.0 release</a>
+      · <a href="changelog.html">CHANGELOG.md guide</a>
+    </div>
+
+    <h2>Install</h2>
+    <pre><code>brew install loki-inu/tap/relnote
+# or
+pip install git+https://github.com/loki-inu/relnote.git
+relnote --version   # relnote 0.3.0</code></pre>
+
+    <h2>Print the next version</h2>
+    <pre><code>$ git describe --tags --abbrev=0
+v1.3.2
+$ git log --format=%s v1.3.2..HEAD
+fix(cli): handle empty ranges
+feat: --next-version flag
+$ relnote --next-version
+v1.4.0</code></pre>
+    <p>relnote looks at the commits after the previous tag (or <code>--since</code>) with the same filters as the notes, then bumps that tag:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Commits in range</th><th>Bump</th><th>v1.3.2 becomes</th><th>v0.4.2 becomes</th></tr></thead>
+        <tbody>
+          <tr><td><code>type!:</code> or a <code>BREAKING CHANGE:</code> footer</td><td>major</td><td><code>v2.0.0</code></td><td><code>v0.5.0</code> (0.x stays 0.x)</td></tr>
+          <tr><td>any <code>feat</code></td><td>minor</td><td><code>v1.4.0</code></td><td><code>v0.5.0</code></td></tr>
+          <tr><td>only <code>fix</code>, <code>docs</code>, <code>chore</code>, other</td><td>patch</td><td><code>v1.3.3</code></td><td><code>v0.4.3</code></td></tr>
+          <tr><td>no previous tag</td><td>first release</td><td colspan="2"><code>v0.1.0</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>No commits in the range exits <code>1</code> (nothing to release). A previous tag that is not <code>x.y.z</code> also exits <code>1</code> with a message, instead of guessing. relnote prints the tag and stops; it never runs <code>git tag</code>.</p>
+
+    <h3>Use it with the other commands</h3>
+    <pre><code>next="$(relnote --next-version)"
+relnote --changelog CHANGELOG.md --changelog-title "$next" -q
+git commit -am "chore(release): $next" &amp;&amp; git tag "$next"
+gh relnote create "$next"     # or: relnote --output notes.md -q &amp;&amp; gh release create "$next" --notes-file notes.md</code></pre>
+    <p>After you tag, plain <code>relnote</code> notices that <code>HEAD</code> is the new tag and uses the tag before it as the start of the range, so the notes cover the release you just made.</p>
+
+    <h2>Monorepos: one package at a time</h2>
+    <p>Two flags scope everything to a package:</p>
+    <ul>
+      <li><code>--path DIR</code> keeps only commits that touch <code>DIR</code>. Repeat it for several directories.</li>
+      <li><code>--tag-prefix PREFIX</code> makes the default range start at the newest tag beginning with <code>PREFIX</code>, such as <code>api/v</code> or <code>web@</code>, instead of the newest tag of any package. The prefix is kept on <code>--next-version</code> output.</li>
+    </ul>
+    <pre><code># notes for packages/api since its last api/v* tag
+relnote --path packages/api --tag-prefix api/v
+
+# its next version and changelog section
+relnote --path packages/api --tag-prefix api/v --next-version        # api/v1.3.0
+relnote --path packages/api --tag-prefix api/v   --changelog packages/api/CHANGELOG.md --changelog-title api/v1.3.0 -q
+
+# a package plus shared code
+relnote --path packages/web --path packages/shared --tag-prefix web@</code></pre>
+
+    <h2>GitHub Action</h2>
+    <pre><code>- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+- id: relnote
+  uses: loki-inu/relnote@v0.3.0
+  with:
+    path: |
+      packages/api
+    tag-prefix: api/v
+- run: echo "next is ${{ steps.relnote.outputs.next-version }}"</code></pre>
+    <p>The action outputs <code>notes</code> (the Release body) and <code>next-version</code> (empty if the previous tag is not semver). <code>path</code> takes one directory per line.</p>
+
+    <h2>Compared to version-bump tools</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>relnote --next-version</th><th>semantic-release / release-please</th><th>git-cliff --bumped-version</th></tr></thead>
+        <tbody>
+          <tr><td>Runtime</td><td>Python 3.11 stdlib, git</td><td>Node, or a GitHub App / Action with a token</td><td>Rust binary</td></tr>
+          <tr><td>Config</td><td>none (flags only)</td><td>config file and plugins</td><td><code>cliff.toml</code> optional</td></tr>
+          <tr><td>Creates tags / releases / PRs</td><td>no, prints a suggestion</td><td>yes</td><td>no</td></tr>
+          <tr><td>Monorepo</td><td><code>--path</code> + <code>--tag-prefix</code></td><td>plugins or manifest config</td><td><code>--include-path</code> + tag pattern</td></tr>
+          <tr><td>Release body / CHANGELOG.md</td><td>both, same command</td><td>yes</td><td>CHANGELOG.md via templates</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>If you want the whole release automated (version files, tags, PRs, npm publish), keep semantic-release or release-please. relnote is for when you want the answer and the notes, and want to do the tagging yourself.</p>
+
+    <footer>
+      <p><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md from conventional commits</a> · <a href="compare.html">Compare</a> · <a href="https://github.com/loki-inu/relnote">Source (MIT)</a></p>
+    </footer>
+  </main>
+</body>
+</html>

@@ -14,11 +14,13 @@ if __package__ in {None, ""}:
     from relnote.changelog import ChangelogError, update_changelog
     from relnote.format import classify, group_commits, render, select
     from relnote.git import GitError, collect_commits, github_compare_url, last_tag
+    from relnote.semver import VersionError, bump_kind, next_version
 else:
     from . import __version__
     from .changelog import ChangelogError, update_changelog
     from .format import classify, group_commits, render, select
     from .git import GitError, collect_commits, github_compare_url, last_tag
+    from .semver import VersionError, bump_kind, next_version
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -29,6 +31,18 @@ range into release notes you can paste into a GitHub Release body.
 Default range
   Latest tag → HEAD. If the repo has no tags, the full history of
   --until (default HEAD) is used. Pass --since to start at any ref.
+  If --until is itself tagged (you just tagged the release), the range
+  starts at the tag before it.
+
+Monorepos
+  --path DIR (repeatable) keeps only commits that touch DIR.
+  --tag-prefix PREFIX only considers tags starting with PREFIX
+  (e.g. "api/v" or "web@") when picking the default --since.
+
+Next version
+  --next-version prints the next tag instead of notes: breaking change
+  → major, any feat → minor, anything else → patch (while the major is
+  0, a breaking change bumps the minor). No previous tag → v0.1.0.
 
 Grouping (Conventional Commits)
   feat / feat(scope)           Features
@@ -47,7 +61,8 @@ Exit status
   0  notes written to stdout (and/or --output FILE)
   1  not a git repository, unknown ref, no commits after filters,
      --output parent directory does not exist,
-     or --changelog already has a section with the same title
+     --changelog already has a section with the same title,
+     or --next-version found a base tag that is not x.y.z
   2  --quiet given without --output or --changelog
 
 Changelog file
@@ -64,6 +79,8 @@ examples:
   python3 -m relnote --output /tmp/notes.md
   python3 -m relnote --output notes.md --quiet
   python3 -m relnote --changelog CHANGELOG.md --changelog-title v1.3.0 -q
+  python3 -m relnote --next-version
+  python3 -m relnote --path packages/api --tag-prefix api/v
   python3 relnote/__main__.py --repo /path/to/project
 """.strip()
 
@@ -116,6 +133,23 @@ def build_parser() -> argparse.ArgumentParser:
         "--no-bots",
         action="store_true",
         help='drop commits from dependabot, renovate, or authors containing "[bot]"',
+    )
+    parser.add_argument(
+        "--path",
+        dest="paths",
+        metavar="DIR",
+        action="append",
+        help="only commits touching DIR (repeatable; for monorepos)",
+    )
+    parser.add_argument(
+        "--tag-prefix",
+        metavar="PREFIX",
+        help='only tags starting with PREFIX count as the default --since (e.g. "api/v")',
+    )
+    parser.add_argument(
+        "--next-version",
+        action="store_true",
+        help="print the next semantic version tag instead of notes",
     )
     parser.add_argument(
         "--repo",
@@ -173,11 +207,12 @@ def main(argv: list[str] | None = None) -> int:
     try:
         since = args.since
         if since is None:
-            since = last_tag(cwd=args.repo)
+            since = last_tag(cwd=args.repo, until=args.until, prefix=args.tag_prefix)
         raw = collect_commits(
             since=since,
             until=args.until,
             exclude_merges=args.exclude_merges,
+            paths=args.paths,
             cwd=args.repo,
         )
         classified = [
@@ -199,6 +234,16 @@ def main(argv: list[str] | None = None) -> int:
                 file=sys.stderr,
             )
             return 1
+
+        if args.next_version:
+            kind = bump_kind(item.category for item in chosen)
+            try:
+                tag = next_version(since, kind, prefix=args.tag_prefix or "")
+            except VersionError as exc:
+                print(f"relnote: {exc}", file=sys.stderr)
+                return 1
+            print(tag)
+            return 0
 
         omitted = sum(
             1
