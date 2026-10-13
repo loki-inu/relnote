@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release notes in GitLab CI, Jenkins or any CI — relnote</title>
+  <meta name="description" content="Run relnote as one downloadable file (Python 3.11+, git) in GitLab CI, Jenkins, Buildkite or CircleCI. GitLab example: a tag pipeline writes notes.md and the release keyword publishes it; --next-version picks the next tag; --path and --tag-prefix for monorepos.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/ci.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release notes in GitLab CI, Jenkins or any CI — relnote">
+  <meta property="og:description" content="Run relnote as one downloadable file (Python 3.11+, git) in GitLab CI, Jenkins, Buildkite or CircleCI. GitLab example: a tag pipeline writes notes.md and the release keyword publishes it; --next-version picks the next tag; --path and --tag-prefix for monorepos.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/ci.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release notes in GitLab CI, Jenkins or any CI — relnote">
+  <meta name="twitter:description" content="Run relnote as one downloadable file (Python 3.11+, git) in GitLab CI, Jenkins, Buildkite or CircleCI. GitLab example: a tag pipeline writes notes.md and the release keyword publishes it; --next-version picks the next tag; --path and --tag-prefix for monorepos.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/ci.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/ci.html",
+        "name": "Release notes in GitLab CI, Jenkins or any CI — relnote",
+        "description": "Run relnote as one downloadable file (Python 3.11+, git) in GitLab CI, Jenkins, Buildkite or CircleCI. GitLab example: a tag pipeline writes notes.md and the release keyword publishes it; --next-version picks the next tag; --path and --tag-prefix for monorepos.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.0", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "GitLab CI, Jenkins or any CI", "item": "https://loki-inu.github.io/relnote/ci.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Publish conventional-commit release notes from GitLab CI with relnote",
+        "step": [
+          { "@type": "HowToStep", "name": "Fetch full history", "text": "Set GIT_DEPTH: 0 on the job so the previous tag is in the clone. relnote needs the tag before the one being released." },
+          { "@type": "HowToStep", "name": "Download the single file", "text": "curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote && chmod +x relnote. Needs Python 3.11+ and git in the job image, for example python:3.12." },
+          { "@type": "HowToStep", "name": "Write the notes", "text": "Run ./relnote --no-bots --output notes.md --quiet in the tag pipeline and keep notes.md as an artifact." },
+          { "@type": "HowToStep", "name": "Create the release", "text": "In a job using registry.gitlab.com/gitlab-org/cli:latest, use the release keyword with tag_name: $CI_COMMIT_TAG and description: notes.md, or run glab release create $CI_COMMIT_TAG -F notes.md." }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="compare.html">Compare</a> · <a href="gh-extension.html">gh relnote</a></p>
+    <h1>Release notes in GitLab CI, Jenkins or any CI</h1>
+    <p class="tag">relnote ships as one file: a Python zipapp attached to every GitHub Release. Download it in a job, run it, and hand the notes to whatever creates your release. No pip, no clone, no Node. It needs Python 3.11+ and git, which most CI images already have.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote/releases/latest/download/relnote">Download relnote (latest)</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/latest">Release assets and SHA256SUMS</a>
+      · <a href="https://github.com/loki-inu/relnote">Source (MIT)</a>
+    </div>
+
+    <h2>One file, no install</h2>
+    <pre><code>curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
+chmod +x relnote
+./relnote --version          # relnote 0.3.0
+./relnote --no-bots --output notes.md --quiet</code></pre>
+    <p>Each release has three assets:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Asset</th><th>What it is</th></tr></thead>
+        <tbody>
+          <tr><td><code>relnote</code></td><td>Executable zipapp with a <code>#!/usr/bin/env python3</code> shebang. Only the <code>relnote</code> package and the licence are inside; it does not read anything from a source tree.</td></tr>
+          <tr><td><code>relnote.pyz</code></td><td>The same bytes. Use <code>python relnote.pyz</code> where the shebang is not honoured (Windows).</td></tr>
+          <tr><td><code>SHA256SUMS</code></td><td>Checksums of both files, in <code>sha256sum -c</code> format.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>In CI, pin a version instead of <code>latest</code> and check the download:</p>
+    <pre><code>base=https://github.com/loki-inu/relnote/releases/download/v0.3.0
+curl -fsSL -o relnote "$base/relnote"
+curl -fsSL -o SHA256SUMS "$base/SHA256SUMS"
+grep ' relnote$' SHA256SUMS | sha256sum -c -
+chmod +x relnote</code></pre>
+
+    <h2>Full history, or the notes are wrong</h2>
+    <p>relnote finds the previous tag with <code>git describe</code> and lists the commits after it. A shallow clone usually does not contain that tag, so relnote falls back to "everything it can see": the notes cover only the fetched commits, the footer reads <code>Range: (start) → HEAD</code>, and <code>--next-version</code> prints <code>v0.1.0</code>. Before running it, make sure the clone is complete and has tags:</p>
+    <ul>
+      <li><strong>GitLab CI:</strong> set <code>GIT_DEPTH: 0</code> on the job (or globally). GitLab's docs: a depth of <code>0</code> disables the shallow clone and fetches all branches and tags. New projects default to a depth of 20.</li>
+      <li><strong>Anything else:</strong> run the two lines below in the job before relnote. They are safe on a clone that is already complete.</li>
+    </ul>
+    <pre><code>if [ "$(git rev-parse --is-shallow-repository)" = true ]; then git fetch --unshallow; fi
+git fetch --tags --force</code></pre>
+
+    <h2>GitLab CI: release on tag push</h2>
+    <p>Two jobs. The first runs in any image with Python 3.11+ and git (<code>python:3.12</code> has both; the <code>-slim</code> and <code>-alpine</code> variants do not include git) and writes <code>notes.md</code> as an artifact. The second runs in GitLab's CLI image and uses the <a href="https://docs.gitlab.com/ci/yaml/#release"><code>release</code> keyword</a>, whose <code>description</code> may be a path to a file relative to <code>$CI_PROJECT_DIR</code>.</p>
+    <pre><code>stages: [notes, release]
+
+release_notes:
+  stage: notes
+  image: python:3.12
+  variables:
+    GIT_DEPTH: 0                      # full history: relnote needs the previous tag
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote
+    - chmod +x relnote
+    - ./relnote --version
+    - ./relnote --no-bots --output notes.md --quiet
+  artifacts:
+    paths: [notes.md]
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  needs:
+    - job: release_notes
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Releasing $CI_COMMIT_TAG"   # the release keyword requires a script
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: $CI_COMMIT_TAG
+    description: notes.md             # path relative to $CI_PROJECT_DIR</code></pre>
+    <p>Because <code>HEAD</code> is the tag being released, relnote starts the range at the tag <em>before</em> it, so the notes describe exactly this release. Prefer a command? The same image has <code>glab</code>, and the job token works once <code>GLAB_ENABLE_CI_AUTOLOGIN</code> is set:</p>
+    <pre><code>release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  needs: [release_notes]
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    GLAB_ENABLE_CI_AUTOLOGIN: "true"
+  script:
+    - glab release create "$CI_COMMIT_TAG" --name "$CI_COMMIT_TAG" --notes-file notes.md</code></pre>
+    <p><code>release-cli</code> (<code>registry.gitlab.com/gitlab-org/release-cli</code>) is deprecated since GitLab 18.0; the <code>release</code> keyword now runs <code>glab release create</code> and falls back to <code>release-cli</code> only where <code>glab</code> is missing. On older GitLab, the first example works unchanged with <code>image: registry.gitlab.com/gitlab-org/release-cli:latest</code>.</p>
+
+    <h2>GitLab CI: let relnote pick the next tag</h2>
+    <p>For a manual (or scheduled) release from the default branch, <code>--next-version</code> decides the tag: a breaking change bumps major, a <code>feat</code> bumps minor, anything else bumps patch (<a href="next-version.html">details</a>). GitLab does not expand variables exported in <code>script</code> inside the same job's <code>release</code> block, so the tag goes through a <a href="https://docs.gitlab.com/ci/yaml/artifacts_reports/#artifactsreportsdotenv">dotenv artifact</a> to a second job. With <code>ref</code> set, <code>release:tag_name</code> creates the tag that does not exist yet.</p>
+    <pre><code>stages: [prepare, release]
+
+prepare_release:
+  stage: prepare
+  image: python:3.12
+  variables:
+    GIT_DEPTH: 0
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never                                   # not in tag pipelines
+    - if: $CI_PIPELINE_SOURCE == "schedule"         # e.g. a weekly release
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual                                  # or a button on main
+      allow_failure: false                          # pipeline waits for it
+  script:
+    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote
+    - chmod +x relnote
+    - echo "TAG=$(./relnote --no-bots --next-version)" &gt;&gt; variables.env
+    - ./relnote --no-bots --output notes.md --quiet
+    - cat variables.env
+  artifacts:
+    paths: [notes.md]
+    reports:
+      dotenv: variables.env
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  needs:
+    - job: prepare_release
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - echo "Releasing $TAG"
+  release:
+    tag_name: $TAG                    # e.g. v1.4.0, from --next-version
+    ref: $CI_COMMIT_SHA               # create the tag at this commit
+    name: $TAG
+    description: notes.md</code></pre>
+    <p>Pick one of the two setups. Creating the tag starts a tag pipeline, and a second <code>release</code> job there would fail because the release already exists. If there is nothing to release since the last tag, relnote exits <code>1</code> in <code>prepare_release</code> and the pipeline stops before anything is tagged.</p>
+
+    <h2>Monorepos</h2>
+    <p><code>--path</code> keeps only commits touching a directory and <code>--tag-prefix</code> makes tags like <code>api/v1.2.0</code> the ones that count. One job per package, matched on the tag prefix:</p>
+    <pre><code>api_notes:
+  stage: notes
+  image: python:3.12
+  variables:
+    GIT_DEPTH: 0
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^api\/v/
+  script:
+    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote
+    - chmod +x relnote
+    - ./relnote --path packages/api --tag-prefix api/v --no-bots --output notes.md --quiet
+  artifacts:
+    paths: [notes.md]</code></pre>
+    <p>With <code>--next-version</code>, the prefix is kept: <code>./relnote --path packages/api --tag-prefix api/v --next-version</code> prints <code>api/v1.3.0</code>.</p>
+
+    <h2>Jenkins, Buildkite, CircleCI, or a plain shell</h2>
+    <p>The same four lines work in any step that has <code>sh</code>, <code>curl</code>, <code>git</code>, and <code>python3</code> (3.11+). Put them in a Jenkinsfile <code>sh</code> block, a Buildkite command step, or a CircleCI <code>run</code>:</p>
+    <pre><code>set -eu
+if [ "$(git rev-parse --is-shallow-repository)" = true ]; then git fetch --unshallow; fi
+git fetch --tags --force
+
+curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote
+chmod +x relnote
+./relnote --no-bots --output notes.md --quiet
+
+# then hand notes.md to whatever publishes the release, for example:
+#   gh release create "$TAG" --notes-file notes.md
+#   glab release create "$TAG" --notes-file notes.md
+#   relnote --changelog CHANGELOG.md --changelog-title "$TAG" -q</code></pre>
+    <p>Pass <code>--since v1.2.0 --until v1.3.0</code> for an explicit range, or <code>--repo /path</code> if the checkout is not the working directory. On GitHub Actions use the <a href="./">action</a> instead; it is the same code.</p>
+
+    <h2>Flags you will want in CI</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Flag</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><code>--output notes.md --quiet</code></td><td>Write the file and keep the job log clean. Exit <code>1</code> if the parent directory is missing.</td></tr>
+          <tr><td><code>--no-bots</code></td><td>Drop dependabot, renovate, and <code>[bot]</code> authors.</td></tr>
+          <tr><td><code>--next-version</code></td><td>Print the next tag instead of notes. Exit <code>1</code> if there are no commits or the previous tag is not <code>x.y.z</code>.</td></tr>
+          <tr><td><code>--path DIR</code>, <code>--tag-prefix PREFIX</code></td><td>Scope to one package in a monorepo.</td></tr>
+          <tr><td><code>--changelog CHANGELOG.md --changelog-title TAG</code></td><td>Prepend the same notes to a Keep a Changelog file; a repeated title is refused, so re-runs cannot duplicate a section.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Everything relnote reads is local git history. No token, no network call, no config file.</p>
+
+    <footer>
+      <p><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md from conventional commits</a> · <a href="next-version.html">Next version and monorepos</a> · <a href="compare.html">Compare</a> · <a href="https://github.com/loki-inu/relnote">Source (MIT)</a></p>
+    </footer>
+  </main>
+</body>
+</html>

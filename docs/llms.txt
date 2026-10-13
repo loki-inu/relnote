@@ -12,6 +12,10 @@ It does not create the Release or the tag. Since v0.3.0, --next-version prints t
 
 loki-inu/relnote@v0.3.0 after actions/checkout with fetch-depth: 0. The notes output is the Release body. CI can also run: relnote --output notes.md --quiet
 
+## GitLab CI, Jenkins, Buildkite, CircleCI
+
+Download the single file in the job and run it; the clone must have full history and tags (GitLab: GIT_DEPTH: 0). GitLab example: a tag-pipeline job in python:3.12 writes notes.md as an artifact, and a job in registry.gitlab.com/gitlab-org/cli:latest publishes it with the release keyword (description: notes.md) or glab release create TAG --notes-file notes.md. A manual or scheduled job can use --next-version to pick the tag. Guide: https://loki-inu.github.io/relnote/ci.html
+
 ## Compared to nearby tools
 
 - git-cliff: keep it for templated CHANGELOG.md rebuilt from history and version bump. relnote prints a Release body, can prepend one release to CHANGELOG.md, and needs no config.
@@ -19,6 +23,10 @@ loki-inu/relnote@v0.3.0 after actions/checkout with fetch-depth: 0. The notes ou
 - swapnanil/relnotes: another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action, --quiet/--output CI, and bot or secret-looking subject filters. Pick that CLI for optional .relnotes.toml, inferred semver bump, or --from/--to.
 
 ## Install
+
+Single file (Python zipapp attached to each GitHub Release; needs Python 3.11+ and git, nothing else):
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote && chmod +x ~/.local/bin/relnote
+Pin a version with releases/download/v0.3.0/relnote. The release also has SHA256SUMS and relnote.pyz (same bytes, for python relnote.pyz on Windows).
 
 pip install git+https://github.com/loki-inu/relnote.git
 relnote --help
@@ -37,6 +45,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - Docs: https://loki-inu.github.io/relnote/
 - CHANGELOG.md from conventional commits: https://loki-inu.github.io/relnote/changelog.html
 - Next version and monorepos: https://loki-inu.github.io/relnote/next-version.html
+- GitLab CI, Jenkins or any CI (single-file download): https://loki-inu.github.io/relnote/ci.html
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html
 - Source: https://github.com/loki-inu/relnote
 - gh extension: https://github.com/loki-inu/gh-relnote (docs: https://loki-inu.github.io/relnote/gh-extension.html)
