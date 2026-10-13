@@ -77,6 +77,12 @@ grep ' relnote$' SHA256SUMS | sha256sum -c -
 
 This is the easiest way to run relnote in GitLab CI, Jenkins, or any other CI; see [the CI page](https://loki-inu.github.io/relnote/ci.html). To build the file yourself: `python3 scripts/build_zipapp.py` writes `dist/relnote`, `dist/relnote.pyz`, and `dist/SHA256SUMS`.
 
+With [mise](https://mise.jdx.dev/) the same file installs through the GitHub backend:
+
+```bash
+mise use -g 'github:loki-inu/relnote[bin=relnote]'
+```
+
 ### Other ways
 
 From a checkout of this repository:
