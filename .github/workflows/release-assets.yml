@@ -1,0 +1,37 @@
+name: Release assets
+
+# Builds the single-file relnote (a Python zipapp) for a release tag and
+# uploads relnote, relnote.pyz and SHA256SUMS to that GitHub Release.
+# Runs when a release is published, or by hand for an existing tag.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build and upload assets for (e.g. v0.3.0)
+        required: true
+        type: string
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - name: Build zipapp
+        run: python3 scripts/build_zipapp.py
+      - name: Smoke test
+        run: scripts/smoke-zipapp.sh dist/relnote "${TAG#v}"
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$TAG" dist/relnote dist/relnote.pyz dist/SHA256SUMS --clobber
+          gh release view "$TAG" --json assets --jq '.assets[].name'
