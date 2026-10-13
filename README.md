@@ -51,11 +51,33 @@ Keep using `gh release create --generate-notes` when you want GitHub's official,
 
 [swapnanil/relnotes](https://github.com/swapnanil/relnotes) is another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action and zero-config CI (`--quiet` / `--output`); pick that CLI if you want an optional `.relnotes.toml` or inferred semver bump.
 
-Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · OSSDrop: https://ossdrop.com/tool/relnote
+Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · GitLab CI / Jenkins / any CI: https://loki-inu.github.io/relnote/ci.html · OSSDrop: https://ossdrop.com/tool/relnote
 
 ## Install
 
 Python 3.11+, git on PATH, no third-party packages.
+
+### Single file (no pip, no clone)
+
+Each GitHub Release ships `relnote`, a self-contained Python [zipapp](https://docs.python.org/3/library/zipapp.html). Download it, make it executable, done:
+
+```bash
+mkdir -p ~/.local/bin
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
+chmod +x ~/.local/bin/relnote
+relnote --version   # relnote 0.3.0
+```
+
+Pin a version with `releases/download/v0.3.0/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
+
+```bash
+curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.0/SHA256SUMS
+grep ' relnote$' SHA256SUMS | sha256sum -c -
+```
+
+This is the easiest way to run relnote in GitLab CI, Jenkins, or any other CI; see [the CI page](https://loki-inu.github.io/relnote/ci.html). To build the file yourself: `python3 scripts/build_zipapp.py` writes `dist/relnote`, `dist/relnote.pyz`, and `dist/SHA256SUMS`.
+
+### Other ways
 
 From a checkout of this repository:
 
@@ -206,6 +228,8 @@ jobs:
 Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`, `changelog` (path to prepend a section to, from v0.2.0), `changelog-title`, `path` (one directory per line, from v0.3.0), `tag-prefix`. Outputs: `notes`, and `next-version` (from v0.3.0; empty if the base tag is not semver).
 
 A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [examples/draft-release.yml](examples/draft-release.yml).
+
+Not on GitHub Actions? Download the single file and run it in GitLab CI, Jenkins, Buildkite, or CircleCI: [Release notes in GitLab CI, Jenkins or any CI](https://loki-inu.github.io/relnote/ci.html).
 
 ## What it is not
 
