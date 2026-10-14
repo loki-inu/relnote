@@ -24,7 +24,7 @@ Download the single file in the job and run it; the clone must have full history
 
 ## Install
 
-Single file (Python zipapp attached to each GitHub Release; needs Python 3.11+ and git, nothing else):
+Single file (Python zipapp attached to each GitHub Release; needs Python 3.11+ and git, nothing else). Guide: https://loki-inu.github.io/relnote/single-file.html
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote && chmod +x ~/.local/bin/relnote
 Pin a version with releases/download/v0.3.0/relnote. The release also has SHA256SUMS and relnote.pyz (same bytes, for python relnote.pyz on Windows).
 
@@ -43,6 +43,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 ## Links
 
 - Docs: https://loki-inu.github.io/relnote/
+- Single-file zipapp install: https://loki-inu.github.io/relnote/single-file.html
 - CHANGELOG.md from conventional commits: https://loki-inu.github.io/relnote/changelog.html
 - Next version and monorepos: https://loki-inu.github.io/relnote/next-version.html
 - GitLab CI, Jenkins or any CI (single-file download): https://loki-inu.github.io/relnote/ci.html

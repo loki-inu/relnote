@@ -140,7 +140,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="compare.html">Compare</a> · <a href="gh-extension.html">gh relnote</a></p>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="single-file.html">Single-file install</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="compare.html">Compare</a> · <a href="gh-extension.html">gh relnote</a></p>
     <h1>Release notes in GitLab CI, Jenkins or any CI</h1>
     <p class="tag">relnote ships as one file: a Python zipapp attached to every GitHub Release. Download it in a job, run it, and hand the notes to whatever creates your release. No pip, no clone, no Node. It needs Python 3.11+ and git, which most CI images already have.</p>
     <div class="links">
@@ -150,6 +150,7 @@
     </div>
 
     <h2>One file, no install</h2>
+    <p>Full install guide (SHA256, Windows <code>.pyz</code>, mise): <a href="single-file.html">single-file.html</a>. Copy-paste GitLab config: <a href="https://github.com/loki-inu/relnote/blob/main/examples/gitlab-ci.yml"><code>examples/gitlab-ci.yml</code></a>.</p>
     <pre><code>curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
 chmod +x relnote
 ./relnote --version          # relnote 0.3.0

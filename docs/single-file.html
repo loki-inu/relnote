@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Single-file install: Python zipapp download (no pip) — relnote</title>
+  <meta name="description" content="Install relnote as one downloadable Python zipapp. No pip, no clone. curl the release asset, chmod +x, done. SHA256SUMS, relnote.pyz for Windows, and mise github: backend.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/single-file.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Single-file install: Python zipapp download (no pip) — relnote">
+  <meta property="og:description" content="Install relnote as one downloadable Python zipapp. No pip, no clone. curl the release asset, chmod +x, done. SHA256SUMS, relnote.pyz for Windows, and mise github: backend.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/single-file.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Single-file install: Python zipapp download (no pip) — relnote">
+  <meta name="twitter:description" content="Install relnote as one downloadable Python zipapp. No pip, no clone. curl the release asset, chmod +x, done. SHA256SUMS, relnote.pyz for Windows, and mise github: backend.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/single-file.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/single-file.html",
+        "name": "Single-file install: Python zipapp download (no pip) — relnote",
+        "description": "Install relnote as one downloadable Python zipapp. No pip, no clone. curl the release asset, chmod +x, done. SHA256SUMS, relnote.pyz for Windows, and mise github: backend.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.0", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "Single-file install", "item": "https://loki-inu.github.io/relnote/single-file.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Install relnote as a single Python zipapp",
+        "step": [
+          { "@type": "HowToStep", "name": "Download the zipapp", "text": "curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote" },
+          { "@type": "HowToStep", "name": "Make it executable", "text": "chmod +x ~/.local/bin/relnote (needs ~/.local/bin on PATH)." },
+          { "@type": "HowToStep", "name": "Verify", "text": "Run relnote --version (expects relnote 0.3.0 for the current release). Optionally check SHA256SUMS." }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="ci.html">CI / GitLab</a> · <a href="gh-extension.html">gh relnote</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a></p>
+    <h1>Single-file install: one download, no pip</h1>
+    <p class="tag">Every <a href="https://github.com/loki-inu/relnote/releases/latest">GitHub Release</a> ships <code>relnote</code> as a self-contained Python <a href="https://docs.python.org/3/library/zipapp.html">zipapp</a>. Download it, make it executable, run it. Needs Python 3.11+ and git on <code>PATH</code> — nothing else.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote/releases/latest/download/relnote">Download relnote (latest)</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/latest">Release assets + SHA256SUMS</a>
+      · <a href="ci.html">Use it in GitLab CI / Jenkins</a>
+    </div>
+
+    <h2>Install</h2>
+    <pre><code>mkdir -p ~/.local/bin
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
+chmod +x ~/.local/bin/relnote
+relnote --version   # relnote 0.3.0</code></pre>
+    <p>Put <code>~/.local/bin</code> on your <code>PATH</code> if it is not already. Pin a version with <code>releases/download/v0.3.0/relnote</code> instead of <code>releases/latest/download/relnote</code>.</p>
+
+    <h2>Release assets</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Asset</th><th>What it is</th></tr></thead>
+        <tbody>
+          <tr><td><code>relnote</code></td><td>Executable zipapp with a <code>#!/usr/bin/env python3</code> shebang. Contains only the <code>relnote</code> package and the licence.</td></tr>
+          <tr><td><code>relnote.pyz</code></td><td>Identical bytes. Use <code>python relnote.pyz</code> where the shebang is not honoured (Windows).</td></tr>
+          <tr><td><code>SHA256SUMS</code></td><td>Checksums of both files, in <code>sha256sum -c</code> format.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Verify the download</h2>
+    <pre><code>base=https://github.com/loki-inu/relnote/releases/download/v0.3.0
+curl -fsSL -o relnote "$base/relnote"
+curl -fsSL -o SHA256SUMS "$base/SHA256SUMS"
+grep ' relnote$' SHA256SUMS | sha256sum -c -
+chmod +x relnote</code></pre>
+    <p>On macOS without GNU coreutils, use <code>shasum -a 256 -c</code> after rewriting the line, or compare the hash by eye: for v0.3.0 the hex starts <code>9d5945c5…</code>.</p>
+
+    <h2>Windows</h2>
+    <pre><code>curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote.pyz
+py -3 relnote.pyz --version</code></pre>
+    <p>The <code>.pyz</code> and <code>relnote</code> files are the same zipapp; only the name differs for systems that ignore shebangs.</p>
+
+    <h2>mise</h2>
+    <pre><code>mise use -g 'github:loki-inu/relnote[bin=relnote]'</code></pre>
+    <p>mise's GitHub backend picks a release asset. Without <code>bin=relnote</code> it may choose <code>relnote.pyz</code>; the <code>bin=</code> filter forces the shebang file.</p>
+
+    <h2>CI</h2>
+    <p>The same download is the easiest way to run relnote in GitLab CI, Jenkins, Buildkite, or CircleCI. Full history and tags are required (<code>GIT_DEPTH: 0</code> on GitLab). See the <a href="ci.html">CI guide</a> and the copy-paste example at <a href="https://github.com/loki-inu/relnote/blob/main/examples/gitlab-ci.yml"><code>examples/gitlab-ci.yml</code></a>.</p>
+
+    <h2>Build it yourself</h2>
+    <pre><code>python3 scripts/build_zipapp.py
+# writes dist/relnote, dist/relnote.pyz, dist/SHA256SUMS</code></pre>
+    <p>On each published release, <code>.github/workflows/release-assets.yml</code> builds and uploads those three files automatically.</p>
+
+    <h2>Other installs</h2>
+    <ul>
+      <li><a href="https://github.com/loki-inu/homebrew-tap">Homebrew</a>: <code>brew install loki-inu/tap/relnote</code></li>
+      <li>pip: <code>pip install git+https://github.com/loki-inu/relnote.git</code></li>
+      <li><a href="gh-extension.html">gh extension</a>: <code>gh extension install loki-inu/gh-relnote</code></li>
+    </ul>
+
+    <footer>MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/issues">Issues</a></footer>
+  </main>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 [![relnote on OSSDrop](https://ossdrop.com/badge/relnote)](https://ossdrop.com/tool/relnote)
 
-Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools), [git-extra-commands](https://github.com/unixorn/git-extra-commands) (External Git Utilities), [awesome-docs](https://github.com/testthedocs/awesome-docs) (GitHub Actions), [awesome-cli-tui-software](https://github.com/lgaggini/awesome-cli-tui-software) (git), [awesome-github](https://github.com/fffaraz/awesome-github) (Git), and [awesome-devops](https://github.com/frimik/awesome-devops) (Command Line and Tooling).
+Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools), [git-extra-commands](https://github.com/unixorn/git-extra-commands) (External Git Utilities), [awesome-docs](https://github.com/testthedocs/awesome-docs) (GitHub Actions), [awesome-cli-tui-software](https://github.com/lgaggini/awesome-cli-tui-software) (git), [awesome-github](https://github.com/fffaraz/awesome-github) (Git), [awesome-devops](https://github.com/frimik/awesome-devops) (Command Line and Tooling), and [awesome-gh-extensions](https://github.com/myzkey/awesome-gh-extensions) (auto-updated gh CLI extensions, via [gh-relnote](https://github.com/loki-inu/gh-relnote)).
 
 Turn a git range into clean GitHub release notes.
 
@@ -75,7 +75,7 @@ curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.0/SHA25
 grep ' relnote$' SHA256SUMS | sha256sum -c -
 ```
 
-This is the easiest way to run relnote in GitLab CI, Jenkins, or any other CI; see [the CI page](https://loki-inu.github.io/relnote/ci.html). To build the file yourself: `python3 scripts/build_zipapp.py` writes `dist/relnote`, `dist/relnote.pyz`, and `dist/SHA256SUMS`.
+See [single-file install](https://loki-inu.github.io/relnote/single-file.html) for SHA256 checks, Windows (`relnote.pyz`), and mise. For GitLab CI, Jenkins, or any other CI, see [the CI page](https://loki-inu.github.io/relnote/ci.html). To build the file yourself: `python3 scripts/build_zipapp.py` writes `dist/relnote`, `dist/relnote.pyz`, and `dist/SHA256SUMS`.
 
 With [mise](https://mise.jdx.dev/) the same file installs through the GitHub backend:
 
