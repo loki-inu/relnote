@@ -206,6 +206,15 @@ If `--until` (default `HEAD`) is itself tagged, the default range starts at the 
 
 `--changelog` writes the same grouped notes into a Keep a Changelog style file. The new section goes above the newest `## ` entry; your header and older entries stay byte-for-byte the same. Running it twice for the same title is refused, so a re-run in CI cannot duplicate a release.
 
+### One-command local release (standard-version style)
+
+[`examples/release.sh`](examples/release.sh) does what `npx standard-version` did, with no Node: picks the next version, bumps `package.json` / `pyproject.toml` / `Cargo.toml` (`--bump-file`), prepends `CHANGELOG.md`, commits `chore(release): vX.Y.Z` and creates an annotated tag. `--dry-run`, `--release-as`, `--skip-commit`, `--skip-tag`, `--tag-prefix`. Nothing is pushed. Guide: [standard-version alternative](https://loki-inu.github.io/relnote/standard-version-alternative.html).
+
+```sh
+./release.sh --dry-run --bump-file package.json
+./release.sh --bump-file package.json && git push --follow-tags
+```
+
 ## GitHub Action
 
 Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.3.0` or `@main` for current. The `v0.1.0` tag is CLI-only.

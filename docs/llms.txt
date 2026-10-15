@@ -16,6 +16,10 @@ loki-inu/relnote@v0.3.0 after actions/checkout with fetch-depth: 0. The notes ou
 
 Download the single file in the job and run it; the clone must have full history and tags (GitLab: GIT_DEPTH: 0). GitLab example: a tag-pipeline job in python:3.12 writes notes.md as an artifact, and a job in registry.gitlab.com/gitlab-org/cli:latest publishes it with the release keyword (description: notes.md) or glab release create TAG --notes-file notes.md. A manual or scheduled job can use --next-version to pick the tag. Guide: https://loki-inu.github.io/relnote/ci.html
 
+## standard-version alternative
+
+standard-version is deprecated. examples/release.sh (bash, in the relnote repo) replaces npx standard-version locally: relnote --next-version (or --release-as TAG), --bump-file package.json/pyproject.toml/Cargo.toml (first version line), relnote --changelog CHANGELOG.md, commit chore(release): vX.Y.Z, annotated tag. --dry-run, --skip-commit, --skip-tag, --tag-prefix; nothing pushed. No prerelease bumps or .versionrc (use commit-and-tag-version for those). Guide: https://loki-inu.github.io/relnote/standard-version-alternative.html
+
 ## Compared to nearby tools
 
 - git-cliff: keep it for templated CHANGELOG.md rebuilt from history and version bump. relnote prints a Release body, can prepend one release to CHANGELOG.md, and needs no config.
@@ -47,6 +51,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - CHANGELOG.md from conventional commits: https://loki-inu.github.io/relnote/changelog.html
 - Next version and monorepos: https://loki-inu.github.io/relnote/next-version.html
 - GitLab CI, Jenkins or any CI (single-file download): https://loki-inu.github.io/relnote/ci.html
+- standard-version alternative (examples/release.sh): https://loki-inu.github.io/relnote/standard-version-alternative.html
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html
 - Source: https://github.com/loki-inu/relnote
 - gh extension: https://github.com/loki-inu/gh-relnote (docs: https://loki-inu.github.io/relnote/gh-extension.html)

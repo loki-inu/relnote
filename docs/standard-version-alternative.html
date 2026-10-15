@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>standard-version alternative: bump, CHANGELOG.md and tag without Node — relnote</title>
+  <meta name="description" content="standard-version is deprecated. relnote plus a short release.sh does what npx standard-version did locally: next semver from conventional commits, bump package.json or pyproject.toml, prepend CHANGELOG.md, commit chore(release) and tag. No Node, no config, no GitHub Actions required.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/standard-version-alternative.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="standard-version alternative: bump, CHANGELOG.md and tag without Node — relnote">
+  <meta property="og:description" content="standard-version is deprecated. relnote plus a short release.sh does what npx standard-version did locally: next semver from conventional commits, bump package.json or pyproject.toml, prepend CHANGELOG.md, commit chore(release) and tag. No Node, no config, no GitHub Actions required.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/standard-version-alternative.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="standard-version alternative: bump, CHANGELOG.md and tag without Node — relnote">
+  <meta name="twitter:description" content="standard-version is deprecated. relnote plus a short release.sh does what npx standard-version did locally: next semver from conventional commits, bump package.json or pyproject.toml, prepend CHANGELOG.md, commit chore(release) and tag. No Node, no config, no GitHub Actions required.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/standard-version-alternative.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/standard-version-alternative.html",
+        "name": "standard-version alternative: bump, CHANGELOG.md and tag without Node — relnote",
+        "description": "standard-version is deprecated. relnote plus a short release.sh does what npx standard-version did locally: next semver from conventional commits, bump package.json or pyproject.toml, prepend CHANGELOG.md, commit chore(release) and tag. No Node, no config, no GitHub Actions required.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.0", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "standard-version alternative", "item": "https://loki-inu.github.io/relnote/standard-version-alternative.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Replace npx standard-version with relnote and release.sh",
+        "step": [
+          { "@type": "HowToStep", "name": "Install relnote", "text": "brew install loki-inu/tap/relnote, download the single-file zipapp from the GitHub Release, or pip install git+https://github.com/loki-inu/relnote.git (Python 3.11+, git, no dependencies)." },
+          { "@type": "HowToStep", "name": "Get release.sh", "text": "Download examples/release.sh from the relnote repository (main branch), and make it executable." },
+          { "@type": "HowToStep", "name": "Dry run", "text": "Run release.sh --dry-run --bump-file package.json to see the next version, the files it will change, and the release notes." },
+          { "@type": "HowToStep", "name": "Release", "text": "Run release.sh --bump-file package.json. It bumps the version line, prepends a CHANGELOG.md section, commits chore(release): vX.Y.Z and creates an annotated tag. Then git push --follow-tags." }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Is standard-version deprecated?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Its README says standard-version is deprecated and points GitHub users to release-please, and others to the commit-and-tag-version fork." } },
+          { "@type": "Question", "name": "Can I replace standard-version without Node?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. relnote is a stdlib Python CLI. relnote --next-version picks the semver bump from conventional commits and relnote --changelog CHANGELOG.md prepends the section; release.sh adds the version-file bump, commit and tag." } }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="compare.html">Compare</a> · <a href="ci.html">Any CI</a></p>
+    <h1>standard-version alternative: bump, CHANGELOG.md and tag without Node</h1>
+    <p class="tag"><code>standard-version</code> is deprecated (its README says so and points to release-please or the commit-and-tag-version fork), but it still gets hundreds of thousands of npm downloads a week. If what you liked was one local command that bumps the version, writes the changelog and tags, relnote can do that without Node, without a config file, and without moving your release into a GitHub Actions bot.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote/blob/main/examples/release.sh">examples/release.sh</a>
+      · <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
+      · <a href="next-version.html">How the next version is picked</a>
+    </div>
+
+    <h2>What standard-version did, and what replaces each step</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Step</th><th>standard-version</th><th>relnote + release.sh</th></tr></thead>
+        <tbody>
+          <tr><td>Next version</td><td>from conventional commits since the last tag</td><td><code>relnote --next-version</code>: breaking → major, <code>feat</code> → minor, else patch (0.x breaking → minor)</td></tr>
+          <tr><td>Bump version files</td><td><code>package.json</code> and <code>bumpFiles</code> updaters</td><td><code>--bump-file FILE</code> (repeatable) sets the first <code>"version"</code> / <code>version =</code> line: package.json, pyproject.toml, Cargo.toml, composer.json</td></tr>
+          <tr><td>CHANGELOG.md</td><td>conventional-changelog presets</td><td><code>relnote --changelog CHANGELOG.md</code> prepends a <code>## [vX.Y.Z] - DATE</code> section; older entries untouched</td></tr>
+          <tr><td>Commit</td><td><code>chore(release): X.Y.Z</code></td><td><code>chore(release): vX.Y.Z</code> (<code>--skip-commit</code> to stop before it)</td></tr>
+          <tr><td>Tag</td><td>annotated <code>vX.Y.Z</code></td><td>annotated tag (<code>--skip-tag</code> to skip)</td></tr>
+          <tr><td>Push</td><td>prints <code>git push --follow-tags</code></td><td>same: nothing is pushed for you</td></tr>
+          <tr><td>Runtime</td><td>Node + npm packages</td><td>bash, git, Python 3.11 stdlib</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Install</h2>
+    <pre><code>brew install loki-inu/tap/relnote
+# or one file, no pip:
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote &amp;&amp; chmod +x ~/.local/bin/relnote
+
+# the release script
+curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/main/examples/release.sh &amp;&amp; chmod +x release.sh</code></pre>
+    <p>Commit <code>release.sh</code> to your repo (e.g. <code>scripts/release.sh</code>) so everyone runs the same thing. It is plain bash; read it before you run it.</p>
+
+    <h2>Use it</h2>
+    <pre><code>$ ./release.sh --dry-run --bump-file package.json
+next: v1.4.0
+changelog: CHANGELOG.md
+bump: package.json -&gt; 1.4.0
+commit: chore(release): v1.4.0
+tag: v1.4.0
+--- notes ---
+## What's changed
+
+### Features
+
+- add export command (`987ca88`) — Ada
+
+### Fixes
+
+- **cli:** handle empty ranges (`34e04b1`) — Ada
+
+$ ./release.sh --bump-file package.json
+committed: chore(release): v1.4.0
+tagged: v1.4.0
+next step: git push --follow-tags</code></pre>
+    <p>The working tree must be clean. If <code>HEAD</code> is already tagged, or a tag with the next version exists, it stops with exit code <code>1</code> instead of guessing.</p>
+
+    <h2>Flag mapping</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>standard-version</th><th>release.sh / relnote</th></tr></thead>
+        <tbody>
+          <tr><td><code>npx standard-version</code></td><td><code>./release.sh --bump-file package.json</code></td></tr>
+          <tr><td><code>--dry-run</code></td><td><code>--dry-run</code></td></tr>
+          <tr><td><code>--release-as 2.0.0</code></td><td><code>--release-as v2.0.0</code> (full tag)</td></tr>
+          <tr><td><code>--first-release</code></td><td>no tag yet → <code>v0.1.0</code>; or <code>--release-as v1.0.0</code></td></tr>
+          <tr><td><code>--skip.commit</code> / <code>--skip.tag</code></td><td><code>--skip-commit</code> / <code>--skip-tag</code></td></tr>
+          <tr><td><code>--infile HISTORY.md</code></td><td><code>--changelog HISTORY.md</code></td></tr>
+          <tr><td><code>--tag-prefix api/v</code> (monorepo)</td><td><code>--tag-prefix api/v -- --path packages/api</code></td></tr>
+          <tr><td><code>--prerelease rc</code></td><td>not supported; use <code>--release-as v2.0.0-rc.1</code></td></tr>
+          <tr><td><code>.versionrc</code>, lifecycle <code>scripts</code>, presets</td><td>none; edit the script</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Then publish the GitHub Release</h2>
+    <pre><code>git push --follow-tags
+gh extension install loki-inu/gh-relnote
+gh relnote create v1.4.0          # Release body from the same commits</code></pre>
+    <p>Or let CI do it on the tag push with the <a href="https://github.com/loki-inu/relnote#github-action">relnote GitHub Action</a>, or <a href="ci.html">in GitLab CI and other CI</a>. relnote sees that <code>HEAD</code> is the new tag and uses the tag before it, so the notes cover this release.</p>
+
+    <h2>When to pick something else</h2>
+    <ul>
+      <li><strong>commit-and-tag-version</strong>: the maintained drop-in fork. Keep it if you depend on <code>.versionrc</code>, prerelease bumps, lifecycle scripts or custom presets.</li>
+      <li><strong>release-please</strong>: the upstream recommendation for GitHub. It opens a release PR from a bot and does the bump, changelog and Release when you merge it.</li>
+      <li><strong>semantic-release</strong>: fully automated publish from CI, with plugins for npm and others.</li>
+      <li><strong>relnote + release.sh</strong>: you want the old one-command local release, in any language, with no Node and no config. See also <a href="compare.html">git-cliff and gh --generate-notes</a>.</li>
+    </ul>
+
+    <footer>
+      <p><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md from conventional commits</a> · <a href="next-version.html">Next version and monorepos</a> · <a href="https://github.com/loki-inu/relnote">Source (MIT)</a></p>
+    </footer>
+  </main>
+</body>
+</html>
