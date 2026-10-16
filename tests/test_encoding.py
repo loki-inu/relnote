@@ -49,7 +49,7 @@ class Cp1252Tty(io.TextIOWrapper):
 class EncodingTests(unittest.TestCase):
     def test_pipe_switches_to_utf8(self) -> None:
         raw = io.BytesIO()
-        stream = Cp1252Pipe(raw, encoding="cp1252")
+        stream = Cp1252Pipe(raw, encoding="cp1252", newline="\n")
         with mock.patch.object(sys, "stdout", stream):
             _use_utf8_stdio()
             sys.stdout.write("Range: `v1` \u2192 `HEAD` \u2014 caf\u00e9 \u65e5\u672c\n")
@@ -59,7 +59,7 @@ class EncodingTests(unittest.TestCase):
 
     def test_tty_keeps_encoding_but_replaces(self) -> None:
         raw = io.BytesIO()
-        stream = Cp1252Tty(raw, encoding="cp1252")
+        stream = Cp1252Tty(raw, encoding="cp1252", newline="\n")
         with mock.patch.object(sys, "stdout", stream):
             _use_utf8_stdio()
             sys.stdout.write("a \u2192 b\n")
