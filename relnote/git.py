@@ -45,6 +45,9 @@ def run_git(args: list[str], cwd: str | Path | None = None) -> subprocess.Comple
             cwd=cwd,
             capture_output=True,
             text=True,
+            # git prints UTF-8; Windows would otherwise decode with the ANSI code page.
+            encoding="utf-8",
+            errors="replace",
             check=False,
         )
     except FileNotFoundError as exc:

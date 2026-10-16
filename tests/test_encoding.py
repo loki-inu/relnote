@@ -11,6 +11,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from relnote import git as relnote_git
 from relnote.__main__ import _use_utf8_stdio
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,6 +72,13 @@ class EncodingTests(unittest.TestCase):
         with mock.patch.object(sys, "stdout", buf):
             _use_utf8_stdio()
             self.assertIs(sys.stdout, buf)
+
+    def test_git_output_is_decoded_as_utf8(self) -> None:
+        with mock.patch.object(relnote_git.subprocess, "run") as run:
+            relnote_git.run_git(["--version"])
+        kwargs = run.call_args.kwargs
+        self.assertEqual(kwargs.get("encoding"), "utf-8")
+        self.assertEqual(kwargs.get("errors"), "replace")
 
     def _run(self, args: list[str], cwd: Path) -> subprocess.CompletedProcess[bytes]:
         env = {**os.environ, "PYTHONIOENCODING": "cp1252", "PYTHONPATH": str(ROOT)}
