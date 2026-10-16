@@ -191,7 +191,30 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+
+def _use_utf8_stdio() -> None:
+    """Write UTF-8 to pipes and files on every platform.
+
+    On Windows, Python defaults redirected stdout to the ANSI code page
+    (often cp1252), which cannot encode characters such as "\u2192" or
+    non-Latin commit subjects. Terminals keep their own encoding but never
+    crash on an unencodable character.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            if stream.isatty():
+                reconfigure(errors="replace")
+            else:
+                reconfigure(encoding="utf-8")
+        except (AttributeError, OSError, ValueError):
+            pass
+
+
 def main(argv: list[str] | None = None) -> int:
+    _use_utf8_stdio()
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.quiet and not (args.output or args.changelog):

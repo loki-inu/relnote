@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.0
+        uses: loki-inu/relnote@v0.3.1
       - uses: softprops/action-gh-release@v2
         with:
           draft: true

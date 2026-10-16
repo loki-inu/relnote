@@ -28,7 +28,7 @@
         "name": "Release notes in GitLab CI, Jenkins or any CI — relnote",
         "description": "Run relnote as one downloadable file (Python 3.11+, git) in GitLab CI, Jenkins, Buildkite or CircleCI. GitLab example: a tag pipeline writes notes.md and the release keyword publishes it; --next-version picks the next tag; --path and --tag-prefix for monorepos.",
         "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
-        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.0", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.1", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
       },
       {
         "@type": "BreadcrumbList",
@@ -153,7 +153,7 @@
     <p>Full install guide (SHA256, Windows <code>.pyz</code>, mise): <a href="single-file.html">single-file.html</a>. Copy-paste GitLab config: <a href="https://github.com/loki-inu/relnote/blob/main/examples/gitlab-ci.yml"><code>examples/gitlab-ci.yml</code></a>.</p>
     <pre><code>curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
 chmod +x relnote
-./relnote --version          # relnote 0.3.0
+./relnote --version          # relnote 0.3.1
 ./relnote --no-bots --output notes.md --quiet</code></pre>
     <p>Each release has three assets:</p>
     <div class="table-wrap">
@@ -167,7 +167,7 @@ chmod +x relnote
       </table>
     </div>
     <p>In CI, pin a version instead of <code>latest</code> and check the download:</p>
-    <pre><code>base=https://github.com/loki-inu/relnote/releases/download/v0.3.0
+    <pre><code>base=https://github.com/loki-inu/relnote/releases/download/v0.3.1
 curl -fsSL -o relnote "$base/relnote"
 curl -fsSL -o SHA256SUMS "$base/SHA256SUMS"
 grep ' relnote$' SHA256SUMS | sha256sum -c -
@@ -194,7 +194,7 @@ release_notes:
   rules:
     - if: $CI_COMMIT_TAG
   script:
-    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote
+    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.1/relnote
     - chmod +x relnote
     - ./relnote --version
     - ./relnote --no-bots --output notes.md --quiet
@@ -245,7 +245,7 @@ prepare_release:
       when: manual                                  # or a button on main
       allow_failure: false                          # pipeline waits for it
   script:
-    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote
+    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.1/relnote
     - chmod +x relnote
     - echo "TAG=$(./relnote --no-bots --next-version)" &gt;&gt; variables.env
     - ./relnote --no-bots --output notes.md --quiet
@@ -285,7 +285,7 @@ release:
   rules:
     - if: $CI_COMMIT_TAG =~ /^api\/v/
   script:
-    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote
+    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.1/relnote
     - chmod +x relnote
     - ./relnote --path packages/api --tag-prefix api/v --no-bots --output notes.md --quiet
   artifacts:
@@ -298,7 +298,7 @@ release:
 if [ "$(git rev-parse --is-shallow-repository)" = true ]; then git fetch --unshallow; fi
 git fetch --tags --force
 
-curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.0/relnote
+curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.1/relnote
 chmod +x relnote
 ./relnote --no-bots --output notes.md --quiet
 
