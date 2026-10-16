@@ -173,7 +173,7 @@ curl -fsSL -o relnote "$base/relnote"
 curl -fsSL -o SHA256SUMS "$base/SHA256SUMS"
 grep ' relnote$' SHA256SUMS | sha256sum -c -
 chmod +x relnote</code></pre>
-    <p>On macOS without GNU coreutils, use <code>shasum -a 256 -c</code> after rewriting the line, or compare the hash by eye: for v0.3.1 the hex starts <code>340b97fb…</code>.</p>
+    <p>On macOS without GNU coreutils, use <code>shasum -a 256 -c</code> after rewriting the line, or compare the hash by eye: for v0.3.1 the hex starts <code>ec12df22…</code>.</p>
 
     <h2>Windows</h2>
     <pre><code>curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.1/relnote.pyz
