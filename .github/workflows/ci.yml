@@ -39,15 +39,11 @@ jobs:
       - name: Windows PowerShell 5.1 commands from docs/windows.html
         shell: powershell
         run: ./scripts/windows-check.ps1
-      - name: Probe released 0.3.1 line endings (temporary)
+      - name: Probe console code page 437 (temporary)
         shell: pwsh
         continue-on-error: true
-        run: |
-          curl.exe -fsSL -o $env:RUNNER_TEMP\old.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.1/relnote.pyz
-          $t = Join-Path $env:RUNNER_TEMP "old"; New-Item -ItemType Directory $t | Out-Null
-          git -C $t init -q -b main; git -C $t config user.name C; git -C $t config user.email c@example.com; git -C $t config core.autocrlf false
-          git -C $t commit -q --allow-empty -m "chore: init"; git -C $t tag v1.0.0; git -C $t commit -q --allow-empty -m "feat: x"
-          [IO.File]::WriteAllBytes("$t\CHANGELOG.md", [Text.Encoding]::UTF8.GetBytes("# Changelog`n`n## [v1.0.0] - 2026-01-01`n`n- first`n"))
-          python $env:RUNNER_TEMP\old.pyz --repo $t --changelog "$t\CHANGELOG.md" --changelog-title v1.1.0 -q
-          python $env:RUNNER_TEMP\old.pyz --repo $t --output "$t\notes.md" -q
-          foreach ($f in "CHANGELOG.md","notes.md") { $b = [IO.File]::ReadAllBytes("$t\$f"); "0.3.1 $f CR bytes: " + ($b | Where-Object { $_ -eq 13 }).Count + " of " + ($b | Where-Object { $_ -eq 10 }).Count + " LF" }
+        run: ./scripts/probe-cp.ps1
+      - name: Probe console code page 437 in 5.1 (temporary)
+        shell: powershell
+        continue-on-error: true
+        run: ./scripts/probe-cp.ps1

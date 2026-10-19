@@ -55,6 +55,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://loki-inu.github.io/relnote/windows.html</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://loki-inu.github.io/relnote/llms.txt</loc>
     <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>

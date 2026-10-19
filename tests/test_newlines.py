@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -15,6 +16,8 @@ from relnote.__main__ import main
 from tests.test_output import _git, _init_repo
 
 ROOT = Path(__file__).resolve().parent.parent
+# Git for Windows bash (not WSL's System32 bash) on Windows; bash elsewhere.
+BASH = r"C:\Program Files\Git\bin\bash.exe" if os.name == "nt" else shutil.which("bash")
 OLD = "# Changelog\n\nPreamble.\n\n## [v0.1.0] - 2026-01-01\n\n### Features\n\n- first\n"
 
 
@@ -77,12 +80,7 @@ class NewlineTests(unittest.TestCase):
         self.assertFalse(data.startswith(b"\xef\xbb\xbf"))
         self.assertIn("→".encode(), data)
 
-    @unittest.skipUnless(
-        subprocess.run(["bash", "-c", "true"], capture_output=True).returncode == 0
-        if os.name != "nt" or Path(r"C:\Program Files\Git\bin\bash.exe").exists()
-        else False,
-        "needs bash",
-    )
+    @unittest.skipUnless(BASH is not None and Path(BASH).exists(), "needs bash")
     def test_release_script_bump_keeps_line_endings(self) -> None:
         for eol in ("\n", "\r\n"):
             with self.subTest(eol=repr(eol)):
@@ -92,11 +90,8 @@ class NewlineTests(unittest.TestCase):
                 _git(["commit", "-m", "chore: add package.json"], self.repo)
                 env = {**os.environ, "RELNOTE": f"{Path(sys.executable).as_posix()} -m relnote",
                        "PYTHONPATH": str(ROOT), "GIT_CONFIG_NOSYSTEM": "1"}
-                bash = "bash"
-                if os.name == "nt":
-                    bash = r"C:\Program Files\Git\bin\bash.exe"
                 result = subprocess.run(
-                    [bash, (ROOT / "examples" / "release.sh").as_posix(),
+                    [BASH, (ROOT / "examples" / "release.sh").as_posix(),
                      "--bump-file", "package.json", "--skip-commit"],
                     cwd=self.repo, env=env, capture_output=True, text=True,
                 )
