@@ -33,3 +33,29 @@ jobs:
           Get-Content notes.md -Encoding utf8 | Select-Object -First 10
       - name: Encoding tests
         run: python -m unittest tests.test_encoding -v
+      - name: Probe pwsh
+        shell: pwsh
+        run: ./scripts/windows-probe.ps1 -Label pwsh
+      - name: Probe Windows PowerShell 5.1
+        shell: powershell
+        run: ./scripts/windows-probe.ps1 -Label winps
+      - name: Probe gh-relnote and release.sh in Git Bash
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          set -x
+          python scripts/build_zipapp.py
+          which python python3 || true
+          gh --version | head -1
+          gh extension install loki-inu/gh-relnote || true
+          t="$RUNNER_TEMP/probe-bash"; rm -rf "$t"; mkdir -p "$t"; cd "$t"
+          git init -q -b main; git config user.name P; git config user.email p@example.com
+          echo '{"version": "1.0.0"}' > package.json; git add .; git commit -qm "chore: init"; git tag v1.0.0
+          git commit -q --allow-empty -m "feat: add café ✓ support"
+          gh relnote || echo "gh relnote exit=$?"
+          PYTHON=python gh relnote || echo "gh relnote PYTHON=python exit=$?"
+          RELNOTE="python $GITHUB_WORKSPACE/dist/relnote.pyz" bash "$GITHUB_WORKSPACE/examples/release.sh" --bump-file package.json --dry-run || echo "release.sh exit=$?"
+          RELNOTE="python $GITHUB_WORKSPACE/dist/relnote.pyz" bash "$GITHUB_WORKSPACE/examples/release.sh" --bump-file package.json || echo "release.sh exit=$?"
+          git log --oneline -3; git tag; cat package.json; head -12 CHANGELOG.md || true
