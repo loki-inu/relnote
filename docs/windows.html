@@ -52,7 +52,7 @@
           {
             "@type": "Question",
             "name": "Why are my release notes garbled when I use relnote > notes.md in PowerShell?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Windows PowerShell 5.1 decodes the output of native programs and re-encodes it when you redirect with >, writing UTF-16LE with a BOM. gh and most tools expect UTF-8, so arrows and accented names come out wrong. Use relnote --output notes.md instead; relnote writes the file itself as UTF-8 without a BOM." }
+            "acceptedAnswer": { "@type": "Answer", "text": "PowerShell decodes the output of native programs with the console code page (437 or 850 by default), and Windows PowerShell 5.1 re-encodes a > redirect as UTF-16LE with a BOM. relnote writes UTF-8, so arrows and accented names come out wrong. Use relnote --output notes.md instead; relnote writes the file itself as UTF-8 without a BOM. To capture output in a variable, set [Console]::OutputEncoding = [Text.Encoding]::UTF8 first." }
           },
           {
             "@type": "Question",
@@ -181,15 +181,19 @@ py -3 relnote.pyz --version</code></pre>
       <table>
         <thead><tr><th>Command</th><th>PowerShell 7 (pwsh)</th><th>Windows PowerShell 5.1</th></tr></thead>
         <tbody>
-          <tr><td><code>relnote --output notes.md -q</code></td><td>UTF-8, no BOM</td><td>UTF-8, no BOM</td></tr>
-          <tr><td><code>relnote &gt; notes.md</code></td><td>UTF-8, no BOM</td><td><strong>UTF-16LE with BOM</strong></td></tr>
-          <tr><td><code>relnote | Out-File -Encoding utf8 notes.md</code></td><td>UTF-8, no BOM</td><td>UTF-8 <strong>with BOM</strong></td></tr>
-          <tr><td><code>$notes = relnote</code></td><td>text intact</td><td>text intact</td></tr>
+          <tr><td><code>relnote --output notes.md -q</code></td><td>UTF-8, no BOM, LF</td><td>UTF-8, no BOM, LF</td></tr>
+          <tr><td><code>relnote &gt; notes.md</code></td><td>UTF-8 (bytes passed through)</td><td><strong>UTF-16LE with BOM</strong>, and accents garbled</td></tr>
+          <tr><td><code>relnote | Out-File -Encoding utf8 notes.md</code></td><td>accents garbled</td><td>UTF-8 <strong>with BOM</strong>, accents garbled</td></tr>
+          <tr><td><code>$notes = relnote</code></td><td>accents garbled</td><td>accents garbled</td></tr>
         </tbody>
       </table>
     </div>
-    <p>Checked on GitHub's <code>windows-latest</code> runner with PowerShell 7.6 and Windows PowerShell 5.1, using a commit subject with accented letters and relnote's <code>→</code> range line. A UTF-16 file passed to <code>gh release create --notes-file</code> or a CI upload step shows up as garbage, and a BOM can end up as a stray character at the top of a Release body. <code>--output</code> avoids both.</p>
-    <p>Printing to the console is fine in both shells: from v0.3.1 relnote switches its own output to UTF-8 when it is piped or redirected, so it no longer crashes on cp1252 code pages.</p>
+    <p>That is with the default console code page of a Western-European or US Windows install (437 or 850). PowerShell decodes a native program's output with <code>[Console]::OutputEncoding</code>; relnote writes UTF-8, so <code>é</code>, <code>→</code> and non-Latin names in commit subjects come out wrong when PowerShell re-reads them. Windows PowerShell 5.1 then also writes <code>&gt;</code> as UTF-16. A UTF-16 file passed to <code>gh release create --notes-file</code> shows up as garbage, and a BOM can end up as a stray character at the top of a Release body. <code>--output</code> avoids all of it because relnote writes the file itself.</p>
+    <p>If you want to capture the text in a variable or pipe it on, switch the console to UTF-8 first (or put this line in your <code>$PROFILE</code>):</p>
+    <pre><code>[Console]::OutputEncoding = [Text.Encoding]::UTF8
+$notes = relnote   # text intact in pwsh and 5.1</code></pre>
+    <p>With that setting, pwsh's <code>Out-File -Encoding utf8</code> is fine too; in 5.1, <code>&gt;</code> is still UTF-16 and <code>Out-File -Encoding utf8</code> still adds a BOM. All of the above was checked on GitHub's <code>windows-latest</code> runner (PowerShell 7.6 and Windows PowerShell 5.1), with code page 437 and with UTF-8.</p>
+    <p>Printing to the console is fine either way: from v0.3.1 relnote switches its own output to UTF-8 when it is piped or redirected, so it no longer crashes on cp1252 code pages.</p>
 
     <h2>Create a GitHub Release from PowerShell</h2>
     <pre><code>$tag = relnote --next-version          # e.g. v1.4.0, from feat/fix/breaking commits
@@ -226,7 +230,7 @@ gh relnote create v1.4.0 --draft</code></pre>
     <p>The full history and tags are needed (<code>fetch-depth: 0</code>). On Linux runners the <a href="https://github.com/loki-inu/relnote#github-action">GitHub Action</a> is simpler; other CI systems are on the <a href="ci.html">CI page</a>.</p>
 
     <h2>How this page is tested</h2>
-    <p>relnote's CI runs <a href="https://github.com/loki-inu/relnote/blob/main/scripts/windows-check.ps1"><code>scripts/windows-check.ps1</code></a> under both <code>pwsh</code> and Windows PowerShell 5.1 on every push: <code>--output</code> must produce UTF-8 without BOM or CR bytes, captured text must survive, <code>--next-version</code> must be right, and <code>--changelog</code> must keep an LF file LF. The <a href="https://github.com/loki-inu/scoop-bucket">Scoop bucket</a>'s CI installs relnote with Scoop and generates notes on Windows.</p>
+    <p>relnote's CI runs <a href="https://github.com/loki-inu/relnote/blob/main/scripts/windows-check.ps1"><code>scripts/windows-check.ps1</code></a> under both <code>pwsh</code> and Windows PowerShell 5.1 on every push: <code>--output</code> must produce UTF-8 without BOM or CR bytes under code page 437, captured text must survive once the console is UTF-8, <code>--next-version</code> must be right, and <code>--changelog</code> must keep an LF file LF. The <a href="https://github.com/loki-inu/scoop-bucket">Scoop bucket</a>'s CI installs relnote with Scoop and generates notes on Windows.</p>
 
     <footer>MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/issues">Issues</a></footer>
   </main>

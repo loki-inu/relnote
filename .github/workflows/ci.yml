@@ -39,11 +39,3 @@ jobs:
       - name: Windows PowerShell 5.1 commands from docs/windows.html
         shell: powershell
         run: ./scripts/windows-check.ps1
-      - name: Probe console code page 437 (temporary)
-        shell: pwsh
-        continue-on-error: true
-        run: ./scripts/probe-cp.ps1
-      - name: Probe console code page 437 in 5.1 (temporary)
-        shell: powershell
-        continue-on-error: true
-        run: ./scripts/probe-cp.ps1

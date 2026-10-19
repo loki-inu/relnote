@@ -30,13 +30,16 @@ function Assert-Utf8Lf([string]$path) {
 
 "PowerShell $($PSVersionTable.PSVersion)"
 
-# 1. --output writes UTF-8, no BOM, LF in any PowerShell version.
+# 1. --output writes UTF-8, no BOM, LF in any PowerShell version, even with the
+#    default US/Western console code page (437), which garbles '>' and captures.
+[Console]::OutputEncoding = [Text.Encoding]::GetEncoding(437)
 $notes = Join-Path $t "notes.md"
 rn --repo $t --output $notes --quiet
 Assert-Utf8Lf $notes
 "ok  --output notes.md"
 
-# 2. Capturing into a variable keeps the text.
+# 2. Capturing into a variable keeps the text once the console is UTF-8.
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
 $text = (rn --repo $t) -join "`n"
 if (-not $text.Contains($cafe)) { throw "variable capture lost non-ASCII text" }
 "ok  `$notes = relnote"
