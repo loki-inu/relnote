@@ -31,31 +31,23 @@ jobs:
           python -m relnote --since v0.1.0 --max 5 > notes.md
           if ($LASTEXITCODE -ne 0) { throw "relnote failed" }
           Get-Content notes.md -Encoding utf8 | Select-Object -First 10
-      - name: Encoding tests
-        run: python -m unittest tests.test_encoding -v
-      - name: Probe pwsh
+      - name: Encoding and line-ending tests
+        run: python -m unittest tests.test_encoding tests.test_newlines -v
+      - name: PowerShell 7 commands from docs/windows.html
         shell: pwsh
-        run: ./scripts/windows-probe.ps1 -Label pwsh
-      - name: Probe Windows PowerShell 5.1
+        run: ./scripts/windows-check.ps1
+      - name: Windows PowerShell 5.1 commands from docs/windows.html
         shell: powershell
-        run: ./scripts/windows-probe.ps1 -Label winps
-      - name: Probe gh-relnote and release.sh in Git Bash
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
+        run: ./scripts/windows-check.ps1
+      - name: Probe released 0.3.1 line endings (temporary)
+        shell: pwsh
         continue-on-error: true
         run: |
-          set -x
-          python scripts/build_zipapp.py
-          which python python3 || true
-          gh --version | head -1
-          gh extension install loki-inu/gh-relnote || true
-          t="$RUNNER_TEMP/probe-bash"; rm -rf "$t"; mkdir -p "$t"; cd "$t"
-          git init -q -b main; git config user.name P; git config user.email p@example.com
-          echo '{"version": "1.0.0"}' > package.json; git add .; git commit -qm "chore: init"; git tag v1.0.0
-          git commit -q --allow-empty -m "feat: add café ✓ support"
-          gh relnote || echo "gh relnote exit=$?"
-          PYTHON=python gh relnote || echo "gh relnote PYTHON=python exit=$?"
-          RELNOTE="python $GITHUB_WORKSPACE/dist/relnote.pyz" bash "$GITHUB_WORKSPACE/examples/release.sh" --bump-file package.json --dry-run || echo "release.sh exit=$?"
-          RELNOTE="python $GITHUB_WORKSPACE/dist/relnote.pyz" bash "$GITHUB_WORKSPACE/examples/release.sh" --bump-file package.json || echo "release.sh exit=$?"
-          git log --oneline -3; git tag; cat package.json; head -12 CHANGELOG.md || true
+          curl.exe -fsSL -o $env:RUNNER_TEMP\old.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.1/relnote.pyz
+          $t = Join-Path $env:RUNNER_TEMP "old"; New-Item -ItemType Directory $t | Out-Null
+          git -C $t init -q -b main; git -C $t config user.name C; git -C $t config user.email c@example.com; git -C $t config core.autocrlf false
+          git -C $t commit -q --allow-empty -m "chore: init"; git -C $t tag v1.0.0; git -C $t commit -q --allow-empty -m "feat: x"
+          [IO.File]::WriteAllBytes("$t\CHANGELOG.md", [Text.Encoding]::UTF8.GetBytes("# Changelog`n`n## [v1.0.0] - 2026-01-01`n`n- first`n"))
+          python $env:RUNNER_TEMP\old.pyz --repo $t --changelog "$t\CHANGELOG.md" --changelog-title v1.1.0 -q
+          python $env:RUNNER_TEMP\old.pyz --repo $t --output "$t\notes.md" -q
+          foreach ($f in "CHANGELOG.md","notes.md") { $b = [IO.File]::ReadAllBytes("$t\$f"); "0.3.1 $f CR bytes: " + ($b | Where-Object { $_ -eq 13 }).Count + " of " + ($b | Where-Object { $_ -eq 10 }).Count + " LF" }

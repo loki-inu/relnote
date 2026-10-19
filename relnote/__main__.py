@@ -293,7 +293,9 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 return 1
             try:
-                dest.write_text(text, encoding="utf-8")
+                # LF on every OS (no CRLF translation on Windows).
+                with open(dest, "w", encoding="utf-8", newline="") as fh:
+                    fh.write(text)
             except OSError as exc:
                 print(f"relnote: cannot write {dest}: {exc}", file=sys.stderr)
                 return 1
