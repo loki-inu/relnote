@@ -31,5 +31,11 @@ jobs:
           python -m relnote --since v0.1.0 --max 5 > notes.md
           if ($LASTEXITCODE -ne 0) { throw "relnote failed" }
           Get-Content notes.md -Encoding utf8 | Select-Object -First 10
-      - name: Encoding tests
-        run: python -m unittest tests.test_encoding -v
+      - name: Encoding and line-ending tests
+        run: python -m unittest tests.test_encoding tests.test_newlines -v
+      - name: PowerShell 7 commands from docs/windows.html
+        shell: pwsh
+        run: ./scripts/windows-check.ps1
+      - name: Windows PowerShell 5.1 commands from docs/windows.html
+        shell: powershell
+        run: ./scripts/windows-check.ps1

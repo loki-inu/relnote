@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>relnote on Windows: PowerShell, Scoop and UTF-8 release notes — relnote</title>
+  <meta name="description" content="Generate GitHub release notes and CHANGELOG.md on Windows with relnote. Scoop or single-file install, PowerShell 7 and Windows PowerShell 5.1 commands, why relnote > notes.md writes UTF-16 in PowerShell 5.1 and how --output avoids it, gh release create, Git Bash.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/windows.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="relnote on Windows: PowerShell, Scoop and UTF-8 release notes">
+  <meta property="og:description" content="Generate GitHub release notes and CHANGELOG.md on Windows with relnote. Scoop or single-file install, PowerShell 7 and Windows PowerShell 5.1 commands, why relnote > notes.md writes UTF-16 in PowerShell 5.1 and how --output avoids it, gh release create, Git Bash.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/windows.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="relnote on Windows: PowerShell, Scoop and UTF-8 release notes">
+  <meta name="twitter:description" content="Generate GitHub release notes and CHANGELOG.md on Windows with relnote. Scoop or single-file install, PowerShell 7 and Windows PowerShell 5.1 commands, why relnote > notes.md writes UTF-16 in PowerShell 5.1 and how --output avoids it, gh release create, Git Bash.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/windows.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/windows.html",
+        "name": "relnote on Windows: PowerShell, Scoop and UTF-8 release notes",
+        "description": "Generate GitHub release notes and CHANGELOG.md on Windows with relnote. Scoop or single-file install, PowerShell 7 and Windows PowerShell 5.1 commands, why relnote > notes.md writes UTF-16 in PowerShell 5.1 and how --output avoids it, gh release create, Git Bash.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.2", "applicationCategory": "DeveloperApplication", "operatingSystem": "Windows, Linux, macOS", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "Windows and PowerShell", "item": "https://loki-inu.github.io/relnote/windows.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Create a GitHub Release with conventional-commit notes from PowerShell",
+        "step": [
+          { "@type": "HowToStep", "name": "Install", "text": "scoop bucket add loki-inu https://github.com/loki-inu/scoop-bucket; scoop install loki-inu/relnote (needs Python 3.11+ on PATH)." },
+          { "@type": "HowToStep", "name": "Write the notes file", "text": "relnote --output notes.md --quiet writes UTF-8 without a BOM and with LF line endings in PowerShell 7 and Windows PowerShell 5.1." },
+          { "@type": "HowToStep", "name": "Create the release", "text": "$tag = relnote --next-version; gh release create $tag --notes-file notes.md" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why are my release notes garbled when I use relnote > notes.md in PowerShell?",
+            "acceptedAnswer": { "@type": "Answer", "text": "PowerShell decodes the output of native programs with the console code page (437 or 850 by default), and Windows PowerShell 5.1 re-encodes a > redirect as UTF-16LE with a BOM. relnote writes UTF-8, so arrows and accented names come out wrong. Use relnote --output notes.md instead; relnote writes the file itself as UTF-8 without a BOM. To capture output in a variable, set [Console]::OutputEncoding = [Text.Encoding]::UTF8 first." }
+          },
+          {
+            "@type": "Question",
+            "name": "Does relnote change the line endings of CHANGELOG.md on Windows?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Not from v0.3.2. relnote --changelog keeps the file's existing line endings (LF or CRLF) and creates new files with LF. Earlier versions rewrote an LF file with CRLF on Windows." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="single-file.html">Single file</a> · <a href="gh-extension.html">gh relnote</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="ci.html">CI</a></p>
+    <h1>relnote on Windows and PowerShell</h1>
+    <p class="tag">relnote turns a git range into GitHub release notes or a Keep a Changelog section. It is plain Python, so it runs on Windows as it does elsewhere. The one thing to know: write files with <code>--output</code>, not <code>&gt;</code>, if you use Windows PowerShell 5.1.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/scoop-bucket">Scoop bucket</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/latest">Release assets (relnote.pyz)</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/scripts/windows-check.ps1">The CI script that checks this page</a>
+    </div>
+
+    <h2>Install</h2>
+    <p>With <a href="https://scoop.sh/#/apps?q=relnote&amp;o=false">Scoop</a>:</p>
+    <pre><code>scoop bucket add loki-inu https://github.com/loki-inu/scoop-bucket
+scoop install loki-inu/relnote
+scoop install python     # if you do not have Python 3.11+ yet
+relnote --version        # relnote 0.3.2</code></pre>
+    <p>Without Scoop, download the single-file zipapp and run it with the Python launcher:</p>
+    <pre><code>curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/latest/download/relnote.pyz
+py -3 relnote.pyz --version</code></pre>
+    <p>Or <code>pip install git+https://github.com/loki-inu/relnote.git</code>. You also need git on <code>PATH</code> (Git for Windows is fine). Run the commands below inside the repository, after <code>git fetch --tags</code>.</p>
+
+    <h2>Write notes to a file: use <code>--output</code></h2>
+    <pre><code>relnote --output notes.md --quiet</code></pre>
+    <p>relnote writes <code>notes.md</code> itself: UTF-8, no BOM, LF line endings, whatever shell you use. Redirection is different, because PowerShell sits between relnote and the file:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Command</th><th>PowerShell 7 (pwsh)</th><th>Windows PowerShell 5.1</th></tr></thead>
+        <tbody>
+          <tr><td><code>relnote --output notes.md -q</code></td><td>UTF-8, no BOM, LF</td><td>UTF-8, no BOM, LF</td></tr>
+          <tr><td><code>relnote &gt; notes.md</code></td><td>UTF-8 (bytes passed through)</td><td><strong>UTF-16LE with BOM</strong>, and accents garbled</td></tr>
+          <tr><td><code>relnote | Out-File -Encoding utf8 notes.md</code></td><td>accents garbled</td><td>UTF-8 <strong>with BOM</strong>, accents garbled</td></tr>
+          <tr><td><code>$notes = relnote</code></td><td>accents garbled</td><td>accents garbled</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>That is with the default console code page of a Western-European or US Windows install (437 or 850). PowerShell decodes a native program's output with <code>[Console]::OutputEncoding</code>; relnote writes UTF-8, so <code>é</code>, <code>→</code> and non-Latin names in commit subjects come out wrong when PowerShell re-reads them. Windows PowerShell 5.1 then also writes <code>&gt;</code> as UTF-16. A UTF-16 file passed to <code>gh release create --notes-file</code> shows up as garbage, and a BOM can end up as a stray character at the top of a Release body. <code>--output</code> avoids all of it because relnote writes the file itself.</p>
+    <p>If you want to capture the text in a variable or pipe it on, switch the console to UTF-8 first (or put this line in your <code>$PROFILE</code>):</p>
+    <pre><code>[Console]::OutputEncoding = [Text.Encoding]::UTF8
+$notes = relnote   # text intact in pwsh and 5.1</code></pre>
+    <p>With that setting, pwsh's <code>Out-File -Encoding utf8</code> is fine too; in 5.1, <code>&gt;</code> is still UTF-16 and <code>Out-File -Encoding utf8</code> still adds a BOM. All of the above was checked on GitHub's <code>windows-latest</code> runner (PowerShell 7.6 and Windows PowerShell 5.1), with code page 437 and with UTF-8.</p>
+    <p>Printing to the console is fine either way: from v0.3.1 relnote switches its own output to UTF-8 when it is piped or redirected, so it no longer crashes on cp1252 code pages.</p>
+
+    <h2>Create a GitHub Release from PowerShell</h2>
+    <pre><code>$tag = relnote --next-version          # e.g. v1.4.0, from feat/fix/breaking commits
+relnote --output notes.md --quiet
+git tag $tag
+git push origin $tag
+gh release create $tag --notes-file notes.md --title $tag</code></pre>
+    <p><code>--next-version</code> prints one tag (breaking → major, <code>feat</code> → minor, otherwise patch) and never tags anything itself. See <a href="next-version.html">next version and monorepos</a> for <code>--path</code> and <code>--tag-prefix</code>.</p>
+
+    <h2>CHANGELOG.md</h2>
+    <pre><code>relnote --changelog CHANGELOG.md --changelog-title $tag --quiet</code></pre>
+    <p>This prepends a <code>## [v1.4.0] - YYYY-MM-DD</code> section and leaves older entries alone. From v0.3.2 it also keeps the file's line endings: an LF file stays LF and a CRLF file stays CRLF, so the diff is only the new section. (v0.3.1 and earlier rewrote an LF file with CRLF on Windows, which showed up as a whole-file change when <code>core.autocrlf</code> is off.) New files are created with LF. More in <a href="changelog.html">CHANGELOG.md from conventional commits</a>.</p>
+
+    <h2>gh extension and Git Bash</h2>
+    <p><a href="gh-extension.html"><code>gh relnote</code></a> is a bash script. It works on Windows with Git for Windows installed; it was checked from Git Bash with gh 2.102:</p>
+    <pre><code>gh extension install loki-inu/gh-relnote
+gh relnote create v1.4.0 --draft</code></pre>
+    <p><a href="standard-version-alternative.html"><code>examples/release.sh</code></a> (bump version file, update CHANGELOG.md, commit, tag) also needs bash. From Git Bash, point it at the zipapp:</p>
+    <pre><code>RELNOTE="python relnote.pyz" bash examples/release.sh --bump-file package.json</code></pre>
+    <p>The version bump keeps <code>package.json</code>'s own line endings too (v0.3.2).</p>
+
+    <h2>In a Windows CI job</h2>
+    <pre><code>- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+- uses: actions/setup-python@v5
+  with:
+    python-version: "3.12"
+- name: Release notes
+  shell: pwsh
+  run: |
+    curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.2/relnote.pyz
+    python relnote.pyz --output notes.md --quiet</code></pre>
+    <p>The full history and tags are needed (<code>fetch-depth: 0</code>). On Linux runners the <a href="https://github.com/loki-inu/relnote#github-action">GitHub Action</a> is simpler; other CI systems are on the <a href="ci.html">CI page</a>.</p>
+
+    <h2>How this page is tested</h2>
+    <p>relnote's CI runs <a href="https://github.com/loki-inu/relnote/blob/main/scripts/windows-check.ps1"><code>scripts/windows-check.ps1</code></a> under both <code>pwsh</code> and Windows PowerShell 5.1 on every push: <code>--output</code> must produce UTF-8 without BOM or CR bytes under code page 437, captured text must survive once the console is UTF-8, <code>--next-version</code> must be right, and <code>--changelog</code> must keep an LF file LF. The <a href="https://github.com/loki-inu/scoop-bucket">Scoop bucket</a>'s CI installs relnote with Scoop and generates notes on Windows.</p>
+
+    <footer>MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/issues">Issues</a></footer>
+  </main>
+</body>
+</html>

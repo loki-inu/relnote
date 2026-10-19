@@ -10,7 +10,7 @@ It does not create the Release or the tag. Since v0.3.0, --next-version prints t
 
 ## GitHub Action
 
-loki-inu/relnote@v0.3.1 after actions/checkout with fetch-depth: 0. The notes output is the Release body. CI can also run: relnote --output notes.md --quiet
+loki-inu/relnote@v0.3.2 after actions/checkout with fetch-depth: 0. The notes output is the Release body. CI can also run: relnote --output notes.md --quiet
 
 ## GitLab CI, Jenkins, Buildkite, CircleCI
 
@@ -30,7 +30,7 @@ standard-version is deprecated. examples/release.sh (bash, in the relnote repo) 
 
 Single file (Python zipapp attached to each GitHub Release; needs Python 3.11+ and git, nothing else). Guide: https://loki-inu.github.io/relnote/single-file.html
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote && chmod +x ~/.local/bin/relnote
-Pin a version with releases/download/v0.3.1/relnote. The release also has SHA256SUMS and relnote.pyz (same bytes, for python relnote.pyz on Windows).
+Pin a version with releases/download/v0.3.2/relnote. The release also has SHA256SUMS and relnote.pyz (same bytes, for python relnote.pyz on Windows).
 
 pip install git+https://github.com/loki-inu/relnote.git
 relnote --help
@@ -52,10 +52,11 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - Next version and monorepos: https://loki-inu.github.io/relnote/next-version.html
 - GitLab CI, Jenkins or any CI (single-file download): https://loki-inu.github.io/relnote/ci.html
 - standard-version alternative (examples/release.sh): https://loki-inu.github.io/relnote/standard-version-alternative.html
+- Windows and PowerShell (Scoop, --output vs > redirection, UTF-8/BOM, line endings): https://loki-inu.github.io/relnote/windows.html
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html
 - Source: https://github.com/loki-inu/relnote
 - gh extension: https://github.com/loki-inu/gh-relnote (docs: https://loki-inu.github.io/relnote/gh-extension.html)
-- Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.3.1
+- Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.3.2
 - itch.io: https://loki-inu.itch.io/relnote
 - OSSDrop: https://ossdrop.com/tool/relnote
 - License: MIT

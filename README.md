@@ -2,7 +2,7 @@
 
 [![relnote on OSSDrop](https://ossdrop.com/badge/relnote)](https://ossdrop.com/tool/relnote)
 
-Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools), [git-extra-commands](https://github.com/unixorn/git-extra-commands) (External Git Utilities), [awesome-docs](https://github.com/testthedocs/awesome-docs) (GitHub Actions), [awesome-cli-tui-software](https://github.com/lgaggini/awesome-cli-tui-software) (git), [awesome-github](https://github.com/fffaraz/awesome-github) (Git), [awesome-devops](https://github.com/frimik/awesome-devops) (Command Line and Tooling), and [awesome-gh-extensions](https://github.com/myzkey/awesome-gh-extensions) (auto-updated gh CLI extensions, via [gh-relnote](https://github.com/loki-inu/gh-relnote)).
+Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools), [git-extra-commands](https://github.com/unixorn/git-extra-commands) (External Git Utilities), [awesome-docs](https://github.com/testthedocs/awesome-docs) (GitHub Actions), [awesome-cli-tui-software](https://github.com/lgaggini/awesome-cli-tui-software) (git), [awesome-github](https://github.com/fffaraz/awesome-github) (Git), [awesome-devops](https://github.com/frimik/awesome-devops) (Command Line and Tooling), [awesome-gh-extensions](https://github.com/myzkey/awesome-gh-extensions) (auto-updated gh CLI extensions, via [gh-relnote](https://github.com/loki-inu/gh-relnote)), and [scoop.sh](https://scoop.sh/#/apps?q=relnote&o=false) app search (Windows, via [loki-inu/scoop-bucket](https://github.com/loki-inu/scoop-bucket)).
 
 Turn a git range into clean GitHub release notes.
 
@@ -51,7 +51,7 @@ Keep using `gh release create --generate-notes` when you want GitHub's official,
 
 [swapnanil/relnotes](https://github.com/swapnanil/relnotes) is another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action and zero-config CI (`--quiet` / `--output`); pick that CLI if you want an optional `.relnotes.toml` or inferred semver bump.
 
-Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · GitLab CI / Jenkins / any CI: https://loki-inu.github.io/relnote/ci.html · OSSDrop: https://ossdrop.com/tool/relnote
+Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · GitLab CI / Jenkins / any CI: https://loki-inu.github.io/relnote/ci.html · Windows / PowerShell: https://loki-inu.github.io/relnote/windows.html · OSSDrop: https://ossdrop.com/tool/relnote
 
 ## Install
 
@@ -65,13 +65,13 @@ Each GitHub Release ships `relnote`, a self-contained Python [zipapp](https://do
 mkdir -p ~/.local/bin
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
 chmod +x ~/.local/bin/relnote
-relnote --version   # relnote 0.3.1
+relnote --version   # relnote 0.3.2
 ```
 
-Pin a version with `releases/download/v0.3.1/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
+Pin a version with `releases/download/v0.3.2/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
 
 ```bash
-curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.1/SHA256SUMS
+curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.2/SHA256SUMS
 grep ' relnote$' SHA256SUMS | sha256sum -c -
 ```
 
@@ -110,6 +110,8 @@ On Windows with [Scoop](https://scoop.sh) ([loki-inu/scoop-bucket](https://githu
 scoop bucket add loki-inu https://github.com/loki-inu/scoop-bucket
 scoop install loki-inu/relnote
 ```
+
+In PowerShell, write files with `relnote --output notes.md` rather than `>` (Windows PowerShell 5.1 redirects as UTF-16). See [Windows and PowerShell](https://loki-inu.github.io/relnote/windows.html).
 
 If you use the GitHub CLI, install it as a `gh` extension ([gh-relnote](https://github.com/loki-inu/gh-relnote)), which can also create the release:
 
@@ -195,7 +197,7 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--date YYYY-MM-DD` | today (UTC) | section date for `--changelog` |
 | `--quiet` / `-q` | off | with `--output` or `--changelog`, do not print notes to stdout |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.3.1` |
+| `--version` | | print `relnote 0.3.2` |
 
 Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, `--output` / `--changelog` points at a missing parent directory, the changelog already has a section with that title, or `--next-version` finds a base tag that is not `x.y.z`. Exit `2` if `--quiet` is set without `--output` or `--changelog`.
 
@@ -224,7 +226,7 @@ If `--until` (default `HEAD`) is itself tagged, the default range starts at the 
 
 ## GitHub Action
 
-Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.3.1` or `@main` for current. The `v0.1.0` tag is CLI-only.
+Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.3.2` or `@main` for current. The `v0.1.0` tag is CLI-only.
 
 ```yaml
 name: Release notes
@@ -240,7 +242,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.1
+        uses: loki-inu/relnote@v0.3.2
       - name: Print notes
         run: |
           echo "next: ${{ steps.relnote.outputs.next-version }}"

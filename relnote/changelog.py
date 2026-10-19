@@ -88,9 +88,23 @@ def update_changelog(path: str | Path, notes: str, *, title: str, date: str | No
     dest = Path(path)
     if not dest.parent.exists():
         raise ChangelogError(f"changelog directory does not exist: {dest.parent}")
-    existing = dest.read_text(encoding="utf-8") if dest.exists() else None
+    existing = None
+    eol = "\n"
+    if dest.exists():
+        # newline="" keeps CRLF/LF as on disk, so the file keeps its line endings
+        # on every OS (no whole-file CRLF rewrite on Windows, no LF rewrite of a
+        # CRLF file elsewhere). A new file gets LF.
+        with open(dest, encoding="utf-8", newline="") as fh:
+            raw = fh.read()
+        if "\r\n" in raw:
+            eol = "\r\n"
+        existing = raw.replace("\r\n", "\n")
     section = section_from_notes(notes, title=title, date=date)
+    text = prepend_section(existing, section, title=title)
+    if eol != "\n":
+        text = text.replace("\n", eol)
     try:
-        dest.write_text(prepend_section(existing, section, title=title), encoding="utf-8")
+        with open(dest, "w", encoding="utf-8", newline="") as fh:
+            fh.write(text)
     except OSError as exc:
         raise ChangelogError(f"cannot write {dest}: {exc}") from exc
