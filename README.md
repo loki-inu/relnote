@@ -2,7 +2,7 @@
 
 [![relnote on OSSDrop](https://ossdrop.com/badge/relnote)](https://ossdrop.com/tool/relnote)
 
-Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools), [git-extra-commands](https://github.com/unixorn/git-extra-commands) (External Git Utilities), [awesome-docs](https://github.com/testthedocs/awesome-docs) (GitHub Actions), [awesome-cli-tui-software](https://github.com/lgaggini/awesome-cli-tui-software) (git), [awesome-github](https://github.com/fffaraz/awesome-github) (Git), [awesome-devops](https://github.com/frimik/awesome-devops) (Command Line and Tooling), [awesome-versioning](https://github.com/quad/awesome-versioning) (Tools), [awesome-gh-extensions](https://github.com/myzkey/awesome-gh-extensions) (auto-updated gh CLI extensions, via [gh-relnote](https://github.com/loki-inu/gh-relnote)), and [scoop.sh](https://scoop.sh/#/apps?q=relnote&o=false) app search (Windows, via [loki-inu/scoop-bucket](https://github.com/loki-inu/scoop-bucket)).
+Also listed in [awesome-release-management](https://github.com/miguelsalva/awesome-release-management) (Changelog Generators), [awesome-cli-apps-in-a-csv](https://github.com/toolleeo/awesome-cli-apps-in-a-csv) (git), [awesome-efficient-devtools](https://github.com/ejboy/awesome-efficient-devtools) (Fast CLI Tools), [git-extra-commands](https://github.com/unixorn/git-extra-commands) (External Git Utilities), [awesome-docs](https://github.com/testthedocs/awesome-docs) (GitHub Actions), [awesome-cli-tui-software](https://github.com/lgaggini/awesome-cli-tui-software) (git), [awesome-github](https://github.com/fffaraz/awesome-github) (Git), [awesome-devops](https://github.com/frimik/awesome-devops) (Command Line and Tooling), [awesome-versioning](https://github.com/quad/awesome-versioning) (Tools), [awesome-gh-extensions](https://github.com/myzkey/awesome-gh-extensions) (auto-updated gh CLI extensions, via [gh-relnote](https://github.com/loki-inu/gh-relnote)), [scoop.sh](https://scoop.sh/#/apps?q=relnote&o=false) app search (Windows, via [loki-inu/scoop-bucket](https://github.com/loki-inu/scoop-bucket)), and [conda-forge](https://anaconda.org/conda-forge/relnote) ([feedstock](https://github.com/conda-forge/relnote-feedstock); also on [prefix.dev](https://prefix.dev/channels/conda-forge/packages/relnote)).
 
 Turn a git range into clean GitHub release notes.
 
@@ -102,6 +102,14 @@ With Homebrew on macOS or Linux ([loki-inu/homebrew-tap](https://github.com/loki
 
 ```bash
 brew install loki-inu/tap/relnote
+```
+
+With [pixi](https://pixi.sh) or conda from [conda-forge](https://anaconda.org/conda-forge/relnote) (any OS; pulls in Python and git for you):
+
+```bash
+pixi global install relnote
+# or
+conda install -c conda-forge relnote
 ```
 
 On Windows with [Scoop](https://scoop.sh) ([loki-inu/scoop-bucket](https://github.com/loki-inu/scoop-bucket); needs Python 3.11+):
