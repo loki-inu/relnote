@@ -51,7 +51,7 @@ Keep using `gh release create --generate-notes` when you want GitHub's official,
 
 [swapnanil/relnotes](https://github.com/swapnanil/relnotes) is another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action and zero-config CI (`--quiet` / `--output`); pick that CLI if you want an optional `.relnotes.toml` or inferred semver bump.
 
-Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · GitLab CI / Jenkins / any CI: https://loki-inu.github.io/relnote/ci.html · Windows / PowerShell: https://loki-inu.github.io/relnote/windows.html · OSSDrop: https://ossdrop.com/tool/relnote
+Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · GitLab CI / Jenkins / any CI: https://loki-inu.github.io/relnote/ci.html · Monorepo (per-package tags): https://loki-inu.github.io/relnote/monorepo.html · Windows / PowerShell: https://loki-inu.github.io/relnote/windows.html · OSSDrop: https://ossdrop.com/tool/relnote
 
 ## Install
 
@@ -217,7 +217,7 @@ If `--until` (default `HEAD`) is itself tagged, the default range starts at the 
 
 ### Monorepos
 
-`--path packages/api` keeps only commits that touch that directory (repeat `--path` for more). `--tag-prefix api/v` makes the default range start at the newest `api/v*` tag instead of the newest tag of any package. Together they give per-package notes, changelog sections, and next versions from one repo.
+`--path packages/api` keeps only commits that touch that directory (repeat `--path` for more). `--tag-prefix api/v` makes the default range start at the newest `api/v*` tag instead of the newest tag of any package. Together they give per-package notes, changelog sections, and next versions from one repo. Guide with tag conventions and a GitHub Actions matrix: [Release notes for a monorepo](https://loki-inu.github.io/relnote/monorepo.html).
 
 ### CHANGELOG.md
 

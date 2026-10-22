@@ -51,6 +51,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - Single-file zipapp install: https://loki-inu.github.io/relnote/single-file.html
 - CHANGELOG.md from conventional commits: https://loki-inu.github.io/relnote/changelog.html
 - Next version and monorepos: https://loki-inu.github.io/relnote/next-version.html
+- Monorepo release notes (per-package tags api/v1.2.0 or @scope/pkg@1.2.0, per-package CHANGELOG.md, GitHub Actions matrix): https://loki-inu.github.io/relnote/monorepo.html
 - GitLab CI, Jenkins or any CI (single-file download): https://loki-inu.github.io/relnote/ci.html
 - standard-version alternative (examples/release.sh): https://loki-inu.github.io/relnote/standard-version-alternative.html
 - Windows and PowerShell (Scoop, --output vs > redirection, UTF-8/BOM, line endings): https://loki-inu.github.io/relnote/windows.html
