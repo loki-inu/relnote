@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release notes for a monorepo (per-package tags) — relnote</title>
+  <meta name="description" content="Per-package release notes, next versions, and CHANGELOG.md files in a monorepo with relnote --path and --tag-prefix (api/v1.2.0, web@2.0.0 style tags), plus a GitHub Actions matrix. Offline, no config, stdlib Python.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/monorepo.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release notes for a monorepo (per-package tags) — relnote">
+  <meta property="og:description" content="Per-package release notes, next versions, and CHANGELOG.md files in a monorepo with relnote --path and --tag-prefix (api/v1.2.0, web@2.0.0 style tags), plus a GitHub Actions matrix. Offline, no config, stdlib Python.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/monorepo.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release notes for a monorepo (per-package tags) — relnote">
+  <meta name="twitter:description" content="Per-package release notes, next versions, and CHANGELOG.md files in a monorepo with relnote --path and --tag-prefix (api/v1.2.0, web@2.0.0 style tags), plus a GitHub Actions matrix. Offline, no config, stdlib Python.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/monorepo.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/monorepo.html",
+        "name": "Release notes for a monorepo (per-package tags) — relnote",
+        "description": "Per-package release notes, next versions, and CHANGELOG.md files in a monorepo with relnote --path and --tag-prefix (api/v1.2.0, web@2.0.0 style tags), plus a GitHub Actions matrix. Offline, no config, stdlib Python.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "relnote",
+          "url": "https://loki-inu.github.io/relnote/"
+        },
+        "about": {
+          "@type": "SoftwareApplication",
+          "name": "relnote",
+          "softwareVersion": "0.3.2",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "Linux, macOS, Windows",
+          "url": "https://github.com/loki-inu/relnote",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "relnote docs",
+            "item": "https://loki-inu.github.io/relnote/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Monorepo release notes",
+            "item": "https://loki-inu.github.io/relnote/monorepo.html"
+          }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Write per-package release notes for a monorepo with relnote",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "name": "Pick a tag prefix per package",
+            "text": "Tag each package with a fixed prefix plus a semantic version, such as api/v1.0.0 and web/v0.1.0."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Print one package's notes",
+            "text": "relnote --path packages/api --tag-prefix api/v prints notes for commits touching packages/api since the last api/v* tag."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Print its next version",
+            "text": "relnote --path packages/api --tag-prefix api/v --next-version prints, for example, api/v2.0.0."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Prepend its CHANGELOG.md",
+            "text": "relnote --path packages/api --tag-prefix api/v --changelog packages/api/CHANGELOG.md --changelog-title api/v2.0.0 -q."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Release every changed package in CI",
+            "text": "Run the same commands in a GitHub Actions matrix with one entry per package, and skip packages where relnote exits 1 (no changes)."
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why do I need --tag-prefix if I already pass --path?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "--path only filters commits. The start of the range is still the newest tag of any package, so without --tag-prefix the notes for packages/api start at the last web tag and miss api commits made before it. --tag-prefix api/v makes the range start at the last api/v* tag."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What tag format should I use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Anything that is a fixed prefix followed by x.y.z: api/v1.2.0, api-v1.2.0, or @acme/web@1.2.0. End the prefix with its separator (<code>api/v</code>, not <code>api</code>), because the prefix is matched as a plain string prefix: <code>api</code> would also match api-gateway/v3.0.0. Put the <code>v</code> inside the prefix if you want it: --tag-prefix cli/v gives cli/v0.1.0 for a first release, --tag-prefix @acme/cli@ gives @acme/cli@0.1.0."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What happens for a package with no changes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "relnote exits 1 with 'no commits in range api/v2.0.0..HEAD' and prints nothing on stdout, for notes and for --next-version. In a matrix job, treat that exit as 'skip this package' instead of a failure."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I include shared code in a package's notes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Repeat --path: relnote --path packages/web --path packages/shared --tag-prefix web/v. A commit is listed if it touches any of the directories. --next-version uses the same commits."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why is the chore(release) commit listed under Other?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "If you generate the notes after committing the release (for example on the tag push) and that commit touches the package directory, such as packages/api/CHANGELOG.md, it is in the range. To leave it out, write notes.md in the same step as the changelog, before the release commit."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does relnote create the package tags or releases?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. relnote prints notes, a changelog section, or the next tag. You run git tag, gh release create, or examples/release.sh."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="next-version.html">Next version</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="ci.html">CI</a> · <a href="standard-version-alternative.html">release.sh</a></p>
+    <h1>Release notes for a monorepo (per-package tags)</h1>
+    <p class="tag">Several packages in one git repository, each with its own tags (<code>api/v1.2.0</code>, <code>web/v0.3.1</code>) and its own Release notes, next version, and <code>CHANGELOG.md</code>. relnote does this with two flags and no config file: <code>--path</code> picks the package's commits, <code>--tag-prefix</code> picks the package's last release.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.2">v0.3.2 release</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/tests/test_monorepo_docs.py">The test that runs this page's example</a>
+    </div>
+
+    <h2>Install</h2>
+    <pre><code>brew install loki-inu/tap/relnote
+# or: pixi global install relnote   (Windows / Scoop: see windows.html)
+# or the single file:
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote &amp;&amp; chmod +x ~/.local/bin/relnote
+relnote --version   # relnote 0.3.2 (--path and --tag-prefix need 0.3.0 or later)</code></pre>
+
+    <h2>Layout and tag conventions</h2>
+    <p>The example on this page uses this repository:</p>
+    <pre><code>packages/api/      # tagged api/v1.0.0, then released as api/v2.0.0
+packages/web/      # tagged web/v0.1.0, web/v0.2.0
+packages/shared/   # no tags of its own; part of web's notes
+docs/              # belongs to no package</code></pre>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tag style</th><th><code>--tag-prefix</code></th><th>First release</th></tr></thead>
+        <tbody>
+          <tr><td><code>api/v1.2.0</code> (Go modules style)</td><td><code>api/v</code></td><td><code>api/v0.1.0</code></td></tr>
+          <tr><td><code>api-v1.2.0</code></td><td><code>api-v</code></td><td><code>api-v0.1.0</code></td></tr>
+          <tr><td><code>@acme/api@1.2.0</code> (npm workspaces / Changesets style)</td><td><code>@acme/api@</code></td><td><code>@acme/api@0.1.0</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Two rules: the part after the prefix must be <code>x.y.z</code>, and the prefix should end with its separator. The prefix is a plain string match, so <code>api</code> would also match <code>api-gateway/v3.0.0</code>. Whatever you put in the prefix, including a <code>v</code>, is kept on the version relnote prints.</p>
+
+    <h2>Notes for one package</h2>
+    <pre><code>$ relnote --path packages/api --tag-prefix api/v
+## What's changed
+
+### Breaking
+
+- **api:** drop /v1 routes (`d4b28a7`) — Ada Lovelace
+
+### Fixes
+
+- **api:** handle empty body (`74e115f`) — Ada Lovelace
+
+---
+
+Range: `api/v1.0.0` → `HEAD`.
+
+**Full changelog:** https://github.com/acme/shop/compare/api/v1.0.0...HEAD</code></pre>
+    <p>Only commits that touch <code>packages/api</code> are listed: <code>fix(shared): trim whitespace</code> and <code>docs: monorepo guide</code> are left out. The compare link works on GitHub with slashes and <code>@</code> in tag names.</p>
+
+    <h3>Why both flags</h3>
+    <p>Leave out <code>--tag-prefix</code> and the range starts at the newest tag of <em>any</em> package. Here that is <code>web/v0.2.0</code>, which came after the api fix, so the fix silently drops out:</p>
+    <pre><code>$ relnote --path packages/api --format plain
+What's changed
+
+Breaking
+  * api: drop /v1 routes (d4b28a7) — Ada Lovelace
+
+Range: web/v0.2.0 -&gt; HEAD</code></pre>
+
+    <h3>Shared code</h3>
+    <p>Repeat <code>--path</code> to count commits in shared directories as part of a package:</p>
+    <pre><code>$ relnote --path packages/web --path packages/shared --tag-prefix web/v --format plain
+What's changed
+
+Fixes
+  * shared: trim whitespace (63ee465) — Ada Lovelace
+
+Range: web/v0.2.0 -&gt; HEAD</code></pre>
+    <p>A package with no matching commits since its last tag exits <code>1</code> with <code>relnote: no commits in range web/v0.2.0..HEAD</code> on stderr and nothing on stdout.</p>
+
+    <h2>Next version per package</h2>
+    <pre><code>$ relnote --path packages/api --tag-prefix api/v --next-version
+api/v2.0.0
+$ relnote --path packages/web --path packages/shared --tag-prefix web/v --next-version
+web/v0.2.1
+$ relnote --path packages/cli --tag-prefix cli/v --next-version      # no cli/v* tag yet
+cli/v0.1.0</code></pre>
+    <p>Same rules as for a single repo: a breaking change bumps major (minor while the major is 0), any <code>feat</code> bumps minor, anything else bumps patch. See <a href="next-version.html">next version</a>.</p>
+
+    <h2>A CHANGELOG.md per package</h2>
+    <pre><code>$ relnote --path packages/api --tag-prefix api/v \
+    --changelog packages/api/CHANGELOG.md --changelog-title api/v2.0.0 -q
+$ head -7 packages/api/CHANGELOG.md
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+## [api/v2.0.0] - 2026-10-22
+
+### Breaking</code></pre>
+    <p>A missing file is created; an existing one gets the new section above the newest entry. To bump a version file, commit, and tag in one go, <a href="standard-version-alternative.html"><code>examples/release.sh</code></a> takes the same flags:</p>
+    <pre><code>examples/release.sh --tag-prefix web/v \
+  --changelog packages/web/CHANGELOG.md --bump-file packages/web/package.json \
+  -- --path packages/web
+# next: web/v0.2.0 … committed: chore(release): web/v0.2.0 · tagged: web/v0.2.0</code></pre>
+
+    <h2>GitHub Actions: one matrix job per package</h2>
+    <p>Run by hand (<code>workflow_dispatch</code>); every package with changes since its last tag gets a GitHub Release and tag, and unchanged packages are skipped.</p>
+    <pre><code>name: Package releases
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [api, web]
+    env:
+      PKG_PATH: packages/${{ matrix.package }}
+      PREFIX: ${{ matrix.package }}/v
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install relnote
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/relnote" https://github.com/loki-inu/relnote/releases/download/v0.3.2/relnote
+          chmod +x "$RUNNER_TEMP/relnote"
+      - name: Next version
+        id: next
+        run: |
+          if next="$("$RUNNER_TEMP/relnote" --path "$PKG_PATH" --tag-prefix "$PREFIX" --next-version)"; then
+            echo "tag=$next" &gt;&gt; "$GITHUB_OUTPUT"
+          else
+            echo "No changes in $PKG_PATH since the last $PREFIX tag; skipping."
+          fi
+      - name: Create the release
+        if: steps.next.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.next.outputs.tag }}
+        run: |
+          "$RUNNER_TEMP/relnote" --path "$PKG_PATH" --tag-prefix "$PREFIX" --output "$RUNNER_TEMP/notes.md" -q
+          gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file "$RUNNER_TEMP/notes.md"</code></pre>
+    <p><code>fetch-depth: 0</code> matters: relnote needs the full history and the tags. If a package's directory name differs from its tag prefix, use <code>matrix.include</code> with separate <code>path</code> and <code>prefix</code> keys.</p>
+
+    <h3>Or: release when a package tag is pushed</h3>
+    <pre><code>on:
+  push:
+    tags: ['*/v*']        # api/v2.0.0, web/v0.2.1, …
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Notes for this package
+        run: |
+          pkg="${GITHUB_REF_NAME%%/v*}"
+          curl -fsSL -o "$RUNNER_TEMP/relnote" https://github.com/loki-inu/relnote/releases/download/v0.3.2/relnote
+          python3 "$RUNNER_TEMP/relnote" --path "packages/$pkg" --tag-prefix "$pkg/v" \
+            --until "$GITHUB_REF_NAME" --output notes.md -q
+      - run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}</code></pre>
+    <p>With <code>--until</code> set to the pushed tag, the range starts at the package's previous tag (<code>api/v1.0.0 → api/v2.0.0</code>), and the compare link ends at the tag instead of <code>HEAD</code>.</p>
+    <p>The <a href="https://github.com/loki-inu/relnote#github-action"><code>loki-inu/relnote</code> action</a> also takes <code>path</code> (one directory per line) and <code>tag-prefix</code>, and outputs <code>notes</code> and <code>next-version</code>. Its step fails when the package has no new commits, so in a matrix over every package the single-file download above is easier.</p>
+
+    <h2>FAQ</h2>
+    <h3>Why do I need <code>--tag-prefix</code> if I already pass <code>--path</code>?</h3>
+    <p><code>--path</code> only filters commits. The start of the range is still the newest tag of any package, so without <code>--tag-prefix</code> the notes for <code>packages/api</code> start at the last web tag and miss api commits made before it. <code>--tag-prefix api/v</code> makes the range start at the last <code>api/v*</code> tag.</p>
+    <h3>What tag format should I use?</h3>
+    <p>Anything that is a fixed prefix followed by <code>x.y.z</code>: <code>api/v1.2.0</code>, <code>api-v1.2.0</code>, or <code>@acme/web@1.2.0</code>. End the prefix with its separator (<code>api/v</code>, not <code>api</code>), because the prefix is matched as a plain string prefix: <code>api</code> would also match <code>api-gateway/v3.0.0</code>. Put the <code>v</code> inside the prefix if you want it: <code>--tag-prefix cli/v</code> gives <code>cli/v0.1.0</code> for a first release, <code>--tag-prefix @acme/cli@</code> gives <code>@acme/cli@0.1.0</code>.</p>
+    <h3>What happens for a package with no changes?</h3>
+    <p>relnote exits <code>1</code> with <code>relnote: no commits in range api/v2.0.0..HEAD</code> and prints nothing on stdout, for notes and for <code>--next-version</code>. In a matrix job, treat that exit as 'skip this package' instead of a failure.</p>
+    <h3>How do I include shared code in a package's notes?</h3>
+    <p>Repeat <code>--path</code>: <code>relnote --path packages/web --path packages/shared --tag-prefix web/v</code>. A commit is listed if it touches any of the directories. <code>--next-version</code> uses the same commits.</p>
+    <h3>Why is the <code>chore(release)</code> commit listed under Other?</h3>
+    <p>If you generate the notes after committing the release (for example on the tag push) and that commit touches the package directory, such as <code>packages/api/CHANGELOG.md</code>, it is in the range. To leave it out, write <code>notes.md</code> in the same step as the changelog, before the release commit.</p>
+    <h3>Does relnote create the package tags or releases?</h3>
+    <p>No. relnote prints notes, a changelog section, or the next tag. You run <code>git tag</code>, <code>gh release create</code>, or <code>examples/release.sh</code>.</p>
+
+    <h2>How this page is tested</h2>
+    <p><a href="https://github.com/loki-inu/relnote/blob/main/tests/test_monorepo_docs.py"><code>tests/test_monorepo_docs.py</code></a> builds the example repository (two packages, shared code, <code>api/v*</code> and <code>web/v*</code> tags) on every CI run and checks the ranges, the skipped package, the next versions, the per-package changelog, and the tag-push notes shown here. The workflows pass <a href="https://github.com/rhysd/actionlint">actionlint</a>, and their shell steps were run against the same repository with the v0.3.2 single file. Commit hashes in the sample output will differ in your repository.</p>
+
+    <footer>
+      <p><a href="./">relnote docs</a> · <a href="next-version.html">Next version and monorepos</a> · <a href="changelog.html">CHANGELOG.md from conventional commits</a> · <a href="ci.html">GitLab CI, Jenkins or any CI</a> · <a href="https://github.com/loki-inu/relnote">Source (MIT)</a></p>
+    </footer>
+  </main>
+</body>
+</html>
