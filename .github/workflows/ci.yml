@@ -39,3 +39,44 @@ jobs:
       - name: Windows PowerShell 5.1 commands from docs/windows.html
         shell: powershell
         run: ./scripts/windows-check.ps1
+
+  action:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: No new commits (clean no-op)
+        id: empty
+        uses: ./
+        with:
+          since: HEAD
+      - name: Commits since v0.3.0
+        id: notes
+        uses: ./
+        with:
+          since: v0.3.0
+          max: "5"
+      - name: Check outputs
+        shell: bash
+        env:
+          EMPTY_HAS: ${{ steps.empty.outputs.has-changes }}
+          EMPTY_NOTES: ${{ steps.empty.outputs.notes }}
+          EMPTY_NEXT: ${{ steps.empty.outputs.next-version }}
+          HAS: ${{ steps.notes.outputs.has-changes }}
+          NOTES: ${{ steps.notes.outputs.notes }}
+          NEXT: ${{ steps.notes.outputs.next-version }}
+        run: |
+          set -euo pipefail
+          test "$EMPTY_HAS" = false
+          test -z "$EMPTY_NOTES"
+          test -z "$EMPTY_NEXT"
+          test "$HAS" = true
+          printf '%s\n' "$NOTES" | grep -q "What's changed"
+          case "$NEXT" in v0.*) ;; *) echo "unexpected next-version: $NEXT"; exit 1 ;; esac
+          echo "ok: has-changes=$HAS next-version=$NEXT"
+

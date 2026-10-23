@@ -8,10 +8,10 @@ branding:
 
 inputs:
   since:
-    description: Start ref (default: latest tag, or full history if untagged)
+    description: 'Start ref (default: latest tag, or full history if untagged)'
     required: false
   until:
-    description: End ref (default: HEAD)
+    description: 'End ref (default: HEAD)'
     required: false
   max:
     description: Include at most N commits after filters
@@ -39,14 +39,25 @@ inputs:
   tag-prefix:
     description: Only tags starting with this prefix count as the previous release (e.g. api/v)
     required: false
+  include-release-commits:
+    description: Keep "chore(release) ..." commits in the notes (default false)
+    required: false
+    default: "false"
+  fail-on-empty:
+    description: Fail the step when there are no new commits (default false; the step succeeds with has-changes false)
+    required: false
+    default: "false"
 
 outputs:
   notes:
     description: Generated release notes
     value: ${{ steps.run.outputs.notes }}
   next-version:
-    description: Suggested next semver tag (empty if the previous tag is not x.y.z)
+    description: Suggested next semver tag (empty if the previous tag is not x.y.z, or if there are no new commits)
     value: ${{ steps.run.outputs.next-version }}
+  has-changes:
+    description: '"true" if there are new commits after filters, "false" if there is nothing to release (notes and next-version are then empty)'
+    value: ${{ steps.run.outputs.has-changes }}
 
 runs:
   using: composite
@@ -65,8 +76,15 @@ runs:
         INPUT_CHANGELOG_TITLE: ${{ inputs.changelog-title }}
         INPUT_PATH: ${{ inputs.path }}
         INPUT_TAG_PREFIX: ${{ inputs.tag-prefix }}
+        INPUT_INCLUDE_RELEASE_COMMITS: ${{ inputs.include-release-commits }}
+        INPUT_FAIL_ON_EMPTY: ${{ inputs.fail-on-empty }}
+        RELNOTE_MAIN: ${{ github.action_path }}/relnote/__main__.py
       run: |
         set -euo pipefail
+        py=python3
+        if ! python3 -c "" >/dev/null 2>&1; then
+          py=python
+        fi
         args=()
         if [ -n "${INPUT_SINCE:-}" ]; then
           args+=(--since "${INPUT_SINCE}")
@@ -98,8 +116,10 @@ runs:
         if [ -n "${INPUT_TAG_PREFIX:-}" ]; then
           args+=(--tag-prefix "${INPUT_TAG_PREFIX}")
         fi
-        next="$(python3 "${{ github.action_path }}/relnote/__main__.py" "${args[@]}" --next-version 2>/dev/null || true)"
-        echo "next-version=${next}" >> "${GITHUB_OUTPUT}"
+        if [ "${INPUT_INCLUDE_RELEASE_COMMITS:-}" = "true" ]; then
+          args+=(--include-release-commits)
+        fi
+        next="$("${py}" "${RELNOTE_MAIN}" "${args[@]}" --next-version 2>/dev/null || true)"
         if [ -n "${INPUT_CHANGELOG:-}" ]; then
           args+=(--changelog "${INPUT_CHANGELOG}")
         fi
@@ -107,10 +127,32 @@ runs:
           args+=(--changelog-title "${INPUT_CHANGELOG_TITLE}")
         fi
 
-        notes="$(python3 "${{ github.action_path }}/relnote/__main__.py" "${args[@]}")"
+        err="$(mktemp)"
+        status=0
+        notes="$("${py}" "${RELNOTE_MAIN}" "${args[@]}" 2>"${err}")" || status=$?
+        cat "${err}" >&2
 
         delimiter="RELNOTE_EOF"
+        if [ "${status}" -ne 0 ]; then
+          if grep -q '^relnote: no commits in range' "${err}" && [ "${INPUT_FAIL_ON_EMPTY:-}" != "true" ]; then
+            rm -f "${err}"
+            {
+              echo "has-changes=false"
+              echo "next-version="
+              echo "notes<<${delimiter}"
+              echo "${delimiter}"
+            } >> "${GITHUB_OUTPUT}"
+            echo "::notice title=relnote::No new commits since the last release; nothing to release (has-changes=false)."
+            exit 0
+          fi
+          rm -f "${err}"
+          exit "${status}"
+        fi
+        rm -f "${err}"
+
         {
+          echo "has-changes=true"
+          echo "next-version=${next}"
           echo "notes<<${delimiter}"
           printf '%s\n' "${notes}"
           echo "${delimiter}"

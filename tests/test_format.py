@@ -323,6 +323,26 @@ class BotAndSecretTests(unittest.TestCase):
         text = notes_from_rows(rows, max_n=3)
         self.assertEqual(text.count("- item"), 3)
 
+    def test_release_commits_left_out_by_default(self) -> None:
+        items = [
+            classify("chore(release): v1.4.0"),
+            classify("chore(Release): 1.4.0"),
+            classify("chore(release)!: drop Node 16"),
+            classify("chore(deps): bump x"),
+            classify("feat: real work"),
+        ]
+        self.assertEqual([i.release for i in items], [True, True, False, False, False])
+        self.assertEqual(
+            [i.description for i in select(items)],
+            ["drop Node 16", "bump x", "real work"],
+        )
+        self.assertEqual(len(select(items, include_release=True)), 5)
+        self.assertNotIn("v1.4.0", notes_from_rows([{"subject": "chore(release): v1.4.0"}, {"subject": "fix: a"}]))
+        self.assertIn(
+            "v1.4.0",
+            notes_from_rows([{"subject": "chore(release): v1.4.0"}], include_release=True),
+        )
+
     def test_empty_select_renders_empty(self) -> None:
         self.assertEqual(select([]), [])
         self.assertEqual(render(group_commits([])), "")

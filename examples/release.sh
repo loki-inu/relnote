@@ -111,9 +111,17 @@ import re, sys
 path, number = sys.argv[1], sys.argv[2]
 # newline="" keeps the file's own line endings (LF or CRLF) on every OS.
 text = open(path, encoding="utf-8", newline="").read()
-# First "version": "x" (JSON) or version = "x" (TOML), at line start.
-pattern = re.compile(r'^(\s*"?version"?\s*[:=]\s*")([^"]*)(")', re.MULTILINE)
-new, count = pattern.subn(lambda m: m.group(1) + number + m.group(3), text, count=1)
+# First "version": "x" (JSON) or version = "x" (TOML), at line start;
+# else the first "version": "x" anywhere (one-line JSON such as {"version": "1.0.0"}).
+patterns = (
+    re.compile(r'^(\s*"?version"?\s*[:=]\s*")([^"]*)(")', re.MULTILINE),
+    re.compile(r'("version"\s*:\s*")([^"]*)(")'),
+)
+count = 0
+for pattern in patterns:
+    new, count = pattern.subn(lambda m: m.group(1) + number + m.group(3), text, count=1)
+    if count:
+        break
 if not count:
     sys.exit(f"release.sh: no version line found in {path}")
 open(path, "w", encoding="utf-8", newline="").write(new)

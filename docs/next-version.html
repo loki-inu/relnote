@@ -28,7 +28,7 @@
         "name": "Next semver version and monorepo release notes from conventional commits — relnote",
         "description": "relnote --next-version prints the next tag (major, minor, or patch) from conventional commits since the last release. --path and --tag-prefix give per-package notes, changelogs, and versions in a monorepo. No config, no API, stdlib Python.",
         "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
-        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.2", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.3", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
       },
       {
         "@type": "BreadcrumbList",
@@ -144,7 +144,7 @@
     <p class="tag">Since v0.3.0, relnote can tell you what the next tag should be, and it can scope notes, changelog sections, and versions to one package in a monorepo. It still reads only your local git history: no config file, no API token, no Node.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
-      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.2">v0.3.2 release</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.3">v0.3.3 release</a>
       · <a href="changelog.html">CHANGELOG.md guide</a>
     </div>
 
@@ -152,7 +152,7 @@
     <pre><code>brew install loki-inu/tap/relnote
 # or
 pip install git+https://github.com/loki-inu/relnote.git
-relnote --version   # relnote 0.3.2</code></pre>
+relnote --version   # relnote 0.3.3</code></pre>
 
     <h2>Print the next version</h2>
     <pre><code>$ git describe --tags --abbrev=0
@@ -206,7 +206,7 @@ relnote --path packages/web --path packages/shared --tag-prefix web@</code></pre
   with:
     fetch-depth: 0
 - id: relnote
-  uses: loki-inu/relnote@v0.3.2
+  uses: loki-inu/relnote@v0.3.3
   with:
     path: |
       packages/api

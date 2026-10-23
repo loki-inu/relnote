@@ -129,6 +129,7 @@ class Classified:
     breaking_note: str | None = None
     secret: bool = False
     bot: bool = False
+    release: bool = False
 
     @property
     def authors(self) -> list[str]:
@@ -197,6 +198,9 @@ def classify(
     else:
         category = "other"
 
+    # chore(release): v1.4.0 is the commit that cuts a release, not a change.
+    release = ctype == "chore" and (scope or "").lower() == "release" and not is_breaking
+
     return Classified(
         category=category,
         description=description,
@@ -210,6 +214,7 @@ def classify(
         breaking_note=breaking_note,
         secret=secret,
         bot=bot,
+        release=release,
     )
 
 
@@ -218,8 +223,12 @@ def select(
     *,
     no_bots: bool = False,
     max_n: int | None = None,
+    include_release: bool = False,
 ) -> list[Classified]:
-    """Drop secrets, empty subjects, and optionally bots. Honour --max."""
+    """Drop secrets, empty subjects, chore(release) commits, and optionally bots.
+
+    Honour --max. Pass include_release=True to keep chore(release) commits.
+    """
     chosen: list[Classified] = []
     for item in items:
         if item.secret:
@@ -227,6 +236,8 @@ def select(
         if not item.description and not item.breaking_note:
             continue
         if no_bots and item.bot:
+            continue
+        if item.release and not include_release:
             continue
         chosen.append(item)
         if max_n is not None and len(chosen) >= max_n:
@@ -352,6 +363,7 @@ def notes_from_rows(
     *,
     no_bots: bool = False,
     max_n: int | None = None,
+    include_release: bool = False,
     format: str = "github",
     since: str | None = None,
     until: str = "HEAD",
@@ -369,7 +381,9 @@ def notes_from_rows(
         )
         for row in rows
     ]
-    chosen = select(classified, no_bots=no_bots, max_n=max_n)
+    chosen = select(
+        classified, no_bots=no_bots, max_n=max_n, include_release=include_release
+    )
     omitted = sum(
         1
         for item in classified

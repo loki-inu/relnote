@@ -132,6 +132,38 @@ class ReleaseScriptTests(unittest.TestCase):
         self.assertIn("endpoint", changelog)
         self.assertNotIn("button", changelog)
 
+    def test_bump_one_line_json(self) -> None:
+        (self.repo / "app.json").write_text(
+            '{"name": "demo", "deps": {"x": "1.0.0"}, "version": "1.3.2"}\n',
+            encoding="utf-8",
+        )
+        _git(["add", "app.json"], self.repo)
+        _git(["commit", "-m", "chore: app manifest"], self.repo)
+        result = self._run("--bump-file", "app.json", "--skip-commit")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            (self.repo / "app.json").read_text(encoding="utf-8"),
+            '{"name": "demo", "deps": {"x": "1.0.0"}, "version": "1.4.0"}\n',
+        )
+
+    def test_tag_push_notes_leave_out_release_commit(self) -> None:
+        result = self._run("--bump-file", "package.json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        env = {**os.environ, "PYTHONPATH": str(ROOT)}
+        notes = subprocess.run(
+            [sys.executable, "-m", "relnote", "--until", "v1.4.0"],
+            cwd=self.repo, env=env, capture_output=True, text=True, check=True,
+        ).stdout
+        self.assertIn("handle b", notes)
+        self.assertNotIn("chore(release)", notes)
+        self.assertNotIn("### Other", notes)
+        kept = subprocess.run(
+            [sys.executable, "-m", "relnote", "--until", "v1.4.0", "--include-release-commits"],
+            cwd=self.repo, env=env, capture_output=True, text=True, check=True,
+        ).stdout
+        self.assertIn("### Other", kept)
+        self.assertIn("v1.4.0", kept.split("### Other", 1)[1])
+
     def test_missing_bump_version_line_fails(self) -> None:
         (self.repo / "VERSION.md").write_text("no version here\n", encoding="utf-8")
         _git(["add", "VERSION.md"], self.repo)
