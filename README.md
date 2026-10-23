@@ -235,7 +235,7 @@ If `--until` (default `HEAD`) is itself tagged, the default range starts at the 
 
 ## GitHub Action
 
-Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.3.3` or `@main` for current. The `v0.1.0` tag is CLI-only.
+Use this repository from another workflow. Pin `loki-inu/relnote@v0.3.3` or later (or `@main`). In v0.1.1–v0.3.2, `action.yml` had an unquoted `: ` in an input description, and the runner refuses to load it ("Mapping values are not allowed in this context"); v0.3.3 fixes that, and CI now runs the action itself on Linux and Windows. The CLI in those tags is fine.
 
 ```yaml
 name: Release notes

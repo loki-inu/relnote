@@ -80,16 +80,3 @@ jobs:
           case "$NEXT" in v0.*) ;; *) echo "unexpected next-version: $NEXT"; exit 1 ;; esac
           echo "ok: has-changes=$HAS next-version=$NEXT"
 
-  probe-released-action:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - id: old
-        continue-on-error: true
-        uses: loki-inu/relnote@v0.3.2
-        with:
-          since: v0.3.0
-          max: "3"
-      - run: echo "outcome=${{ steps.old.outcome }}"
