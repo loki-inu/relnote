@@ -55,6 +55,8 @@ Safety
   Merge commits are omitted unless you pass --include-merges.
   Subjects that look like tokens or keys are never printed.
   --no-bots drops dependabot, renovate, and authors containing "[bot]".
+  "chore(release): v1.4.0" commits (the commit that cuts a release) are
+  left out; --include-release-commits keeps them.
   Co-authored-by trailers are listed; names are not invented.
 
 Exit status
@@ -133,6 +135,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--no-bots",
         action="store_true",
         help='drop commits from dependabot, renovate, or authors containing "[bot]"',
+    )
+    parser.add_argument(
+        "--include-release-commits",
+        action="store_true",
+        help='keep "chore(release): ..." commits (default: left out)',
     )
     parser.add_argument(
         "--path",
@@ -249,7 +256,12 @@ def main(argv: list[str] | None = None) -> int:
             )
             for commit in raw
         ]
-        chosen = select(classified, no_bots=args.no_bots, max_n=args.max_n)
+        chosen = select(
+            classified,
+            no_bots=args.no_bots,
+            max_n=args.max_n,
+            include_release=args.include_release_commits,
+        )
         if not chosen:
             left = since or "(start)"
             print(

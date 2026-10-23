@@ -65,13 +65,13 @@ Each GitHub Release ships `relnote`, a self-contained Python [zipapp](https://do
 mkdir -p ~/.local/bin
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
 chmod +x ~/.local/bin/relnote
-relnote --version   # relnote 0.3.2
+relnote --version   # relnote 0.3.3
 ```
 
-Pin a version with `releases/download/v0.3.2/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
+Pin a version with `releases/download/v0.3.3/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
 
 ```bash
-curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.2/SHA256SUMS
+curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.3/SHA256SUMS
 grep ' relnote$' SHA256SUMS | sha256sum -c -
 ```
 
@@ -142,7 +142,7 @@ Reads the current repository, from the latest tag (or `--since <ref>`) to `HEAD`
 - **Breaking** — `feat!`, `fix!`, any `type!`, or a `BREAKING CHANGE:` / `BREAKING-CHANGE:` footer
 - **Other** — `docs`, `chore`, `refactor`, and anything that is not a conventional commit
 
-Merge commits are omitted by default. `Co-authored-by` trailers are listed; names are not invented. Subjects that look like tokens or keys are dropped, never printed.
+Merge commits are omitted by default. So are `chore(release): v1.4.0` commits (the commit that cuts a release, e.g. from `examples/release.sh`), so notes generated on the tag push do not list it under Other; `--include-release-commits` keeps them. `Co-authored-by` trailers are listed; names are not invented. Subjects that look like tokens or keys are dropped, never printed.
 
 ## Examples
 
@@ -195,6 +195,7 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--exclude-merges` | on | skip merge commits |
 | `--include-merges` | off | keep merge commits |
 | `--no-bots` | off | drop dependabot, renovate, `[bot]` |
+| `--include-release-commits` | off | keep `chore(release): …` commits (left out by default, from v0.3.3) |
 | `--path DIR` | whole repo | only commits touching DIR; repeat for several (monorepos) |
 | `--tag-prefix PREFIX` | any tag | only tags starting with PREFIX (e.g. `api/v`, `web@`) count for the default `--since` and `--next-version` |
 | `--next-version` | off | print the next semver tag instead of notes |
@@ -205,7 +206,7 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--date YYYY-MM-DD` | today (UTC) | section date for `--changelog` |
 | `--quiet` / `-q` | off | with `--output` or `--changelog`, do not print notes to stdout |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.3.2` |
+| `--version` | | print `relnote 0.3.3` |
 
 Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, `--output` / `--changelog` points at a missing parent directory, the changelog already has a section with that title, or `--next-version` finds a base tag that is not `x.y.z`. Exit `2` if `--quiet` is set without `--output` or `--changelog`.
 
@@ -234,7 +235,7 @@ If `--until` (default `HEAD`) is itself tagged, the default range starts at the 
 
 ## GitHub Action
 
-Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.3.2` or `@main` for current. The `v0.1.0` tag is CLI-only.
+Use this repository from another workflow. The action first shipped in **v0.1.1** — pin `loki-inu/relnote@v0.3.3` or `@main` for current. The `v0.1.0` tag is CLI-only.
 
 ```yaml
 name: Release notes
@@ -250,14 +251,29 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.2
+        uses: loki-inu/relnote@v0.3.3
       - name: Print notes
         run: |
           echo "next: ${{ steps.relnote.outputs.next-version }}"
           printf '%s\n' "${{ steps.relnote.outputs.notes }}"
 ```
 
-Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`, `changelog` (path to prepend a section to, from v0.2.0), `changelog-title`, `path` (one directory per line, from v0.3.1), `tag-prefix`. Outputs: `notes`, and `next-version` (from v0.3.1; empty if the base tag is not semver).
+Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`, `changelog` (path to prepend a section to, from v0.2.0), `changelog-title`, `path` (one directory per line, from v0.3.1), `tag-prefix`, `include-release-commits` (default `false`, from v0.3.3), `fail-on-empty` (default `false`, from v0.3.3). Outputs: `notes`, `next-version` (from v0.3.1; empty if the base tag is not semver), and `has-changes` (from v0.3.3).
+
+**Nothing to release is not an error.** From v0.3.3, when there are no new commits after the filters (for example a monorepo package untouched since its last tag), the step succeeds with `has-changes` = `false` and empty `notes` and `next-version`, and writes no changelog section. Gate the release steps on it, or set `fail-on-empty: true` to fail as before. Real errors (unknown ref, not a git repo) still fail the step.
+
+```yaml
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.3
+        with:
+          path: packages/api
+          tag-prefix: api/v
+      - if: steps.relnote.outputs.has-changes == 'true'
+        run: gh release create "${{ steps.relnote.outputs.next-version }}" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+```
 
 A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [examples/draft-release.yml](examples/draft-release.yml).
 

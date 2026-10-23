@@ -28,7 +28,7 @@
         "name": "Single-file install: Python zipapp download (no pip) — relnote",
         "description": "Install relnote as one downloadable Python zipapp. No pip, no clone. curl the release asset, chmod +x, done. SHA256SUMS, relnote.pyz for Windows, and mise github: backend.",
         "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
-        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.2", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.3", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
       },
       {
         "@type": "BreadcrumbList",
@@ -43,7 +43,7 @@
         "step": [
           { "@type": "HowToStep", "name": "Download the zipapp", "text": "curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote" },
           { "@type": "HowToStep", "name": "Make it executable", "text": "chmod +x ~/.local/bin/relnote (needs ~/.local/bin on PATH)." },
-          { "@type": "HowToStep", "name": "Verify", "text": "Run relnote --version (expects relnote 0.3.2 for the current release). Optionally check SHA256SUMS." }
+          { "@type": "HowToStep", "name": "Verify", "text": "Run relnote --version (expects relnote 0.3.3 for the current release). Optionally check SHA256SUMS." }
         ]
       }
     ]
@@ -152,8 +152,8 @@
     <pre><code>mkdir -p ~/.local/bin
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
 chmod +x ~/.local/bin/relnote
-relnote --version   # relnote 0.3.2</code></pre>
-    <p>Put <code>~/.local/bin</code> on your <code>PATH</code> if it is not already. Pin a version with <code>releases/download/v0.3.2/relnote</code> instead of <code>releases/latest/download/relnote</code>.</p>
+relnote --version   # relnote 0.3.3</code></pre>
+    <p>Put <code>~/.local/bin</code> on your <code>PATH</code> if it is not already. Pin a version with <code>releases/download/v0.3.3/relnote</code> instead of <code>releases/latest/download/relnote</code>.</p>
 
     <h2>Release assets</h2>
     <div class="table-wrap">
@@ -168,15 +168,15 @@ relnote --version   # relnote 0.3.2</code></pre>
     </div>
 
     <h2>Verify the download</h2>
-    <pre><code>base=https://github.com/loki-inu/relnote/releases/download/v0.3.2
+    <pre><code>base=https://github.com/loki-inu/relnote/releases/download/v0.3.3
 curl -fsSL -o relnote "$base/relnote"
 curl -fsSL -o SHA256SUMS "$base/SHA256SUMS"
 grep ' relnote$' SHA256SUMS | sha256sum -c -
 chmod +x relnote</code></pre>
-    <p>On macOS without GNU coreutils, use <code>shasum -a 256 -c</code> after rewriting the line, or compare the hash by eye: for v0.3.2 the hex starts <code>acb98a2b…</code>.</p>
+    <p>On macOS without GNU coreutils, use <code>shasum -a 256 -c</code> after rewriting the line, or compare the hash by eye: for v0.3.3 the hex starts <code>30454c2b…</code>.</p>
 
     <h2>Windows</h2>
-    <pre><code>curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.2/relnote.pyz
+    <pre><code>curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.3/relnote.pyz
 py -3 relnote.pyz --version</code></pre>
     <p>The <code>.pyz</code> and <code>relnote</code> files are the same zipapp; only the name differs for systems that ignore shebangs.</p>
     <p>Or let <a href="https://scoop.sh">Scoop</a> install it and put <code>relnote</code> on your <code>PATH</code> (<a href="https://github.com/loki-inu/scoop-bucket">loki-inu/scoop-bucket</a>, checked against <code>SHA256SUMS</code>):</p>
