@@ -10,7 +10,7 @@ It does not create the Release or the tag. Since v0.3.0, --next-version prints t
 
 ## GitHub Action
 
-loki-inu/relnote@v0.3.3 after actions/checkout with fetch-depth: 0. The notes output is the Release body. Outputs: notes, next-version, has-changes. With no new commits (e.g. an untouched monorepo package) the step succeeds with has-changes=false and empty notes (fail-on-empty: true restores the old failure). chore(release) commits are left out of notes by default (--include-release-commits / include-release-commits: true keeps them). CI can also run: relnote --output notes.md --quiet
+loki-inu/relnote@v0.3.4 after actions/checkout with fetch-depth: 0. The notes output is the Release body. Outputs: notes, next-version, has-changes. With no new commits (e.g. an untouched monorepo package) the step succeeds with has-changes=false and empty notes (fail-on-empty: true restores the old failure). chore(release) commits are left out of notes by default (--include-release-commits / include-release-commits: true keeps them). On a tag push (HEAD is the new tag) the range runs from the previous tag to the pushed tag, and from v0.3.4 the compare link ends at that tag instead of HEAD. Pass outputs to run: scripts via env:, not inline ${{ }} (notes contain backticks). Guide (tag-push draft Release, has-changes gated release button, monorepo matrix, CHANGELOG.md, inputs/outputs table): https://loki-inu.github.io/relnote/github-action.html. CI can also run: relnote --output notes.md --quiet
 
 ## GitLab CI, Jenkins, Buildkite, CircleCI
 
@@ -30,7 +30,7 @@ standard-version is deprecated. examples/release.sh (bash, in the relnote repo) 
 
 Single file (Python zipapp attached to each GitHub Release; needs Python 3.11+ and git, nothing else). Guide: https://loki-inu.github.io/relnote/single-file.html
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote && chmod +x ~/.local/bin/relnote
-Pin a version with releases/download/v0.3.3/relnote. The release also has SHA256SUMS and relnote.pyz (same bytes, for python relnote.pyz on Windows).
+Pin a version with releases/download/v0.3.4/relnote. The release also has SHA256SUMS and relnote.pyz (same bytes, for python relnote.pyz on Windows).
 
 pip install git+https://github.com/loki-inu/relnote.git
 relnote --help
@@ -51,6 +51,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - Single-file zipapp install: https://loki-inu.github.io/relnote/single-file.html
 - CHANGELOG.md from conventional commits: https://loki-inu.github.io/relnote/changelog.html
 - Next version and monorepos: https://loki-inu.github.io/relnote/next-version.html
+- GitHub Action guide (tag-push draft Release, has-changes gating, monorepo matrix): https://loki-inu.github.io/relnote/github-action.html
 - Monorepo release notes (per-package tags api/v1.2.0 or @scope/pkg@1.2.0, per-package CHANGELOG.md, GitHub Actions matrix): https://loki-inu.github.io/relnote/monorepo.html
 - GitLab CI, Jenkins or any CI (single-file download): https://loki-inu.github.io/relnote/ci.html
 - standard-version alternative (examples/release.sh): https://loki-inu.github.io/relnote/standard-version-alternative.html
@@ -58,7 +59,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html
 - Source: https://github.com/loki-inu/relnote
 - gh extension: https://github.com/loki-inu/gh-relnote (docs: https://loki-inu.github.io/relnote/gh-extension.html)
-- Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.3.3
+- Latest release: https://github.com/loki-inu/relnote/releases/tag/v0.3.4
 - itch.io: https://loki-inu.itch.io/relnote
 - OSSDrop: https://ossdrop.com/tool/relnote
 - License: MIT

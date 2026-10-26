@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>GitHub Action for release notes from conventional commits — relnote</title>
+  <meta name="description" content="Use the loki-inu/relnote GitHub Action to draft a Release on tag push, release from a button only when there are new commits (has-changes), run a monorepo matrix, and prepend CHANGELOG.md. Offline, no token, no config.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/github-action.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="GitHub Action for release notes from conventional commits — relnote">
+  <meta property="og:description" content="Use the loki-inu/relnote GitHub Action to draft a Release on tag push, release from a button only when there are new commits (has-changes), run a monorepo matrix, and prepend CHANGELOG.md. Offline, no token, no config.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/github-action.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GitHub Action for release notes from conventional commits — relnote">
+  <meta name="twitter:description" content="Use the loki-inu/relnote GitHub Action to draft a Release on tag push, release from a button only when there are new commits (has-changes), run a monorepo matrix, and prepend CHANGELOG.md. Offline, no token, no config.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/github-action.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/github-action.html",
+      "name": "GitHub Action for release notes from conventional commits — relnote",
+      "description": "Use the loki-inu/relnote GitHub Action to draft a Release on tag push, release from a button only when there are new commits (has-changes), run a monorepo matrix, and prepend CHANGELOG.md. Offline, no token, no config.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "relnote",
+        "url": "https://loki-inu.github.io/relnote/"
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "relnote",
+        "softwareVersion": "0.3.4",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, macOS, Windows",
+        "url": "https://github.com/loki-inu/relnote",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "relnote docs",
+          "item": "https://loki-inu.github.io/relnote/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "GitHub Action",
+          "item": "https://loki-inu.github.io/relnote/github-action.html"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Draft a GitHub Release with conventional-commit notes on every tag push",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Check out full history",
+          "text": "actions/checkout@v4 with fetch-depth: 0 so relnote can see the previous tag."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Generate the notes",
+          "text": "Add a step with id relnote that uses loki-inu/relnote@v0.3.4. On a tag push the range runs from the previous tag to the pushed tag."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Create the draft Release",
+          "text": "Pass steps.relnote.outputs.notes as the body to softprops/action-gh-release@v2 with draft: true, or to gh release create --draft --notes through env."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which version of loki-inu/relnote should I pin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "v0.3.4. Tags v0.1.1 to v0.3.2 have an action.yml the runner cannot parse; any tag from v0.3.3 loads. v0.3.4 ends the compare link at the pushed tag instead of HEAD."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is the notes output empty?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "has-changes is false: there are no new commits since the previous tag after the filters. The step succeeds; gate release steps on has-changes == 'true', or set fail-on-empty: true."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do the notes list only one commit with range (start)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The checkout is shallow, so there is no previous tag. Use actions/checkout with fetch-depth: 0."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the relnote action need a GitHub token?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It reads only the local clone. The token is for the step that creates the Release."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="monorepo.html">Monorepo</a> · <a href="next-version.html">Next version</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="ci.html">Other CI</a></p>
+    <h1>GitHub Action: release notes from conventional commits</h1>
+    <p class="tag"><code>loki-inu/relnote</code> is a composite action. It reads your git history (no GitHub API calls, no token, no config file) and outputs a Release body grouped as Features, Fixes, Breaking, and Other, plus the next semver tag. You create the Release with whatever you already use.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/action.yml">action.yml</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/examples/draft-release.yml">examples/draft-release.yml</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.4">v0.3.4 release</a>
+    </div>
+
+    <h2>Draft a Release on every tag push</h2>
+    <p>Copy into <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag; review it and press Publish.</p>
+    <pre><code>name: Draft release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.4
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: ${{ github.ref_name }}
+          body: ${{ steps.relnote.outputs.notes }}</code></pre>
+    <p>Three things matter:</p>
+    <ul>
+      <li><code>fetch-depth: 0</code>. The default checkout is one commit with no tags, so relnote cannot find the previous release.</li>
+      <li><code>permissions: contents: write</code> is for the release step. relnote itself only reads the checkout.</li>
+      <li>On a tag push, <code>HEAD</code> <em>is</em> the new tag. relnote notices that and starts the range at the tag before it, so the notes cover <code>v1.3.0</code> → <code>v1.4.0</code>, not an empty range.</li>
+    </ul>
+    <p>The Release body for that push:</p>
+    <pre><code>## What's changed
+
+### Features
+
+- **cli:** add --json output (`9120f1b`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config file (`900d4e8`) — Ada Lovelace
+
+### Other
+
+- **deps:** bump actions/checkout (`5a0577e`) — Ada Lovelace
+- **docs:** usage examples (`056a02c`) — Ada Lovelace
+
+---
+
+Range: `v1.3.0` → `v1.4.0`.
+
+**Full changelog:** https://github.com/acme/app/compare/v1.3.0...v1.4.0</code></pre>
+    <p>From v0.3.4 the range line and the compare link name the pushed tag. v0.3.3 wrote <code>…compare/v1.3.0...HEAD</code>, which is right on the day and points at newer commits once <code>main</code> moves on. Dependabot and Renovate commits are dropped by default (<code>no-bots: true</code>); the <code>chore(deps)</code> line above is a person's commit.</p>
+    <p>No third-party release action? Use the GitHub CLI that is already on the runner:</p>
+    <pre><code>      - run: gh release create "$GITHUB_REF_NAME" --draft --title "$GITHUB_REF_NAME" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.relnote.outputs.notes }}</code></pre>
+
+    <h2>Release from a button, only when there is something to release</h2>
+    <p>Here the workflow picks the tag. <code>next-version</code> is the next semver after the last tag (breaking → major, <code>feat</code> → minor, anything else → patch; while the major is 0 a breaking change bumps the minor). <code>has-changes</code> is <code>false</code> when there are no new commits, and the step still succeeds, so you gate on it instead of handling a failure:</p>
+    <pre><code>name: Release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.4
+      - if: steps.relnote.outputs.has-changes == 'true'
+        run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.relnote.outputs.next-version }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+      - if: steps.relnote.outputs.has-changes != 'true'
+        run: echo "Nothing to release since the last tag."</code></pre>
+    <p><code>gh release create</code> makes the tag at <code>--target</code>. The same pattern works on a <code>schedule:</code> for weekly releases. Want the old behaviour (fail when empty)? Set <code>fail-on-empty: true</code>. Real errors, such as an unknown <code>since</code> ref, still fail the step.</p>
+
+    <h2>Monorepo: one matrix job per package</h2>
+    <p><code>path</code> limits the notes to commits touching the package (one directory per line); <code>tag-prefix</code> makes the range start at that package's last tag (<code>api/v1.0.0</code>), not the newest tag of any package. Untouched packages come out as <code>has-changes</code> = <code>false</code> and are skipped:</p>
+    <pre><code>    strategy:
+      fail-fast: false
+      matrix:
+        package: [api, web]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.4
+        with:
+          path: |
+            packages/${{ matrix.package }}
+            packages/shared
+          tag-prefix: ${{ matrix.package }}/v
+      - if: steps.relnote.outputs.has-changes == 'true'
+        run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.relnote.outputs.next-version }}
+          NOTES: ${{ steps.relnote.outputs.notes }}</code></pre>
+    <p>For a package tag push (<code>on: push: tags: ['*/v*']</code>), derive the package from <code>github.ref_name</code> and pass it as <code>path</code> and <code>tag-prefix</code>; the range then runs from that package's previous tag to the pushed tag. Tag conventions, per-package changelogs, and a tested example repository: <a href="monorepo.html">release notes for a monorepo</a>.</p>
+
+    <h2>Also prepend CHANGELOG.md</h2>
+    <p><code>changelog</code> writes a Keep a Changelog section (<code>## [v1.4.0] - 2026-10-26</code>) above the newest entry on the runner's disk; older entries are not touched and a duplicate title is refused. The action does not commit. Commit it yourself, or open a PR with the file:</p>
+    <pre><code>      - id: relnote
+        uses: loki-inu/relnote@v0.3.4
+        with:
+          changelog: CHANGELOG.md
+          changelog-title: ${{ github.ref_name }}</code></pre>
+    <p>On a tag push the default title is already the pushed tag (v0.3.4+); outside a tagged <code>HEAD</code> it is <code>Unreleased</code>. More: <a href="changelog.html">CHANGELOG.md from conventional commits</a>.</p>
+
+    <h2>Inputs and outputs</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Input</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>since</code></td><td>previous tag</td><td>Start ref. With a tagged <code>HEAD</code>, the tag before it.</td></tr>
+          <tr><td><code>until</code></td><td><code>HEAD</code></td><td>End ref.</td></tr>
+          <tr><td><code>path</code></td><td></td><td>Only commits touching these directories, one per line.</td></tr>
+          <tr><td><code>tag-prefix</code></td><td></td><td>Only tags starting with this count as the previous release (<code>api/v</code>).</td></tr>
+          <tr><td><code>format</code></td><td><code>github</code></td><td><code>github</code> (Markdown) or <code>plain</code>.</td></tr>
+          <tr><td><code>no-bots</code></td><td><code>true</code></td><td>Drop dependabot, renovate, and <code>[bot]</code> authors.</td></tr>
+          <tr><td><code>max</code></td><td></td><td>At most N commits after filters.</td></tr>
+          <tr><td><code>changelog</code></td><td></td><td>Also prepend a section to this file.</td></tr>
+          <tr><td><code>changelog-title</code></td><td>tag on <code>HEAD</code>, else <code>Unreleased</code></td><td>Section title.</td></tr>
+          <tr><td><code>include-release-commits</code></td><td><code>false</code></td><td>Keep <code>chore(release): …</code> commits.</td></tr>
+          <tr><td><code>fail-on-empty</code></td><td><code>false</code></td><td>Fail instead of <code>has-changes</code> = <code>false</code>.</td></tr>
+          <tr><td><code>repo</code></td><td>workspace</td><td>Path to the git working tree.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Output</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><code>notes</code></td><td>The Release body (empty when there is nothing to release).</td></tr>
+          <tr><td><code>next-version</code></td><td>Next semver tag, keeping the prefix and <code>v</code> (<code>v1.4.0</code>, <code>api/v2.0.0</code>); empty if the previous tag is not <code>x.y.z</code> or there are no new commits.</td></tr>
+          <tr><td><code>has-changes</code></td><td><code>"true"</code> or <code>"false"</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>FAQ</h2>
+    <h3>Which version should I pin?</h3>
+    <p><code>@v0.3.4</code>. Tags v0.1.1–v0.3.2 have an <code>action.yml</code> the runner cannot parse ("Mapping values are not allowed in this context"); the CLI in them is fine, but <code>uses:</code> fails before the step starts. Any tag from v0.3.3 loads.</p>
+    <h3>Why is the notes output empty?</h3>
+    <p><code>has-changes</code> is <code>false</code>: no commits since the previous tag after the filters (<code>path</code>, <code>no-bots</code>, release commits). The log shows a notice saying so. If you expected commits, check that <code>tag-prefix</code>, <code>path</code>, and <code>since</code> are what you meant, and for a monorepo that <code>tag-prefix</code> ends with its separator (<code>api/v</code>, not <code>api</code>).</p>
+    <h3>The notes list only one commit and say <code>(start)</code></h3>
+    <p>The checkout is shallow. <code>actions/checkout</code> fetches one commit and no tags by default, so there is no previous tag and the "full history" is that one commit. Add <code>fetch-depth: 0</code>.</p>
+    <h3>Can I use the outputs in a <code>run:</code> script?</h3>
+    <p>Yes, through <code>env:</code> as in the examples on this page. Do not paste <code>${{ steps.relnote.outputs.notes }}</code> into the script: the notes contain backticks and commit subjects, and the shell would run them.</p>
+    <h3>Does it run on Windows and macOS runners?</h3>
+    <p>Yes. The step uses bash (Git Bash on <code>windows-latest</code>) and the runner's Python 3.11+; it falls back to <code>python</code> when <code>python3</code> is missing. CI runs the action on <code>ubuntu-latest</code> and <code>windows-latest</code>.</p>
+    <h3>Does it need a token?</h3>
+    <p>No. relnote reads only the local clone. The token is for whatever creates the Release.</p>
+    <h3>Squash merges or merge commits?</h3>
+    <p>Either. Merge commits are left out by default and the squashed commit's conventional-commit subject is what gets grouped, so PR titles like <code>feat(cli): add --json output (#42)</code> work as they are (the <code>(#42)</code> stays in the line, and GitHub links it).</p>
+
+    <h2>How this page is tested</h2>
+    <p><a href="https://github.com/loki-inu/relnote/blob/main/.github/workflows/ci.yml">CI</a> runs the action with <code>uses: ./</code> on Linux and Windows for a normal range, the no-op case, and a tagged <code>HEAD</code> (the tag-push case), and <a href="https://github.com/loki-inu/relnote/blob/main/tests/test_action.py"><code>tests/test_action.py</code></a> runs the action's shell step against temporary repositories, including the tag-push range above. The tag-push draft (with the tag made inside the job), the matrix, and the no-op case were also run with the published <code>uses: loki-inu/relnote@v0.3.3</code> and <code>@v0.3.4</code> on GitHub-hosted runners, and the workflows pass <a href="https://github.com/rhysd/actionlint">actionlint</a>. Commit hashes in the sample output will differ in your repository.</p>
+
+    <footer>
+      <p><a href="./">relnote docs</a> · <a href="monorepo.html">Monorepo release notes</a> · <a href="next-version.html">Next version</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="ci.html">GitLab CI, Jenkins or any CI</a> · <a href="gh-extension.html">gh extension</a> · <a href="https://github.com/loki-inu/relnote">Source (MIT)</a></p>
+    </footer>
+  </main>
+</body>
+</html>

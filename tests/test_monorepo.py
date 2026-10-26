@@ -135,6 +135,45 @@ class CliTests(unittest.TestCase):
         self.assertIn("shipped thing", out)
         self.assertIn("`v1.0.0`", out)
 
+    def test_tagged_head_named_in_range_and_compare(self) -> None:
+        _git(["remote", "add", "origin", "https://github.com/acme/app.git"], self.repo)
+        _commit(self.repo, "a.txt", "feat: shipped thing")
+        _git(["tag", "v1.1.0"], self.repo)
+        code, out, err = _run(["--repo", str(self.repo)])
+        self.assertEqual(code, 0, err)
+        self.assertIn("Range: `v1.0.0` → `v1.1.0`.", out)
+        self.assertIn("https://github.com/acme/app/compare/v1.0.0...v1.1.0", out)
+        self.assertNotIn("HEAD", out)
+
+    def test_untagged_head_still_says_head(self) -> None:
+        _git(["remote", "add", "origin", "https://github.com/acme/app.git"], self.repo)
+        _commit(self.repo, "a.txt", "feat: not tagged yet")
+        code, out, err = _run(["--repo", str(self.repo)])
+        self.assertEqual(code, 0, err)
+        self.assertIn("compare/v1.0.0...HEAD", out)
+
+    def test_tagged_head_respects_tag_prefix(self) -> None:
+        _git(["tag", "api/v0.1.0"], self.repo)
+        _commit(self.repo, "api/x.txt", "feat(api): new endpoint")
+        _git(["tag", "api/v0.2.0"], self.repo)
+        _git(["tag", "web/v3.0.0"], self.repo)
+        code, out, err = _run(
+            ["--repo", str(self.repo), "--path", "api", "--tag-prefix", "api/"]
+        )
+        self.assertEqual(code, 0, err)
+        self.assertIn("`api/v0.1.0` → `api/v0.2.0`", out)
+        self.assertNotIn("web/v3.0.0", out)
+
+    def test_tagged_head_changelog_title_is_tag(self) -> None:
+        _commit(self.repo, "a.txt", "fix: patch")
+        _git(["tag", "v1.0.1"], self.repo)
+        log = self.repo / "CHANGELOG.md"
+        code, _, err = _run(
+            ["--repo", str(self.repo), "--changelog", str(log), "--date", "2026-10-26"]
+        )
+        self.assertEqual(code, 0, err)
+        self.assertIn("## [v1.0.1] - 2026-10-26", log.read_text(encoding="utf-8"))
+
     def test_tagged_until_uses_previous_tag(self) -> None:
         _commit(self.repo, "a.txt", "feat: in one-one")
         _git(["tag", "v1.1.0"], self.repo)

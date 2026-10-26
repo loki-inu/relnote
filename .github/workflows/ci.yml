@@ -61,6 +61,12 @@ jobs:
         with:
           since: v0.3.0
           max: "5"
+      - name: Tag HEAD locally (the tag-push case)
+        shell: bash
+        run: git tag v99.0.0-ci HEAD
+      - name: Tagged HEAD
+        id: tagged
+        uses: ./
       - name: Check outputs
         shell: bash
         env:
@@ -70,6 +76,8 @@ jobs:
           HAS: ${{ steps.notes.outputs.has-changes }}
           NOTES: ${{ steps.notes.outputs.notes }}
           NEXT: ${{ steps.notes.outputs.next-version }}
+          TAGGED_HAS: ${{ steps.tagged.outputs.has-changes }}
+          TAGGED_NOTES: ${{ steps.tagged.outputs.notes }}
         run: |
           set -euo pipefail
           test "$EMPTY_HAS" = false
@@ -78,5 +86,7 @@ jobs:
           test "$HAS" = true
           printf '%s\n' "$NOTES" | grep -q "What's changed"
           case "$NEXT" in v0.*) ;; *) echo "unexpected next-version: $NEXT"; exit 1 ;; esac
-          echo "ok: has-changes=$HAS next-version=$NEXT"
+          test "$TAGGED_HAS" = true
+          printf '%s\n' "$TAGGED_NOTES" | grep -q '\.\.\.v99\.0\.0-ci$'
+          echo "ok: has-changes=$HAS next-version=$NEXT; tagged HEAD compare ends at v99.0.0-ci"
 

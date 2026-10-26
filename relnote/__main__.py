@@ -13,13 +13,13 @@ if __package__ in {None, ""}:
     from relnote import __version__
     from relnote.changelog import ChangelogError, update_changelog
     from relnote.format import classify, group_commits, render, select
-    from relnote.git import GitError, collect_commits, github_compare_url, last_tag
+    from relnote.git import GitError, collect_commits, github_compare_url, last_tag, tag_at
     from relnote.semver import VersionError, bump_kind, next_version
 else:
     from . import __version__
     from .changelog import ChangelogError, update_changelog
     from .format import classify, group_commits, render, select
-    from .git import GitError, collect_commits, github_compare_url, last_tag
+    from .git import GitError, collect_commits, github_compare_url, last_tag, tag_at
     from .semver import VersionError, bump_kind, next_version
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -32,7 +32,8 @@ Default range
   Latest tag → HEAD. If the repo has no tags, the full history of
   --until (default HEAD) is used. Pass --since to start at any ref.
   If --until is itself tagged (you just tagged the release), the range
-  starts at the tag before it.
+  starts at the tag before it. When --until is HEAD and HEAD is tagged,
+  the range line, compare link, and changelog title use that tag name.
 
 Monorepos
   --path DIR (repeatable) keeps only commits that touch DIR.
@@ -177,7 +178,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--changelog-title",
         metavar="TITLE",
-        help='section title (default: --until if not HEAD, else "Unreleased")',
+        help='section title (default: --until, or the tag on HEAD, else "Unreleased")',
     )
     parser.add_argument(
         "--date",
@@ -262,6 +263,12 @@ def main(argv: list[str] | None = None) -> int:
             max_n=args.max_n,
             include_release=args.include_release_commits,
         )
+        # Name shown in the range line / compare link / changelog title.
+        # A tagged HEAD (tag-push workflow, or right after `git tag`) is
+        # shown as its tag, so the compare link does not drift with HEAD.
+        until_label = args.until
+        if args.until == "HEAD":
+            until_label = tag_at("HEAD", cwd=args.repo, prefix=args.tag_prefix) or "HEAD"
         if not chosen:
             left = since or "(start)"
             print(
@@ -289,8 +296,8 @@ def main(argv: list[str] | None = None) -> int:
             group_commits(chosen),
             format=args.format,
             since=since,
-            until=args.until,
-            compare_url=github_compare_url(since, args.until, cwd=args.repo),
+            until=until_label,
+            compare_url=github_compare_url(since, until_label, cwd=args.repo),
             omitted=omitted,
         )
         if text and not text.endswith("\n"):
@@ -313,7 +320,7 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
         if args.changelog:
             title = args.changelog_title or (
-                args.until if args.until and args.until != "HEAD" else "Unreleased"
+                until_label if until_label and until_label != "HEAD" else "Unreleased"
             )
             date = args.date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
             section_notes = text
@@ -322,8 +329,8 @@ def main(argv: list[str] | None = None) -> int:
                     group_commits(chosen),
                     format="github",
                     since=since,
-                    until=args.until,
-                    compare_url=github_compare_url(since, args.until, cwd=args.repo),
+                    until=until_label,
+                    compare_url=github_compare_url(since, until_label, cwd=args.repo),
                     omitted=omitted,
                 )
             try:

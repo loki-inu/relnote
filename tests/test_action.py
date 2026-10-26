@@ -128,6 +128,18 @@ class ActionStepTests(unittest.TestCase):
         self.assertEqual(out["next-version"], "v1.1.0")
         self.assertIn("add a", out["notes"])
 
+    def test_tag_push_names_the_new_tag(self) -> None:
+        # on: push: tags -> HEAD is the new tag; notes cover the previous tag..new tag
+        _git(["remote", "add", "origin", "https://github.com/acme/app.git"], self.repo)
+        _commit(self.repo, "a.txt", "fix: patch it")
+        _git(["tag", "v1.0.1"], self.repo)
+        code, out, log = self.step()
+        self.assertEqual(code, 0, log)
+        self.assertEqual(out["has-changes"], "true")
+        self.assertIn("patch it", out["notes"])
+        self.assertIn("compare/v1.0.0...v1.0.1", out["notes"])
+        self.assertEqual(out["next-version"], "v1.0.1")
+
     def test_no_new_commits_is_a_clean_no_op(self) -> None:
         code, out, log = self.step(since="v1.0.0")
         self.assertEqual(code, 0, log)
