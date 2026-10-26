@@ -1,0 +1,57 @@
+name: e2e probe (temporary)
+on:
+  push:
+    branches: [docs/github-action]
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Tag HEAD locally (simulate tag push)
+        run: git tag v0.3.4-e2e HEAD
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.3
+      - name: Show outputs
+        env:
+          HAS: ${{ steps.relnote.outputs.has-changes }}
+          NEXT: ${{ steps.relnote.outputs.next-version }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+        run: |
+          echo "has=$HAS next=$NEXT"; printf '%s\n' "$NOTES"
+      - uses: softprops/action-gh-release@v2
+        if: steps.relnote.outputs.has-changes == 'true'
+        with:
+          draft: true
+          tag_name: v0.0.0-e2e-probe
+          name: e2e probe (temporary draft)
+          body: ${{ steps.relnote.outputs.notes }}
+  matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pkg: [relnote, docs]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.3
+        with:
+          since: v0.3.2
+          path: ${{ matrix.pkg }}
+      - run: echo "pkg=${{ matrix.pkg }} has=${{ steps.relnote.outputs.has-changes }} next=${{ steps.relnote.outputs.next-version }}"
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.3
+        with:
+          path: examples/does-not-exist
+      - run: test "${{ steps.relnote.outputs.has-changes }}" = false && echo "no-op ok"
