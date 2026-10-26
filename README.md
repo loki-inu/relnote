@@ -65,13 +65,13 @@ Each GitHub Release ships `relnote`, a self-contained Python [zipapp](https://do
 mkdir -p ~/.local/bin
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
 chmod +x ~/.local/bin/relnote
-relnote --version   # relnote 0.3.3
+relnote --version   # relnote 0.3.4
 ```
 
-Pin a version with `releases/download/v0.3.3/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
+Pin a version with `releases/download/v0.3.4/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
 
 ```bash
-curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.3/SHA256SUMS
+curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.4/SHA256SUMS
 grep ' relnote$' SHA256SUMS | sha256sum -c -
 ```
 
@@ -202,15 +202,15 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--repo PATH` | `.` | git working tree |
 | `--output FILE` | off | also write notes to FILE (UTF-8); still print to stdout unless `--quiet` |
 | `--changelog FILE` | off | prepend a `## [TITLE] - DATE` section to FILE (created with a `# Changelog` header if missing) |
-| `--changelog-title TITLE` | `--until` if not `HEAD`, else `Unreleased` | section title for `--changelog` |
+| `--changelog-title TITLE` | `--until` if not `HEAD`; the tag on `HEAD` if there is one (v0.3.4+); else `Unreleased` | section title for `--changelog` |
 | `--date YYYY-MM-DD` | today (UTC) | section date for `--changelog` |
 | `--quiet` / `-q` | off | with `--output` or `--changelog`, do not print notes to stdout |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.3.3` |
+| `--version` | | print `relnote 0.3.4` |
 
 Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, `--output` / `--changelog` points at a missing parent directory, the changelog already has a section with that title, or `--next-version` finds a base tag that is not `x.y.z`. Exit `2` if `--quiet` is set without `--output` or `--changelog`.
 
-If `--until` (default `HEAD`) is itself tagged, the default range starts at the tag before it, so running relnote right after `git tag v1.4.0` (or in a tag-push workflow) gives that release's notes.
+If `--until` (default `HEAD`) is itself tagged, the default range starts at the tag before it, so running relnote right after `git tag v1.4.0` (or in a tag-push workflow) gives that release's notes. From v0.3.4 the range line and compare link then end at that tag (`v1.3.0...v1.4.0`) instead of `HEAD`, so a Release body stays correct after `main` moves on.
 
 ### Next version
 
@@ -235,7 +235,7 @@ If `--until` (default `HEAD`) is itself tagged, the default range starts at the 
 
 ## GitHub Action
 
-Use this repository from another workflow. Pin `loki-inu/relnote@v0.3.3` or later (or `@main`). In v0.1.1–v0.3.2, `action.yml` had an unquoted `: ` in an input description, and the runner refuses to load it ("Mapping values are not allowed in this context"); v0.3.3 fixes that, and CI now runs the action itself on Linux and Windows. The CLI in those tags is fine.
+Use this repository from another workflow. Pin `loki-inu/relnote@v0.3.4` (any tag from v0.3.3 loads; v0.3.4 names a tag-push range after the pushed tag, so the compare link ends at `v1.4.0` instead of `HEAD`). In v0.1.1–v0.3.2, `action.yml` had an unquoted `: ` in an input description, and the runner refuses to load it ("Mapping values are not allowed in this context"); v0.3.3 fixes that, and CI now runs the action itself on Linux and Windows. The CLI in those tags is fine.
 
 ```yaml
 name: Release notes
@@ -251,11 +251,14 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.3
+        uses: loki-inu/relnote@v0.3.4
       - name: Print notes
+        env:
+          NEXT: ${{ steps.relnote.outputs.next-version }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
         run: |
-          echo "next: ${{ steps.relnote.outputs.next-version }}"
-          printf '%s\n' "${{ steps.relnote.outputs.notes }}"
+          echo "next: $NEXT"
+          printf '%s\n' "$NOTES"
 ```
 
 Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots` (default `true`), `repo`, `changelog` (path to prepend a section to, from v0.2.0), `changelog-title`, `path` (one directory per line, from v0.3.1), `tag-prefix`, `include-release-commits` (default `false`, from v0.3.3), `fail-on-empty` (default `false`, from v0.3.3). Outputs: `notes`, `next-version` (from v0.3.1; empty if the base tag is not semver), and `has-changes` (from v0.3.3).
@@ -264,18 +267,21 @@ Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots`
 
 ```yaml
       - id: relnote
-        uses: loki-inu/relnote@v0.3.3
+        uses: loki-inu/relnote@v0.3.4
         with:
           path: packages/api
           tag-prefix: api/v
       - if: steps.relnote.outputs.has-changes == 'true'
-        run: gh release create "${{ steps.relnote.outputs.next-version }}" --notes "$NOTES"
+        run: gh release create "$TAG" --notes "$NOTES"
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.relnote.outputs.next-version }}
           NOTES: ${{ steps.relnote.outputs.notes }}
 ```
 
-A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [examples/draft-release.yml](examples/draft-release.yml).
+Pass outputs to `run:` steps through `env:` as above, not as `${{ … }}` inside the script: the notes contain backticks and commit subjects, which the shell would otherwise run.
+
+A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [examples/draft-release.yml](examples/draft-release.yml). Walkthrough (tag-push drafts, `has-changes` gating, monorepo matrix, CHANGELOG.md, FAQ): [GitHub Action guide](https://loki-inu.github.io/relnote/github-action.html).
 
 Not on GitHub Actions? Download the single file and run it in GitLab CI, Jenkins, Buildkite, or CircleCI: [Release notes in GitLab CI, Jenkins or any CI](https://loki-inu.github.io/relnote/ci.html).
 

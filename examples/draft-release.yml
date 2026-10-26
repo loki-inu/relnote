@@ -1,4 +1,6 @@
 # Copy into .github/workflows/ to open a draft GitHub Release on tag push.
+# Notes cover the previous tag -> the pushed tag. Guide:
+# https://loki-inu.github.io/relnote/github-action.html
 name: Draft release
 
 on:
@@ -16,8 +18,9 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.3
+        uses: loki-inu/relnote@v0.3.4
       - uses: softprops/action-gh-release@v2
         with:
           draft: true
+          name: ${{ github.ref_name }}
           body: ${{ steps.relnote.outputs.notes }}

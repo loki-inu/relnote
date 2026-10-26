@@ -28,7 +28,7 @@
         "name": "relnote on Windows: PowerShell, Scoop and UTF-8 release notes",
         "description": "Generate GitHub release notes and CHANGELOG.md on Windows with relnote. Scoop or single-file install, PowerShell 7 and Windows PowerShell 5.1 commands, why relnote > notes.md writes UTF-16 in PowerShell 5.1 and how --output avoids it, gh release create, Git Bash.",
         "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
-        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.3", "applicationCategory": "DeveloperApplication", "operatingSystem": "Windows, Linux, macOS", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.4", "applicationCategory": "DeveloperApplication", "operatingSystem": "Windows, Linux, macOS", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
       },
       {
         "@type": "BreadcrumbList",
@@ -168,7 +168,7 @@
     <pre><code>scoop bucket add loki-inu https://github.com/loki-inu/scoop-bucket
 scoop install loki-inu/relnote
 scoop install python     # if you do not have Python 3.11+ yet
-relnote --version        # relnote 0.3.3</code></pre>
+relnote --version        # relnote 0.3.4</code></pre>
     <p>Without Scoop, download the single-file zipapp and run it with the Python launcher:</p>
     <pre><code>curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/latest/download/relnote.pyz
 py -3 relnote.pyz --version</code></pre>
@@ -225,7 +225,7 @@ gh relnote create v1.4.0 --draft</code></pre>
 - name: Release notes
   shell: pwsh
   run: |
-    curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.3/relnote.pyz
+    curl.exe -fsSL -o relnote.pyz https://github.com/loki-inu/relnote/releases/download/v0.3.4/relnote.pyz
     python relnote.pyz --output notes.md --quiet</code></pre>
     <p>The full history and tags are needed (<code>fetch-depth: 0</code>). On Linux runners the <a href="https://github.com/loki-inu/relnote#github-action">GitHub Action</a> is simpler; other CI systems are on the <a href="ci.html">CI page</a>.</p>
 

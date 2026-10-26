@@ -102,6 +102,23 @@ def last_tag(
     return tag
 
 
+def tag_at(
+    ref: str = "HEAD",
+    cwd: str | Path | None = None,
+    *,
+    prefix: str | None = None,
+) -> str | None:
+    """Name of a tag (matching *prefix*) that points exactly at *ref*, or None."""
+    args = ["describe", "--tags", "--exact-match"]
+    if prefix:
+        args += ["--match", f"{prefix}*"]
+    args.append(ref)
+    result = run_git(args, cwd=cwd)
+    if result.returncode != 0:
+        return None
+    return result.stdout.strip() or None
+
+
 def resolve_ref(ref: str, cwd: str | Path | None = None) -> str:
     result = run_git(["rev-parse", "--verify", f"{ref}^{{commit}}"], cwd=cwd)
     if result.returncode != 0:
