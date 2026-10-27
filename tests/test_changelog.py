@@ -11,6 +11,7 @@ from pathlib import Path
 from relnote.__main__ import main
 from relnote.changelog import (
     ChangelogError,
+    link_pr_refs,
     prepend_section,
     section_from_notes,
 )
@@ -32,6 +33,30 @@ Range: `v1.0.0` → `v1.1.0`.
 
 **Full changelog:** https://github.com/o/r/compare/v1.0.0...v1.1.0
 """
+
+
+class PrLinkTests(unittest.TestCase):
+    def test_squash_ref_linked(self) -> None:
+        line = "- **api:** add paging (#41) (`abc1234`) — Ada"
+        self.assertEqual(
+            link_pr_refs(line, "o/r"),
+            "- **api:** add paging ([#41](https://github.com/o/r/pull/41)) (`abc1234`) — Ada",
+        )
+
+    def test_code_span_and_bare_hash_untouched(self) -> None:
+        line = "- keep `(#7)` literal, issue #8 too (#9)"
+        out = link_pr_refs(line, "o/r")
+        self.assertIn("`(#7)`", out)
+        self.assertIn("issue #8 too", out)
+        self.assertIn("([#9](https://github.com/o/r/pull/9))", out)
+
+    def test_section_links_only_with_repo(self) -> None:
+        notes = NOTES.replace("add widgets", "add widgets (#12)")
+        self.assertIn("(#12)", section_from_notes(notes, title="v1", date=None))
+        out = section_from_notes(notes, title="v1", date=None, repo="o/r")
+        self.assertIn("[#12](https://github.com/o/r/pull/12)", out)
+        # compare link line unchanged
+        self.assertIn("**Full changelog:** https://github.com/o/r/compare", out)
 
 
 class SectionTests(unittest.TestCase):
@@ -123,6 +148,32 @@ class ChangelogCliTests(unittest.TestCase):
             # empty range -> exit 1, file untouched
             self.assertEqual(code, 1)
             self.assertEqual(log.read_text(encoding="utf-8"), text)
+
+    def test_cli_links_squash_pr_refs_for_github_origin(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp) / "repo"
+            repo.mkdir()
+            _init_repo(repo)
+            _git(["tag", "v0.1.0"], repo)
+            _git(["commit", "--allow-empty", "-m", "feat: add paging (#41)"], repo)
+            log = repo / "CHANGELOG.md"
+            argv = [
+                "--repo", str(repo), "--changelog", str(log),
+                "--changelog-title", "v0.2.0", "--date", "2026-10-27",
+            ]
+            # no remote: plain ref, and stdout (release body) never rewritten
+            code, out, err = self._run(argv)
+            self.assertEqual(code, 0, err)
+            self.assertIn("add paging (#41)", log.read_text(encoding="utf-8"))
+            log.unlink()
+            _git(["remote", "add", "origin", "git@github.com:acme/widget.git"], repo)
+            code, out, err = self._run(argv)
+            self.assertEqual(code, 0, err)
+            self.assertIn("add paging (#41)", out)
+            self.assertIn(
+                "add paging ([#41](https://github.com/acme/widget/pull/41))",
+                log.read_text(encoding="utf-8"),
+            )
 
     def test_default_title_unreleased_and_stdout_kept(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release notes from squash-merged PR titles — relnote</title>
+  <meta name="description" content="Squash merges leave one commit per PR titled like feat: add paging (#41). relnote groups those PR titles into Breaking, Features, and Fixes for a GitHub Release body and CHANGELOG.md with PR links. Offline, no config.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/squash-merge.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release notes from squash-merged PR titles — relnote">
+  <meta property="og:description" content="Squash merges leave one commit per PR titled like feat: add paging (#41). relnote groups those PR titles into Breaking, Features, and Fixes for a GitHub Release body and CHANGELOG.md with PR links. Offline, no config.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/squash-merge.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release notes from squash-merged PR titles — relnote">
+  <meta name="twitter:description" content="Squash merges leave one commit per PR titled like feat: add paging (#41). relnote groups those PR titles into Breaking, Features, and Fixes for a GitHub Release body and CHANGELOG.md with PR links. Offline, no config.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://loki-inu.github.io/relnote/squash-merge.html#webpage",
+        "url": "https://loki-inu.github.io/relnote/squash-merge.html",
+        "name": "Release notes from squash-merged PR titles — relnote",
+        "description": "Squash merges leave one commit per PR titled like feat: add paging (#41). relnote groups those PR titles into Breaking, Features, and Fixes for a GitHub Release body and CHANGELOG.md with PR links. Offline, no config.",
+        "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "url": "https://github.com/loki-inu/relnote" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/" },
+          { "@type": "ListItem", "position": 2, "name": "Squash-merged PR release notes", "item": "https://loki-inu.github.io/relnote/squash-merge.html" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "Release notes from squash-merged pull request titles",
+        "step": [
+          { "@type": "HowToStep", "name": "Squash with the PR title", "text": "In repository settings, allow squash merging and set the default commit message to the pull request title." },
+          { "@type": "HowToStep", "name": "Check PR titles", "text": "Require Conventional Commits PR titles, for example with amannn/action-semantic-pull-request." },
+          { "@type": "HowToStep", "name": "Generate notes", "text": "Run relnote (or the loki-inu/relnote action) on the tag push to get a Release body grouped into Breaking, Features, Fixes, and Other." }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Does relnote call the GitHub API to find the PRs?", "acceptedAnswer": { "@type": "Answer", "text": "No. It reads git log only. The PR number is already in each squash commit subject as (#41), and GitHub turns #41 into a link in a Release body. In CHANGELOG.md, where GitHub does not autolink, relnote v0.3.5+ writes [#41](https://github.com/OWNER/REPO/pull/41) when origin is a github.com remote." } },
+          { "@type": "Question", "name": "What if some PRs were merged with a merge commit?", "acceptedAnswer": { "@type": "Answer", "text": "Merge commits (Merge pull request #12 from \u2026) are skipped by default; the commits they brought in are still listed. Squash and rebase merges both leave plain commits, so mixed histories work." } },
+          { "@type": "Question", "name": "Where do co-authors come from?", "acceptedAnswer": { "@type": "Answer", "text": "GitHub adds Co-authored-by: trailers to the squash commit body for everyone who committed on the PR branch. relnote reads those trailers and lists the names after the author." } },
+          { "@type": "Question", "name": "How do I mark a PR as breaking?", "acceptedAnswer": { "@type": "Answer", "text": "Put ! after the type in the PR title (feat(api)!: \u2026) or add a BREAKING CHANGE: line to the squash commit message. Either one lands under Breaking and makes --next-version bump the major." } },
+          { "@type": "Question", "name": "How is this different from gh release create --generate-notes?", "acceptedAnswer": { "@type": "Answer", "text": "GitHub's generated notes list PR titles with authors and new contributors, grouped by labels you configure in .github/release.yml. relnote groups by the conventional-commit type in the title, needs no labels or API, and can also write CHANGELOG.md and suggest the next version." } }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="compare.html">Compare</a></p>
+    <h1>Release notes from squash-merged PR titles</h1>
+    <p class="tag">If your team squash-merges pull requests, every PR is already one commit on <code>main</code> named after its title: <code>feat(api): add paging (#41)</code>. With Conventional Commits PR titles, that history is enough for grouped release notes. relnote reads it offline and prints a GitHub Release body, with no labels, no API token, and no config file.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="github-action.html">Action guide</a>
+      · <a href="single-file.html">Single-file install</a>
+    </div>
+
+    <h2>1. Squash with the PR title</h2>
+    <p>In the repository's <strong>Settings → General → Pull Requests</strong>, keep <em>Allow squash merging</em> on and set its default commit message to <em>Pull request title</em> (or <em>Pull request title and commit details</em>). GitHub appends <code>(#NUMBER)</code> to the subject and adds <code>Co-authored-by:</code> trailers for everyone who committed on the branch.</p>
+
+    <h2>2. Keep PR titles conventional</h2>
+    <p>The squash subject is the PR title, so check the title, not each commit on the branch. One option is <a href="https://github.com/amannn/action-semantic-pull-request">amannn/action-semantic-pull-request</a>:</p>
+    <pre><code>name: PR title
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+permissions:
+  pull-requests: read
+jobs:
+  conventional-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}</code></pre>
+    <p>Add it as a required status check. Contributors can push <code>wip</code> commits freely; only the title has to read <code>fix: …</code>, <code>feat(cli): …</code>, or <code>feat!: …</code>.</p>
+
+    <h2>3. Generate the notes</h2>
+    <p>A <code>main</code> after four squash merges since <code>v1.2.0</code>:</p>
+    <pre><code>feat(api)!: paginate list endpoints (#41)      Ada Lovelace (+ Co-authored-by: Grace Hopper)
+fix: handle empty config (#42)                 Ada Lovelace
+build(deps): bump actions/checkout from 4 to 5 (#43)   dependabot[bot]
+docs: fix install command (#44)                Ada Lovelace</code></pre>
+    <p>Tag and run relnote (the bot PR is dropped by <code>--no-bots</code>, which the Action does by default):</p>
+    <pre><code>relnote --next-version          # v2.0.0 (feat! is breaking)
+git tag v2.0.0
+relnote --no-bots</code></pre>
+    <pre><code>## What&#x27;s changed
+
+### Breaking
+
+- **api:** paginate list endpoints (#41) (`7f22a1c`) — Ada Lovelace, Grace Hopper
+
+### Fixes
+
+- handle empty config (#42) (`c0ec41c`) — Ada Lovelace
+
+### Other
+
+- **docs:** fix install command (#44) (`4df3794`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `v2.0.0`.
+
+**Full changelog:** https://github.com/you/project/compare/v1.2.0...v2.0.0
+
+_1 commit(s) omitted (bots or secret-looking subjects)._</code></pre>
+    <p>Output from a test repository built in relnote's CI (<code>tests/test_squash_docs.py</code>); your hashes differ. On GitHub, <code>#41</code> in a Release body links to the PR automatically.</p>
+
+    <h2>4. CHANGELOG.md with PR links</h2>
+    <p>GitHub does not autolink <code>#41</code> inside a Markdown file in the repository. From v0.3.5, <code>--changelog</code> writes each squash reference <code>(#41)</code> as a real link when <code>origin</code> is a <code>github.com</code> remote. The Release body on stdout keeps the short form.</p>
+    <pre><code>relnote --no-bots --changelog CHANGELOG.md -q</code></pre>
+    <pre><code>## [v2.0.0] - 2026-10-27
+
+### Breaking
+
+- **api:** paginate list endpoints ([#41](https://github.com/you/project/pull/41)) (`7f22a1c`) — Ada Lovelace, Grace Hopper
+
+### Fixes
+
+- handle empty config ([#42](https://github.com/you/project/pull/42)) (`c0ec41c`) — Ada Lovelace
+
+### Other
+
+- **docs:** fix install command ([#44](https://github.com/you/project/pull/44)) (`4df3794`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/project/compare/v1.2.0...v2.0.0</code></pre>
+    <p>Only <code>(#N)</code> in parentheses is linked, which is the form GitHub's squash merge writes. Text in code spans and a bare <code>#8</code> elsewhere in a subject are left as they are.</p>
+
+    <h2>5. On every tag push</h2>
+    <pre><code>name: Release
+on:
+  push:
+    tags: [&quot;v*&quot;]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.5
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+        run: gh release create &quot;$GITHUB_REF_NAME&quot; --draft --notes &quot;$NOTES&quot;</code></pre>
+    <p>Pass the notes through <code>env:</code>, not inline <code>${{ }}</code> in <code>run:</code>; PR titles can contain backticks. More patterns (release button gated on <code>has-changes</code>, monorepo matrix) are in the <a href="github-action.html">Action guide</a>.</p>
+
+    <h2>FAQ</h2>
+    <h3>Does relnote call the GitHub API to find the PRs?</h3>
+    <p>No. It reads git log only. The PR number is already in each squash commit subject as (#41), and GitHub turns #41 into a link in a Release body. In CHANGELOG.md, where GitHub does not autolink, relnote v0.3.5+ writes [#41](https://github.com/OWNER/REPO/pull/41) when origin is a github.com remote.</p>
+    <h3>What if some PRs were merged with a merge commit?</h3>
+    <p>Merge commits (Merge pull request #12 from …) are skipped by default; the commits they brought in are still listed. Squash and rebase merges both leave plain commits, so mixed histories work.</p>
+    <h3>Where do co-authors come from?</h3>
+    <p>GitHub adds Co-authored-by: trailers to the squash commit body for everyone who committed on the PR branch. relnote reads those trailers and lists the names after the author.</p>
+    <h3>How do I mark a PR as breaking?</h3>
+    <p>Put ! after the type in the PR title (feat(api)!: …) or add a BREAKING CHANGE: line to the squash commit message. Either one lands under Breaking and makes --next-version bump the major.</p>
+    <h3>How is this different from gh release create --generate-notes?</h3>
+    <p>GitHub&#x27;s generated notes list PR titles with authors and new contributors, grouped by labels you configure in .github/release.yml. relnote groups by the conventional-commit type in the title, needs no labels or API, and can also write CHANGELOG.md and suggest the next version.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/latest">Latest release</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
