@@ -133,13 +133,18 @@ def github_compare_url(
 ) -> str | None:
     if not since:
         return None
-    result = run_git(["remote", "get-url", "origin"], cwd=cwd)
-    if result.returncode != 0:
-        return None
-    owner_repo = _parse_github_remote(result.stdout.strip())
+    owner_repo = github_repo(cwd=cwd)
     if not owner_repo:
         return None
     return f"https://github.com/{owner_repo}/compare/{since}...{until}"
+
+
+def github_repo(cwd: str | Path | None = None) -> str | None:
+    """`owner/repo` of a GitHub `origin` remote, else None."""
+    result = run_git(["remote", "get-url", "origin"], cwd=cwd)
+    if result.returncode != 0:
+        return None
+    return _parse_github_remote(result.stdout.strip())
 
 
 def _parse_github_remote(url: str) -> str | None:

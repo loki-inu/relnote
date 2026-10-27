@@ -28,7 +28,7 @@
         "name": "Generate CHANGELOG.md from conventional commits, offline — relnote",
         "description": "relnote --changelog prepends a Keep a Changelog style section for each release to CHANGELOG.md, grouped from conventional commits in your git history. No config, no API, stdlib Python. CLI, GitHub Action, and gh extension.",
         "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
-        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.4", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.5", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
       },
       {
         "@type": "BreadcrumbList",
@@ -144,13 +144,13 @@
     <p class="tag">relnote reads your git history from the latest tag to <code>HEAD</code>, groups <code>feat</code>, <code>fix</code>, and breaking changes, and prepends one release section to <code>CHANGELOG.md</code>. Your header and older entries are left exactly as they were.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
-      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.4">v0.3.4 release</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.5">v0.3.5 release</a>
       · <a href="compare.html">Compare to git-cliff</a>
     </div>
 
     <h2>Install</h2>
     <pre><code>pip install git+https://github.com/loki-inu/relnote.git
-relnote --version   # relnote 0.3.4</code></pre>
+relnote --version   # relnote 0.3.5</code></pre>
     <p>Python 3.11+ and git on <code>PATH</code>. No third-party packages, no network calls, no config file.</p>
     <p>On macOS or Linux with Homebrew: <code>brew install loki-inu/tap/relnote</code>.</p>
 
@@ -184,7 +184,7 @@ All notable changes to this project are documented in this file.
 
 ## [v1.2.0] - 2026-09-01
 …</code></pre>
-    <p>Illustrative output from a made-up history. A missing file is created with the <code># Changelog</code> header. The new section goes above the first <code>## </code> heading, after any preamble. The compare link appears when <code>origin</code> is a <code>github.com</code> remote.</p>
+    <p>Illustrative output from a made-up history. A missing file is created with the <code># Changelog</code> header. The new section goes above the first <code>## </code> heading, after any preamble. The compare link appears when <code>origin</code> is a <code>github.com</code> remote. From v0.3.5 the same remote turns a squash-merge reference like <code>(#41)</code> into <code>([#41](https://github.com/you/project/pull/41))</code>, because GitHub does not autolink <code>#41</code> inside a Markdown file. See <a href="squash-merge.html">release notes from squash-merged PR titles</a>.</p>
 
     <h2>Safe to re-run</h2>
     <ul>
@@ -198,7 +198,7 @@ All notable changes to this project are documented in this file.
   with:
     fetch-depth: 0
 - id: relnote
-  uses: loki-inu/relnote@v0.3.4
+  uses: loki-inu/relnote@v0.3.5
   with:
     changelog: CHANGELOG.md
     changelog-title: ${{ github.ref_name }}

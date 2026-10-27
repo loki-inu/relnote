@@ -18,6 +18,9 @@ DEFAULT_HEADER = (
 
 SECTION_RE = re.compile(r"^## ", re.MULTILINE)
 
+# "(#123)" as left by GitHub squash merges ("feat: thing (#123)").
+PR_REF_RE = re.compile(r"\(#(\d+)\)")
+
 
 class ChangelogError(Exception):
     """Raised when the changelog cannot be updated safely."""
@@ -31,11 +34,29 @@ def _heading_re(title: str) -> re.Pattern[str]:
     )
 
 
-def section_from_notes(notes: str, *, title: str, date: str | None) -> str:
+def link_pr_refs(line: str, repo: str) -> str:
+    """Link `(#123)` to the pull request on github.com/<repo>.
+
+    GitHub autolinks `#123` in Release bodies but not in CHANGELOG.md
+    files, so the changelog gets explicit links. Code spans are left alone.
+    """
+    parts = line.split("`")
+    for i in range(0, len(parts), 2):
+        parts[i] = PR_REF_RE.sub(
+            lambda m: f"([#{m.group(1)}](https://github.com/{repo}/pull/{m.group(1)}))",
+            parts[i],
+        )
+    return "`".join(parts)
+
+
+def section_from_notes(
+    notes: str, *, title: str, date: str | None, repo: str | None = None
+) -> str:
     """Turn relnote github-format notes into a `## [title] - date` section.
 
     Drops the "What's changed" heading and the Range footer, keeps the
     category headings, bullets, and the full-changelog compare link.
+    With `repo` ("owner/name"), `(#123)` in bullets links to the PR.
     """
     lines = notes.splitlines()
     if lines and lines[0].strip() == "## What's changed":
@@ -51,6 +72,8 @@ def section_from_notes(notes: str, *, title: str, date: str | None) -> str:
             if line.startswith("**Full changelog:**"):
                 footer.append(line)
             continue
+        if repo and line.lstrip().startswith("- "):
+            line = link_pr_refs(line, repo)
         body.append(line)
     while body and not body[0].strip():
         body.pop(0)
@@ -84,7 +107,14 @@ def prepend_section(existing: str | None, section: str, *, title: str) -> str:
     return existing[: match.start()] + section + existing[match.start() :]
 
 
-def update_changelog(path: str | Path, notes: str, *, title: str, date: str | None) -> None:
+def update_changelog(
+    path: str | Path,
+    notes: str,
+    *,
+    title: str,
+    date: str | None,
+    repo: str | None = None,
+) -> None:
     dest = Path(path)
     if not dest.parent.exists():
         raise ChangelogError(f"changelog directory does not exist: {dest.parent}")
@@ -99,7 +129,7 @@ def update_changelog(path: str | Path, notes: str, *, title: str, date: str | No
         if "\r\n" in raw:
             eol = "\r\n"
         existing = raw.replace("\r\n", "\n")
-    section = section_from_notes(notes, title=title, date=date)
+    section = section_from_notes(notes, title=title, date=date, repo=repo)
     text = prepend_section(existing, section, title=title)
     if eol != "\n":
         text = text.replace("\n", eol)

@@ -65,13 +65,13 @@ Each GitHub Release ships `relnote`, a self-contained Python [zipapp](https://do
 mkdir -p ~/.local/bin
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
 chmod +x ~/.local/bin/relnote
-relnote --version   # relnote 0.3.4
+relnote --version   # relnote 0.3.5
 ```
 
-Pin a version with `releases/download/v0.3.4/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
+Pin a version with `releases/download/v0.3.5/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
 
 ```bash
-curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.4/SHA256SUMS
+curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.5/SHA256SUMS
 grep ' relnote$' SHA256SUMS | sha256sum -c -
 ```
 
@@ -206,7 +206,7 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--date YYYY-MM-DD` | today (UTC) | section date for `--changelog` |
 | `--quiet` / `-q` | off | with `--output` or `--changelog`, do not print notes to stdout |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.3.4` |
+| `--version` | | print `relnote 0.3.5` |
 
 Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, `--output` / `--changelog` points at a missing parent directory, the changelog already has a section with that title, or `--next-version` finds a base tag that is not `x.y.z`. Exit `2` if `--quiet` is set without `--output` or `--changelog`.
 
@@ -222,7 +222,9 @@ If `--until` (default `HEAD`) is itself tagged, the default range starts at the 
 
 ### CHANGELOG.md
 
-`--changelog` writes the same grouped notes into a Keep a Changelog style file. The new section goes above the newest `## ` entry; your header and older entries stay byte-for-byte the same. Running it twice for the same title is refused, so a re-run in CI cannot duplicate a release.
+`--changelog` writes the same grouped notes into a Keep a Changelog style file. The new section goes above the newest `## ` entry; your header and older entries stay byte-for-byte the same. Running it twice for the same title is refused, so a re-run in CI cannot duplicate a release. From v0.3.5, when `origin` is a `github.com` remote, the squash-merge reference `(#41)` in each changelog bullet becomes a link to that pull request (GitHub autolinks `#41` in a Release body but not in a Markdown file); stdout keeps the short form.
+
+Squash-merging PRs with Conventional Commits titles? Each PR is already one commit like `feat(api): add paging (#41)`, so relnote gives grouped notes with no labels or API: [Release notes from squash-merged PR titles](https://loki-inu.github.io/relnote/squash-merge.html).
 
 ### One-command local release (standard-version style)
 
@@ -235,7 +237,7 @@ If `--until` (default `HEAD`) is itself tagged, the default range starts at the 
 
 ## GitHub Action
 
-Use this repository from another workflow. Pin `loki-inu/relnote@v0.3.4` (any tag from v0.3.3 loads; v0.3.4 names a tag-push range after the pushed tag, so the compare link ends at `v1.4.0` instead of `HEAD`). In v0.1.1–v0.3.2, `action.yml` had an unquoted `: ` in an input description, and the runner refuses to load it ("Mapping values are not allowed in this context"); v0.3.3 fixes that, and CI now runs the action itself on Linux and Windows. The CLI in those tags is fine.
+Use this repository from another workflow. Pin `loki-inu/relnote@v0.3.5` (any tag from v0.3.3 loads; v0.3.4 names a tag-push range after the pushed tag, so the compare link ends at `v1.4.0` instead of `HEAD`). In v0.1.1–v0.3.2, `action.yml` had an unquoted `: ` in an input description, and the runner refuses to load it ("Mapping values are not allowed in this context"); v0.3.3 fixes that, and CI now runs the action itself on Linux and Windows. The CLI in those tags is fine.
 
 ```yaml
 name: Release notes
@@ -251,7 +253,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.4
+        uses: loki-inu/relnote@v0.3.5
       - name: Print notes
         env:
           NEXT: ${{ steps.relnote.outputs.next-version }}
@@ -267,7 +269,7 @@ Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots`
 
 ```yaml
       - id: relnote
-        uses: loki-inu/relnote@v0.3.4
+        uses: loki-inu/relnote@v0.3.5
         with:
           path: packages/api
           tag-prefix: api/v

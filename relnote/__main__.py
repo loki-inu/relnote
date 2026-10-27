@@ -13,13 +13,13 @@ if __package__ in {None, ""}:
     from relnote import __version__
     from relnote.changelog import ChangelogError, update_changelog
     from relnote.format import classify, group_commits, render, select
-    from relnote.git import GitError, collect_commits, github_compare_url, last_tag, tag_at
+    from relnote.git import GitError, collect_commits, github_compare_url, github_repo, last_tag, tag_at
     from relnote.semver import VersionError, bump_kind, next_version
 else:
     from . import __version__
     from .changelog import ChangelogError, update_changelog
     from .format import classify, group_commits, render, select
-    from .git import GitError, collect_commits, github_compare_url, last_tag, tag_at
+    from .git import GitError, collect_commits, github_compare_url, github_repo, last_tag, tag_at
     from .semver import VersionError, bump_kind, next_version
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -334,7 +334,13 @@ def main(argv: list[str] | None = None) -> int:
                     omitted=omitted,
                 )
             try:
-                update_changelog(args.changelog, section_notes, title=title, date=date)
+                update_changelog(
+                    args.changelog,
+                    section_notes,
+                    title=title,
+                    date=date,
+                    repo=github_repo(cwd=args.repo),
+                )
             except ChangelogError as exc:
                 print(f"relnote: {exc}", file=sys.stderr)
                 return 1
