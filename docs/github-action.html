@@ -35,7 +35,7 @@
       "about": {
         "@type": "SoftwareApplication",
         "name": "relnote",
-        "softwareVersion": "0.3.5",
+        "softwareVersion": "0.3.6",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, macOS, Windows",
         "url": "https://github.com/loki-inu/relnote",
@@ -75,7 +75,7 @@
         {
           "@type": "HowToStep",
           "name": "Generate the notes",
-          "text": "Add a step with id relnote that uses loki-inu/relnote@v0.3.5. On a tag push the range runs from the previous tag to the pushed tag."
+          "text": "Add a step with id relnote that uses loki-inu/relnote@v0.3.6. On a tag push the range runs from the previous tag to the pushed tag."
         },
         {
           "@type": "HowToStep",
@@ -92,7 +92,7 @@
           "name": "Which version of loki-inu/relnote should I pin?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "v0.3.5. Tags v0.1.1 to v0.3.2 have an action.yml the runner cannot parse; any tag from v0.3.3 loads. v0.3.4 ends the compare link at the pushed tag instead of HEAD."
+            "text": "v0.3.6. Tags v0.1.1 to v0.3.2 have an action.yml the runner cannot parse; any tag from v0.3.3 loads. v0.3.4 ends the compare link at the pushed tag instead of HEAD."
           }
         },
         {
@@ -221,7 +221,7 @@
       <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
       · <a href="https://github.com/loki-inu/relnote/blob/main/action.yml">action.yml</a>
       · <a href="https://github.com/loki-inu/relnote/blob/main/examples/draft-release.yml">examples/draft-release.yml</a>
-      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.5">v0.3.5 release</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.6">v0.3.6 release</a>
     </div>
 
     <h2>Draft a Release on every tag push</h2>
@@ -243,7 +243,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.5
+        uses: loki-inu/relnote@v0.3.6
       - uses: softprops/action-gh-release@v2
         with:
           draft: true
@@ -298,7 +298,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.5
+        uses: loki-inu/relnote@v0.3.6
       - if: steps.relnote.outputs.has-changes == 'true'
         run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
         env:
@@ -320,7 +320,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.5
+        uses: loki-inu/relnote@v0.3.6
         with:
           path: |
             packages/${{ matrix.package }}
@@ -337,7 +337,7 @@ jobs:
     <h2>Also prepend CHANGELOG.md</h2>
     <p><code>changelog</code> writes a Keep a Changelog section (<code>## [v1.4.0] - 2026-10-26</code>) above the newest entry on the runner's disk; older entries are not touched and a duplicate title is refused. The action does not commit. Commit it yourself, or open a PR with the file:</p>
     <pre><code>      - id: relnote
-        uses: loki-inu/relnote@v0.3.5
+        uses: loki-inu/relnote@v0.3.6
         with:
           changelog: CHANGELOG.md
           changelog-title: ${{ github.ref_name }}</code></pre>
@@ -376,7 +376,7 @@ jobs:
 
     <h2>FAQ</h2>
     <h3>Which version should I pin?</h3>
-    <p><code>@v0.3.5</code>. Tags v0.1.1–v0.3.2 have an <code>action.yml</code> the runner cannot parse ("Mapping values are not allowed in this context"); the CLI in them is fine, but <code>uses:</code> fails before the step starts. Any tag from v0.3.3 loads.</p>
+    <p><code>@v0.3.6</code>. Tags v0.1.1–v0.3.2 have an <code>action.yml</code> the runner cannot parse ("Mapping values are not allowed in this context"); the CLI in them is fine, but <code>uses:</code> fails before the step starts. Any tag from v0.3.3 loads.</p>
     <h3>Why is the notes output empty?</h3>
     <p><code>has-changes</code> is <code>false</code>: no commits since the previous tag after the filters (<code>path</code>, <code>no-bots</code>, release commits). The log shows a notice saying so. If you expected commits, check that <code>tag-prefix</code>, <code>path</code>, and <code>since</code> are what you meant, and for a monorepo that <code>tag-prefix</code> ends with its separator (<code>api/v</code>, not <code>api</code>).</p>
     <h3>The notes list only one commit and say <code>(start)</code></h3>
@@ -391,7 +391,7 @@ jobs:
     <p>Either. Merge commits are left out by default and the squashed commit's conventional-commit subject is what gets grouped, so PR titles like <code>feat(cli): add --json output (#42)</code> work as they are (the <code>(#42)</code> stays in the line, and GitHub links it).</p>
 
     <h2>How this page is tested</h2>
-    <p><a href="https://github.com/loki-inu/relnote/blob/main/.github/workflows/ci.yml">CI</a> runs the action with <code>uses: ./</code> on Linux and Windows for a normal range, the no-op case, and a tagged <code>HEAD</code> (the tag-push case), and <a href="https://github.com/loki-inu/relnote/blob/main/tests/test_action.py"><code>tests/test_action.py</code></a> runs the action's shell step against temporary repositories, including the tag-push range above. The tag-push draft (with the tag made inside the job), the matrix, and the no-op case were also run with the published <code>uses: loki-inu/relnote@v0.3.3</code> and <code>@v0.3.5</code> on GitHub-hosted runners, and the workflows pass <a href="https://github.com/rhysd/actionlint">actionlint</a>. Commit hashes in the sample output will differ in your repository.</p>
+    <p><a href="https://github.com/loki-inu/relnote/blob/main/.github/workflows/ci.yml">CI</a> runs the action with <code>uses: ./</code> on Linux and Windows for a normal range, the no-op case, and a tagged <code>HEAD</code> (the tag-push case), and <a href="https://github.com/loki-inu/relnote/blob/main/tests/test_action.py"><code>tests/test_action.py</code></a> runs the action's shell step against temporary repositories, including the tag-push range above. The tag-push draft (with the tag made inside the job), the matrix, and the no-op case were also run with the published <code>uses: loki-inu/relnote@v0.3.3</code> and <code>@v0.3.4</code> on GitHub-hosted runners, and the workflows pass <a href="https://github.com/rhysd/actionlint">actionlint</a>. Commit hashes in the sample output will differ in your repository.</p>
 
     <footer>
       <p><a href="./">relnote docs</a> · <a href="monorepo.html">Monorepo release notes</a> · <a href="next-version.html">Next version</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="ci.html">GitLab CI, Jenkins or any CI</a> · <a href="gh-extension.html">gh extension</a> · <a href="https://github.com/loki-inu/relnote">Source (MIT)</a></p>

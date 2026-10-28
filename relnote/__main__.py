@@ -88,6 +88,19 @@ examples:
 """.strip()
 
 
+_VERSION_TAG = re.compile(r"v?\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.+-]*)?")
+
+
+def _is_version_tag(title: str, prefix: str) -> bool:
+    """True for a semver tag name such as v1.4.0 (after --tag-prefix, if any)."""
+    if prefix and not title.startswith(prefix):
+        return False
+    rest = title[len(prefix):] if prefix else title
+    if prefix.endswith("v"):
+        rest = "v" + rest
+    return _VERSION_TAG.fullmatch(rest) is not None
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="relnote",
@@ -323,14 +336,23 @@ def main(argv: list[str] | None = None) -> int:
                 until_label if until_label and until_label != "HEAD" else "Unreleased"
             )
             date = args.date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            # Cutting a release before tagging it (examples/release.sh):
+            # --changelog-title v1.4.0 on an untagged HEAD names the tag about
+            # to be created, so the section's compare link ends there, not at
+            # HEAD (which keeps moving after the release).
+            section_until = until_label
+            if until_label == "HEAD" and args.changelog_title and _is_version_tag(
+                args.changelog_title, args.tag_prefix or ""
+            ):
+                section_until = args.changelog_title
             section_notes = text
-            if args.format != "github":
+            if args.format != "github" or section_until != until_label:
                 section_notes = render(
                     group_commits(chosen),
                     format="github",
                     since=since,
-                    until=until_label,
-                    compare_url=github_compare_url(since, until_label, cwd=args.repo),
+                    until=section_until,
+                    compare_url=github_compare_url(since, section_until, cwd=args.repo),
                     omitted=omitted,
                 )
             try:
