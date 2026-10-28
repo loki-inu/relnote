@@ -35,7 +35,7 @@
         "about": {
           "@type": "SoftwareApplication",
           "name": "relnote",
-          "softwareVersion": "0.3.5",
+          "softwareVersion": "0.3.6",
           "applicationCategory": "DeveloperApplication",
           "operatingSystem": "Linux, macOS, Windows",
           "url": "https://github.com/loki-inu/relnote",
@@ -245,7 +245,7 @@
     <p class="tag">Several packages in one git repository, each with its own tags (<code>api/v1.2.0</code>, <code>web/v0.3.1</code>) and its own Release notes, next version, and <code>CHANGELOG.md</code>. relnote does this with two flags and no config file: <code>--path</code> picks the package's commits, <code>--tag-prefix</code> picks the package's last release.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">relnote on GitHub</a>
-      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.5">v0.3.5 release</a>
+      · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.6">v0.3.6 release</a>
       · <a href="https://github.com/loki-inu/relnote/blob/main/tests/test_monorepo_docs.py">The test that runs this page's example</a>
     </div>
 
@@ -254,7 +254,7 @@
 # or: pixi global install relnote   (Windows / Scoop: see windows.html)
 # or the single file:
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote &amp;&amp; chmod +x ~/.local/bin/relnote
-relnote --version   # relnote 0.3.5 (--path and --tag-prefix need 0.3.0 or later)</code></pre>
+relnote --version   # relnote 0.3.6 (--path and --tag-prefix need 0.3.0 or later)</code></pre>
 
     <h2>Layout and tag conventions</h2>
     <p>The example on this page uses this repository:</p>
@@ -363,7 +363,7 @@ jobs:
           fetch-depth: 0
       - name: Install relnote
         run: |
-          curl -fsSL -o "$RUNNER_TEMP/relnote" https://github.com/loki-inu/relnote/releases/download/v0.3.5/relnote
+          curl -fsSL -o "$RUNNER_TEMP/relnote" https://github.com/loki-inu/relnote/releases/download/v0.3.6/relnote
           chmod +x "$RUNNER_TEMP/relnote"
       - name: Next version
         id: next
@@ -399,7 +399,7 @@ jobs:
       - name: Notes for this package
         run: |
           pkg="${GITHUB_REF_NAME%%/v*}"
-          curl -fsSL -o "$RUNNER_TEMP/relnote" https://github.com/loki-inu/relnote/releases/download/v0.3.5/relnote
+          curl -fsSL -o "$RUNNER_TEMP/relnote" https://github.com/loki-inu/relnote/releases/download/v0.3.6/relnote
           python3 "$RUNNER_TEMP/relnote" --path "packages/$pkg" --tag-prefix "$pkg/v" \
             --until "$GITHUB_REF_NAME" --output notes.md -q
       - run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md
@@ -408,7 +408,7 @@ jobs:
     <p>With <code>--until</code> set to the pushed tag, the range starts at the package's previous tag (<code>api/v1.0.0 → api/v2.0.0</code>), and the compare link ends at the tag instead of <code>HEAD</code>.</p>
     <p>The <a href="https://github.com/loki-inu/relnote#github-action"><code>loki-inu/relnote</code> action</a> also takes <code>path</code> (one directory per line) and <code>tag-prefix</code>, and outputs <code>notes</code> and <code>next-version</code>. From v0.3.3 a package with no new commits is a clean no-op: the step succeeds with <code>has-changes</code> set to <code>false</code> and empty <code>notes</code> and <code>next-version</code> (set <code>fail-on-empty: true</code> to fail instead), so the action can replace the two relnote steps in the matrix above:</p>
     <pre><code>      - id: relnote
-        uses: loki-inu/relnote@v0.3.5
+        uses: loki-inu/relnote@v0.3.6
         with:
           path: packages/${{ matrix.package }}
           tag-prefix: ${{ matrix.package }}/v

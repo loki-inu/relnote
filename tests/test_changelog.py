@@ -175,6 +175,54 @@ class ChangelogCliTests(unittest.TestCase):
                 log.read_text(encoding="utf-8"),
             )
 
+    def _compare_repo(self, tmp: str, remote: str = "https://github.com/acme/widget.git") -> Path:
+        repo = Path(tmp) / "repo"
+        repo.mkdir()
+        _init_repo(repo)
+        _git(["remote", "add", "origin", remote], repo)
+        _git(["tag", "v1.3.2"], repo)
+        _git(["commit", "--allow-empty", "-m", "feat: add json output (#12)"], repo)
+        return repo
+
+    def test_version_title_on_untagged_head_ends_compare_at_title(self) -> None:
+        # examples/release.sh writes CHANGELOG.md before it creates the tag.
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self._compare_repo(tmp)
+            log = repo / "CHANGELOG.md"
+            code, out, err = self._run([
+                "--repo", str(repo), "--changelog", str(log),
+                "--changelog-title", "v1.4.0", "--date", "2026-10-28",
+            ])
+            self.assertEqual(code, 0, err)
+            text = log.read_text(encoding="utf-8")
+            self.assertIn("compare/v1.3.2...v1.4.0", text)
+            self.assertNotIn("...HEAD", text)
+            # the Release body on stdout still describes what exists: HEAD
+            self.assertIn("compare/v1.3.2...HEAD", out)
+
+    def test_non_version_title_keeps_head(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self._compare_repo(tmp)
+            log = repo / "CHANGELOG.md"
+            code, _, err = self._run([
+                "--repo", str(repo), "--changelog", str(log),
+                "--changelog-title", "Next release", "-q",
+            ])
+            self.assertEqual(code, 0, err)
+            self.assertIn("compare/v1.3.2...HEAD", log.read_text(encoding="utf-8"))
+
+    def test_prefixed_version_title_with_tag_prefix(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self._compare_repo(tmp)
+            _git(["tag", "api/v1.0.0", "HEAD~1"], repo)
+            log = repo / "CHANGELOG.md"
+            code, _, err = self._run([
+                "--repo", str(repo), "--tag-prefix", "api/v", "--changelog", str(log),
+                "--changelog-title", "api/v1.1.0", "-q",
+            ])
+            self.assertEqual(code, 0, err)
+            self.assertIn("compare/api/v1.0.0...api/v1.1.0", log.read_text(encoding="utf-8"))
+
     def test_default_title_unreleased_and_stdout_kept(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp) / "repo"

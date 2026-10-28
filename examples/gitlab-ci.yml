@@ -13,7 +13,7 @@ release_notes:
   rules:
     - if: $CI_COMMIT_TAG
   script:
-    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.5/relnote
+    - curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.6/relnote
     - chmod +x relnote
     - ./relnote --version
     - ./relnote --no-bots --output notes.md --quiet

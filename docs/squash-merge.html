@@ -246,7 +246,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.5
+        uses: loki-inu/relnote@v0.3.6
       - env:
           GH_TOKEN: ${{ github.token }}
           NOTES: ${{ steps.relnote.outputs.notes }}
