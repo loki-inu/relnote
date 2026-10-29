@@ -24,6 +24,10 @@ standard-version is deprecated. examples/release.sh (bash, in the relnote repo) 
 
 No release PR bot: a workflow_dispatch job runs the relnote action (has-changes gate), then examples/release.sh --bump-file pyproject.toml (next version, version bump, CHANGELOG.md, chore(release) commit, annotated tag), pushes the commit and tag, and publishes relnote output with gh release create. From v0.3.6 the CHANGELOG.md compare link ends at the --changelog-title tag (e.g. v1.4.0) when HEAD is not tagged yet. Keep release-please for reviewed release PRs, per-language version updaters, or a protected main without a bypass token. Guide: https://loki-inu.github.io/relnote/release-please-alternative.html
 
+## Python packages (pyproject.toml, PyPI)
+
+Locally: examples/release.sh --bump-file pyproject.toml (first version = "..." line, so [project] or [tool.poetry]) → next version from commits, CHANGELOG.md section, chore(release) commit, annotated tag; git push --follow-tags. Tag-push workflow: check v$version == tag via tomllib, python -m build, pypa/gh-action-pypi-publish with trusted publishing (environment pypi, id-token: write only on that job), then gh release create TAG dist/* --notes-file with the loki-inu/relnote action's notes. Dynamic versions (setuptools-scm, hatch-vcs): skip --bump-file; the tag is the version. __version__: importlib.metadata.version("pkg"). Guide: https://loki-inu.github.io/relnote/python-package.html
+
 ## Compared to nearby tools
 
 - git-cliff: keep it for templated CHANGELOG.md rebuilt from history and version bump. relnote prints a Release body, can prepend one release to CHANGELOG.md, and needs no config.
@@ -60,6 +64,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - GitLab CI, Jenkins or any CI (single-file download): https://loki-inu.github.io/relnote/ci.html
 - standard-version alternative (examples/release.sh): https://loki-inu.github.io/relnote/standard-version-alternative.html
 - release-please alternative without a release PR (workflow_dispatch: bump version file, CHANGELOG.md, chore(release) commit, tag, gh release create; tested example): https://loki-inu.github.io/relnote/release-please-alternative.html
+- Release a Python package (pyproject.toml bump, CHANGELOG.md, tag, PyPI trusted publishing, GitHub Release; tested example): https://loki-inu.github.io/relnote/python-package.html
 - Release notes from squash-merged PR titles (feat: x (#41); PR-title check; CHANGELOG.md PR links from v0.3.5): https://loki-inu.github.io/relnote/squash-merge.html
 - Windows and PowerShell (Scoop, --output vs > redirection, UTF-8/BOM, line endings): https://loki-inu.github.io/relnote/windows.html
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html

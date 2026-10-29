@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release a Python package from conventional commits — relnote</title>
+  <meta name="description" content="Bump the version in pyproject.toml, prepend CHANGELOG.md, tag, then build, publish to PyPI with trusted publishing, and create a GitHub Release with grouped notes. No Node, no release bot, no config file.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/python-package.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release a Python package from conventional commits — relnote">
+  <meta property="og:description" content="Bump the version in pyproject.toml, prepend CHANGELOG.md, tag, then build, publish to PyPI with trusted publishing, and create a GitHub Release with grouped notes. No Node, no release bot, no config file.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/python-package.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release a Python package from conventional commits — relnote">
+  <meta name="twitter:description" content="Bump the version in pyproject.toml, prepend CHANGELOG.md, tag, then build, publish to PyPI with trusted publishing, and create a GitHub Release with grouped notes. No Node, no release bot, no config file.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/python-package.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/python-package.html",
+      "name": "Release a Python package from conventional commits — relnote",
+      "description": "Bump the version in pyproject.toml, prepend CHANGELOG.md, tag, then build, publish to PyPI with trusted publishing, and create a GitHub Release with grouped notes. No Node, no release bot, no config file.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "relnote",
+        "url": "https://loki-inu.github.io/relnote/"
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "relnote",
+        "url": "https://github.com/loki-inu/relnote"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "relnote docs",
+          "item": "https://loki-inu.github.io/relnote/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Python package releases",
+          "item": "https://loki-inu.github.io/relnote/python-package.html"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Release a Python package from conventional commits",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Cut the release",
+          "text": "Run examples/release.sh --bump-file pyproject.toml: next version from commits, version bump, CHANGELOG.md section, chore(release) commit, annotated tag."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Push the tag",
+          "text": "git push --follow-tags starts the release workflow."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Build and publish",
+          "text": "The workflow checks the tag matches pyproject.toml, builds the sdist and wheel, uploads them to PyPI with trusted publishing, and creates a GitHub Release whose body comes from the loki-inu/relnote action."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does this work with Poetry, Hatch, PDM, setuptools, or uv?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, as long as pyproject.toml has a static version line. release.sh rewrites the first line that starts with version = \"...\", which is [project] version for Hatch, PDM, setuptools, flit, and uv, and [tool.poetry] version for Poetry 1.x. Keep that table above any other table with its own version key."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "My version is dynamic (setuptools-scm or hatch-vcs). What changes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Skip --bump-file and the tag check. The tag is the version, so run relnote --next-version, tag, and push; the build backend reads the version from the tag. The notes, CHANGELOG.md, and workflow steps stay the same."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I keep __version__ in sync?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Do not store it twice. In your package's __init__.py, read it from the installed metadata: from importlib.metadata import version; __version__ = version(\"demo\")."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why trusted publishing instead of a PyPI token?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PyPI trusted publishing lets the workflow get a short-lived upload token through OpenID Connect, so there is no long-lived secret to leak. Add the publisher on PyPI (project, owner, repo, workflow file release.yml, environment pypi) before the first tag."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I try it on TestPyPI first?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Register the trusted publisher on test.pypi.org and add repository-url: https://test.pypi.org/legacy/ under with: in the publish step."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if the tag and pyproject.toml disagree?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The first step fails before anything is built or uploaded, with an error naming both values. A PyPI version cannot be reused once uploaded, so this check is worth keeping."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="release-please-alternative.html">release-please alternative</a> · <a href="standard-version-alternative.html">standard-version alternative</a></p>
+    <h1>Release a Python package from conventional commits</h1>
+    <p class="tag">Bump <code>version</code> in <code>pyproject.toml</code>, prepend a <code>CHANGELOG.md</code> section, and tag in one local command. Pushing the tag builds the sdist and wheel, uploads them to PyPI with trusted publishing, and creates a GitHub Release with grouped notes. No Node, no release bot, no config file; relnote itself is stdlib Python.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/examples/release.sh">release.sh</a>
+      · <a href="single-file.html">Single-file install</a>
+    </div>
+
+    <h2>1. A static version in pyproject.toml</h2>
+    <pre><code>[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;demo&quot;
+version = &quot;1.2.0&quot;
+description = &quot;A small example package&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [&quot;httpx&gt;=0.27&quot;]
+
+[tool.ruff]
+target-version = &quot;py39&quot;</code></pre>
+    <p>Any build backend works (Hatch, setuptools, PDM, flit, uv, Poetry). The version lives in one place; see the FAQ for <code>__version__</code> and for dynamic versions.</p>
+
+    <h2>2. Cut the release locally</h2>
+    <p>Three commits since <code>v1.2.0</code>:</p>
+    <pre><code>git log --oneline v1.2.0..HEAD
+docs: install with pipx
+fix: read config files as UTF-8 on Windows
+feat(cli): add --json output</code></pre>
+    <p>Install relnote (<code>pipx install git+https://github.com/loki-inu/relnote.git</code>, <code>brew install loki-inu/tap/relnote</code>, or the <a href="single-file.html">single file</a>), then run the release script pinned to a version:</p>
+    <pre><code>curl -fsSLO https://raw.githubusercontent.com/loki-inu/relnote/v0.3.6/examples/release.sh
+bash release.sh --bump-file pyproject.toml</code></pre>
+    <pre><code>next: v1.3.0
+changelog: CHANGELOG.md
+bump: pyproject.toml -&gt; 1.3.0
+committed: chore(release): v1.3.0
+tagged: v1.3.0
+next step: git push --follow-tags</code></pre>
+    <p>A <code>feat</code> made it a minor bump. The release commit changes one line of <code>pyproject.toml</code>:</p>
+    <pre><code>-version = &quot;1.2.0&quot;
++version = &quot;1.3.0&quot;</code></pre>
+    <p>and adds this section to <code>CHANGELOG.md</code>:</p>
+    <pre><code>## [v1.3.0] - 2026-10-29
+
+### Features
+
+- **cli:** add --json output (`4e39256`) — Ada Lovelace
+
+### Fixes
+
+- read config files as UTF-8 on Windows (`a8cc6d8`) — Ada Lovelace
+
+### Other
+
+- **docs:** install with pipx (`83256ad`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+    <p>Output from a test repository built in relnote&#x27;s CI (<code>tests/test_python_package_docs.py</code>); your hashes and date differ. Use <code>--dry-run</code> first to see the version and notes without changing anything. Then:</p>
+    <pre><code>git push --follow-tags</code></pre>
+
+    <h2>3. Build, publish, and release on the tag</h2>
+    <p>Save as <code>.github/workflows/release.yml</code>. On PyPI, add a trusted publisher for the project with workflow <code>release.yml</code> and environment <code>pypi</code>, and create that environment in the repository settings.</p>
+    <pre><code>name: Release
+on:
+  push:
+    tags: [&quot;v*&quot;]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: &quot;3.12&quot;
+      - name: Tag matches pyproject.toml
+        run: |
+          version=$(python -c &#x27;import tomllib; print(tomllib.load(open(&quot;pyproject.toml&quot;, &quot;rb&quot;))[&quot;project&quot;][&quot;version&quot;])&#x27;)
+          if [ &quot;v$version&quot; != &quot;$GITHUB_REF_NAME&quot; ]; then
+            echo &quot;::error::tag $GITHUB_REF_NAME but pyproject.toml says $version&quot;
+            exit 1
+          fi
+      - run: python -m pip install build &amp;&amp; python -m build
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.6
+      - name: Save notes
+        env:
+          NOTES: ${{ steps.relnote.outputs.notes }}
+        run: printf &#x27;%s\n&#x27; &quot;$NOTES&quot; &gt; dist-notes.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: notes
+          path: dist-notes.md
+
+  pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    needs: pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: actions/download-artifact@v4
+        with:
+          name: notes
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release create &quot;$GITHUB_REF_NAME&quot; dist/* --verify-tag --notes-file dist-notes.md</code></pre>
+    <p>The first step stops the run if the tag and <code>pyproject.toml</code> disagree. The upload job is the only one with <code>id-token: write</code>, and the GitHub Release is created only after PyPI accepted the files, with the wheel and sdist attached. The Release body is the action&#x27;s <code>notes</code> output, passed through <code>env:</code> because commit subjects can contain backticks:</p>
+    <pre><code>## What&#x27;s changed
+
+### Features
+
+- **cli:** add --json output (`4e39256`) — Ada Lovelace
+
+### Fixes
+
+- read config files as UTF-8 on Windows (`a8cc6d8`) — Ada Lovelace
+
+### Other
+
+- **docs:** install with pipx (`83256ad`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `v1.3.0`.
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+    <p>The <code>chore(release): v1.3.0</code> commit is left out of the notes by default.</p>
+
+    <h2>FAQ</h2>
+    <h3>Does this work with Poetry, Hatch, PDM, setuptools, or uv?</h3>
+    <p>Yes, as long as pyproject.toml has a static version line. release.sh rewrites the first line that starts with version = &quot;...&quot;, which is [project] version for Hatch, PDM, setuptools, flit, and uv, and [tool.poetry] version for Poetry 1.x. Keep that table above any other table with its own version key.</p>
+    <h3>My version is dynamic (setuptools-scm or hatch-vcs). What changes?</h3>
+    <p>Skip --bump-file and the tag check. The tag is the version, so run relnote --next-version, tag, and push; the build backend reads the version from the tag. The notes, CHANGELOG.md, and workflow steps stay the same.</p>
+    <h3>How do I keep __version__ in sync?</h3>
+    <p>Do not store it twice. In your package&#x27;s __init__.py, read it from the installed metadata: from importlib.metadata import version; __version__ = version(&quot;demo&quot;).</p>
+    <pre><code>from importlib.metadata import version
+
+__version__ = version(&quot;demo&quot;)</code></pre>
+    <h3>Why trusted publishing instead of a PyPI token?</h3>
+    <p>PyPI trusted publishing lets the workflow get a short-lived upload token through OpenID Connect, so there is no long-lived secret to leak. Add the publisher on PyPI (project, owner, repo, workflow file release.yml, environment pypi) before the first tag.</p>
+    <h3>Can I try it on TestPyPI first?</h3>
+    <p>Yes. Register the trusted publisher on test.pypi.org and add repository-url: https://test.pypi.org/legacy/ under with: in the publish step.</p>
+    <h3>What if the tag and pyproject.toml disagree?</h3>
+    <p>The first step fails before anything is built or uploaded, with an error naming both values. A PyPI version cannot be reused once uploaded, so this check is worth keeping.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/latest">Latest release</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
