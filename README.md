@@ -232,6 +232,8 @@ Squash-merging PRs with Conventional Commits titles? Each PR is already one comm
 
 Want the release-please result (version bump, CHANGELOG.md, tag, GitHub Release) without a release PR waiting in your PR list? Run the same script from a one-button `workflow_dispatch` job: [release-please alternative without a release PR](https://loki-inu.github.io/relnote/release-please-alternative.html). From v0.3.6, a version `--changelog-title` such as `v1.4.0` on an untagged `HEAD` makes the CHANGELOG.md compare link end at that tag, so `release.sh` no longer writes `...HEAD` there.
 
+Releasing a Python package? [Release a Python package from conventional commits](https://loki-inu.github.io/relnote/python-package.html) bumps `version` in `pyproject.toml`, prepends CHANGELOG.md, and tags with `release.sh`, then a tag-push workflow checks the tag against `pyproject.toml`, builds, uploads to PyPI with trusted publishing, and creates the GitHub Release with relnote notes.
+
 ```sh
 ./release.sh --dry-run --bump-file package.json
 ./release.sh --bump-file package.json && git push --follow-tags

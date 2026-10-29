@@ -347,6 +347,8 @@ Range: `v1.3.2` → `v1.4.0`.
     <h2>Monorepo packages</h2>
     <p>Pass the package's tag prefix and path to <code>release.sh</code> and to the notes step: <code>bash "$RUNNER_TEMP/release.sh" --tag-prefix api/v --bump-file packages/api/package.json -- --path packages/api</code>, then <code>relnote --tag-prefix api/v --path packages/api --output …</code>. Change the guard's <code>'v*'</code> to <code>'api/v*'</code>. See the <a href="monorepo.html">monorepo guide</a> for a matrix over packages.</p>
 
+    <p>Publishing to PyPI? <a href="python-package.html">Release a Python package from conventional commits</a> adds the tag check, build, and trusted-publishing upload.</p>
+
     <h2>FAQ</h2>
     <h3>Why not just keep release-please?</h3>
     <p>Keep it if you like reviewing each release as a pull request, or need its per-language version updaters and manifest monorepo mode. This page is for repos where the open release PR is noise: it rebases on every merge, sits in the PR list, and needs release-please-config.json plus .release-please-manifest.json. Here the release happens when you press Run workflow, and nothing waits in between.</p>

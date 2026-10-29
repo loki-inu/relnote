@@ -229,6 +229,8 @@ gh extension install loki-inu/gh-relnote
 gh relnote create v1.4.0          # Release body from the same commits</code></pre>
     <p>Or let CI do it on the tag push with the <a href="https://github.com/loki-inu/relnote#github-action">relnote GitHub Action</a>, or <a href="ci.html">in GitLab CI and other CI</a>. relnote sees that <code>HEAD</code> is the new tag and uses the tag before it, so the notes cover this release.</p>
 
+    <p>Publishing to PyPI? <a href="python-package.html">Release a Python package from conventional commits</a> adds the tag check, build, and trusted-publishing upload.</p>
+
     <h2>When to pick something else</h2>
     <ul>
       <li><strong>commit-and-tag-version</strong>: the maintained drop-in fork. Keep it if you depend on <code>.versionrc</code>, prerelease bumps, lifecycle scripts or custom presets.</li>
