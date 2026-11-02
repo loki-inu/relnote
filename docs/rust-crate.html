@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release a Rust crate from conventional commits — relnote</title>
+  <meta name="description" content="Bump the version in Cargo.toml, keep Cargo.lock in sync, prepend CHANGELOG.md, tag, then publish to crates.io with trusted publishing and create a GitHub Release with grouped notes. No cargo plugin, no release bot, no config file.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/rust-crate.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release a Rust crate from conventional commits — relnote">
+  <meta property="og:description" content="Bump the version in Cargo.toml, keep Cargo.lock in sync, prepend CHANGELOG.md, tag, then publish to crates.io with trusted publishing and create a GitHub Release with grouped notes. No cargo plugin, no release bot, no config file.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/rust-crate.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release a Rust crate from conventional commits — relnote">
+  <meta name="twitter:description" content="Bump the version in Cargo.toml, keep Cargo.lock in sync, prepend CHANGELOG.md, tag, then publish to crates.io with trusted publishing and create a GitHub Release with grouped notes. No cargo plugin, no release bot, no config file.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/rust-crate.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/rust-crate.html",
+      "name": "Release a Rust crate from conventional commits — relnote",
+      "description": "Bump the version in Cargo.toml, keep Cargo.lock in sync, prepend CHANGELOG.md, tag, then publish to crates.io with trusted publishing and create a GitHub Release with grouped notes. No cargo plugin, no release bot, no config file.",
+      "isPartOf": {"@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/"},
+      "about": {"@type": "SoftwareApplication", "name": "relnote", "url": "https://github.com/loki-inu/relnote"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/"},
+        {"@type": "ListItem", "position": 2, "name": "Rust crate releases", "item": "https://loki-inu.github.io/relnote/rust-crate.html"}
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Release a Rust crate from conventional commits",
+      "step": [
+        {"@type": "HowToStep", "name": "Cut the release", "text": "Run release.sh --bump-file Cargo.toml --exec \"cargo update --workspace\": next version from commits, Cargo.toml and Cargo.lock bump, CHANGELOG.md section, chore(release) commit, annotated tag."},
+        {"@type": "HowToStep", "name": "Push the tag", "text": "git push --follow-tags starts the release workflow."},
+        {"@type": "HowToStep", "name": "Publish", "text": "The workflow checks the tag matches Cargo.toml, runs cargo test --locked, publishes to crates.io with trusted publishing, and creates a GitHub Release whose body comes from the loki-inu/relnote action."}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why is Cargo.lock in the release commit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cargo.lock records your crate's own version. After the bump it is stale, so cargo publish --locked (or any --locked build) fails because the lock file needs to be updated. The --exec \"cargo update --workspace\" step rewrites only your workspace's entries, and release.sh commits every tracked file the command changed, so the tag points at a tree that builds with --locked."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work for a workspace with several crates?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If the members share a version, put it in [workspace.package] in the root Cargo.toml, set version.workspace = true in each member, and pass --bump-file Cargo.toml once. For crates versioned separately, use one tag prefix per crate (release.sh --tag-prefix demo-core/v ... -- --path crates/demo-core) as on the monorepo page, and publish with cargo publish -p."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why trusted publishing instead of a crates.io token?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "rust-lang/crates-io-auth-action exchanges the job's OpenID Connect token for a crates.io token that lasts 30 minutes and is revoked when the job ends, so there is no long-lived secret in the repository. crates.io only lets you add a trusted publisher to a crate that already exists, so publish the first version by hand with cargo publish and a normal API token."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if the tag and Cargo.toml disagree?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The check step fails before cargo publish runs, with an error naming both values. A crates.io version can be yanked but never replaced, so the check is worth keeping."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I dry-run the whole thing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Locally, release.sh --dry-run prints the next version, the files it would bump, the --exec commands, and the notes, and changes nothing. cargo publish --dry-run --locked packages and builds the crate without uploading."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need cargo-release or release-plz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Those are good tools if you want them; this page is for people who want the version, changelog, and notes from commit messages with one small script and no extra cargo install."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="python-package.html">Python packages</a> · <a href="release-please-alternative.html">release-please alternative</a></p>
+    <h1>Release a Rust crate from conventional commits</h1>
+    <p class="tag">Bump <code>version</code> in <code>Cargo.toml</code>, bring <code>Cargo.lock</code> along, prepend a <code>CHANGELOG.md</code> section, and tag in one local command. Pushing the tag publishes to crates.io with trusted publishing and creates a GitHub Release with grouped notes. No cargo plugin, no release bot, no config file.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/examples/release.sh">release.sh</a>
+      · <a href="single-file.html">Single-file install</a>
+    </div>
+
+    <h2>1. The version lives in Cargo.toml</h2>
+    <pre><code>[package]
+name = &quot;demo&quot;
+version = &quot;1.2.0&quot;
+edition = &quot;2021&quot;
+description = &quot;A small example crate&quot;
+license = &quot;MIT&quot;
+repository = &quot;https://github.com/you/demo&quot;
+
+[profile.release]
+lto = true</code></pre>
+    <p>Commit <code>Cargo.lock</code> (Cargo&#x27;s advice for libraries and binaries alike since 2023). It also records your crate&#x27;s version, which is why the release step below updates it.</p>
+
+    <h2>2. Cut the release locally</h2>
+    <p>Three commits since <code>v1.2.0</code>:</p>
+    <pre><code>git log --oneline v1.2.0..HEAD
+docs: document the --json flag
+fix: handle empty input without panicking
+feat(cli): add --json output</code></pre>
+    <p>Install relnote (<code>pipx install git+https://github.com/loki-inu/relnote.git</code>, <code>brew install loki-inu/tap/relnote</code>, or the <a href="single-file.html">single file</a>), then run the release script pinned to a version:</p>
+    <pre><code>curl -fsSLO https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+bash release.sh --bump-file Cargo.toml --exec &quot;cargo update --workspace&quot;</code></pre>
+    <pre><code>next: v1.3.0
+changelog: CHANGELOG.md
+bump: Cargo.toml -&gt; 1.3.0
+exec: cargo update --workspace
+committed: chore(release): v1.3.0
+tagged: v1.3.0
+next step: git push --follow-tags</code></pre>
+    <p>A <code>feat</code> made it a minor bump. <code>--exec</code> runs after the bump and before the commit; <code>cargo update --workspace</code> changes only your own crate&#x27;s entry in <code>Cargo.lock</code>, not your dependencies, and release.sh commits it with the rest:</p>
+    <pre><code>git show --name-only --format= v1.3.0
+CHANGELOG.md
+Cargo.lock
+Cargo.toml</code></pre>
+    <p>Without it, <code>Cargo.lock</code> still says 1.2.0 and <code>cargo publish --locked</code> stops with &quot;the lock file …/Cargo.lock needs to be updated but --locked was passed to prevent this&quot;. The new <code>CHANGELOG.md</code> section:</p>
+    <pre><code>## [v1.3.0] - 2026-11-02
+
+### Features
+
+- **cli:** add --json output (`4e39256`) — Ada Lovelace
+
+### Fixes
+
+- handle empty input without panicking (`a8cc6d8`) — Ada Lovelace
+
+### Other
+
+- **docs:** document the --json flag (`83256ad`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+    <p>Output from a test repository built in relnote&#x27;s CI with real <code>cargo</code> (<code>tests/test_rust_crate_docs.py</code>); your hashes and date differ. Use <code>--dry-run</code> first to see the version and notes without changing anything. Then:</p>
+    <pre><code>git push --follow-tags</code></pre>
+
+    <h2>3. Publish and release on the tag</h2>
+    <p>Save as <code>.github/workflows/release.yml</code>. Publish the first version by hand (<code>cargo publish</code> with an API token); then, in the crate&#x27;s settings on crates.io, add a trusted publisher for this repository with workflow <code>release.yml</code> and environment <code>release</code>, and create that environment in the repository settings.</p>
+    <pre><code>name: Release
+on:
+  push:
+    tags: [&quot;v*&quot;]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Tag matches Cargo.toml
+        run: |
+          version=$(cargo metadata --no-deps --format-version 1 | jq -r &#x27;.packages[0].version&#x27;)
+          if [ &quot;v$version&quot; != &quot;$GITHUB_REF_NAME&quot; ]; then
+            echo &quot;::error::tag $GITHUB_REF_NAME but Cargo.toml says $version&quot;
+            exit 1
+          fi
+      - run: cargo test --locked
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
+      - run: cargo publish --locked
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+        run: |
+          printf &#x27;%s\n&#x27; &quot;$NOTES&quot; &gt; notes.md
+          gh release create &quot;$GITHUB_REF_NAME&quot; --verify-tag --notes-file notes.md</code></pre>
+    <p>The first step stops the run if the tag and <code>Cargo.toml</code> disagree. <code>--locked</code> makes the test and publish steps fail instead of quietly rewriting a stale <code>Cargo.lock</code>. The GitHub Release is created only after crates.io accepted the crate. Its body is the action&#x27;s <code>notes</code> output, passed through <code>env:</code> because commit subjects can contain backticks:</p>
+    <pre><code>## What&#x27;s changed
+
+### Features
+
+- **cli:** add --json output (`4e39256`) — Ada Lovelace
+
+### Fixes
+
+- handle empty input without panicking (`a8cc6d8`) — Ada Lovelace
+
+### Other
+
+- **docs:** document the --json flag (`83256ad`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `v1.3.0`.
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+    <p>The <code>chore(release): v1.3.0</code> commit is left out of the notes by default.</p>
+
+    <h2>FAQ</h2>
+    <h3>Why is Cargo.lock in the release commit?</h3>
+    <p>Cargo.lock records your crate&#x27;s own version. After the bump it is stale, so cargo publish --locked (or any --locked build) fails because the lock file needs to be updated. The --exec &quot;cargo update --workspace&quot; step rewrites only your workspace&#x27;s entries, and release.sh commits every tracked file the command changed, so the tag points at a tree that builds with --locked.</p>
+    <h3>Does it work for a workspace with several crates?</h3>
+    <p>If the members share a version, put it in [workspace.package] in the root Cargo.toml, set version.workspace = true in each member, and pass --bump-file Cargo.toml once. For crates versioned separately, use one tag prefix per crate (release.sh --tag-prefix demo-core/v ... -- --path crates/demo-core) as on the monorepo page, and publish with cargo publish -p.</p>
+    <h3>Why trusted publishing instead of a crates.io token?</h3>
+    <p>rust-lang/crates-io-auth-action exchanges the job&#x27;s OpenID Connect token for a crates.io token that lasts 30 minutes and is revoked when the job ends, so there is no long-lived secret in the repository. crates.io only lets you add a trusted publisher to a crate that already exists, so publish the first version by hand with cargo publish and a normal API token.</p>
+    <h3>What if the tag and Cargo.toml disagree?</h3>
+    <p>The check step fails before cargo publish runs, with an error naming both values. A crates.io version can be yanked but never replaced, so the check is worth keeping.</p>
+    <h3>Can I dry-run the whole thing?</h3>
+    <p>Locally, release.sh --dry-run prints the next version, the files it would bump, the --exec commands, and the notes, and changes nothing. cargo publish --dry-run --locked packages and builds the crate without uploading.</p>
+    <h3>Do I need cargo-release or release-plz?</h3>
+    <p>No. Those are good tools if you want them; this page is for people who want the version, changelog, and notes from commit messages with one small script and no extra cargo install.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/latest">Latest release</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>

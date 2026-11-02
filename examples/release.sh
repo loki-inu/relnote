@@ -7,6 +7,7 @@
 #   examples/release.sh --release-as v2.0.0
 #   examples/release.sh --bump-file package.json --bump-file pyproject.toml
 #   examples/release.sh --tag-prefix api/v -- --path packages/api
+#   examples/release.sh --bump-file Cargo.toml --exec "cargo update --workspace --offline"
 #
 # Needs bash, git, Python 3.11+ and relnote on PATH (or RELNOTE="python3 relnote.pyz").
 # Docs: https://loki-inu.github.io/relnote/standard-version-alternative.html
@@ -21,6 +22,9 @@ usage: release.sh [options] [-- relnote flags]
   --bump-file FILE     set the first "version" value in FILE (package.json,
                        pyproject.toml, Cargo.toml, ...); repeatable
   --tag-prefix PREFIX  monorepo tag prefix, passed to relnote (e.g. api/v)
+  --exec CMD           run CMD with bash after the bump and CHANGELOG.md, before
+                       the commit; tracked files it changes (e.g. Cargo.lock)
+                       are committed too. Repeatable; NEXT_VERSION is exported
   --skip-commit        update files but do not commit (implies --skip-tag)
   --skip-tag           commit but do not tag
   --dry-run            print what would happen; change nothing
@@ -37,6 +41,7 @@ read -r -a RELNOTE_BIN <<<"$RELNOTE_CMD"
 release_as=""
 changelog="CHANGELOG.md"
 bump_files=()
+exec_cmds=()
 tag_prefix=""
 skip_commit=0
 skip_tag=0
@@ -49,6 +54,7 @@ while [ $# -gt 0 ]; do
     --changelog) changelog=${2:?--changelog needs a file}; shift 2 ;;
     --bump-file) bump_files+=("${2:?--bump-file needs a file}"); shift 2 ;;
     --tag-prefix) tag_prefix=${2:?--tag-prefix needs a prefix}; shift 2 ;;
+    --exec) exec_cmds+=("${2:?--exec needs a command}"); shift 2 ;;
     --skip-commit) skip_commit=1; skip_tag=1; shift ;;
     --skip-tag) skip_tag=1; shift ;;
     --dry-run) dry_run=1; shift ;;
@@ -96,6 +102,9 @@ for f in "${bump_files[@]+"${bump_files[@]}"}"; do
   [ -f "$f" ] || die "--bump-file $f: no such file"
   echo "bump: $f -> $number"
 done
+for c in "${exec_cmds[@]+"${exec_cmds[@]}"}"; do
+  echo "exec: $c"
+done
 
 if [ "$dry_run" -eq 1 ]; then
   echo "commit: $([ "$skip_commit" -eq 1 ] && echo skipped || echo "chore(release): $next")"
@@ -130,12 +139,20 @@ done
 
 "${rn[@]}" --changelog "$changelog" --changelog-title "$next" --quiet
 
+for c in "${exec_cmds[@]+"${exec_cmds[@]}"}"; do
+  NEXT_VERSION=$number bash -c "$c" || die "--exec failed: $c"
+done
+
 if [ "$skip_commit" -eq 1 ]; then
   echo "updated files; not committed (--skip-commit)"
   exit 0
 fi
 
 git add -- "$changelog" "${bump_files[@]+"${bump_files[@]}"}"
+# The tree was clean at the start, so tracked changes now come from --exec.
+if [ "${#exec_cmds[@]}" -gt 0 ]; then
+  git add -u
+fi
 git commit -q -m "chore(release): $next"
 echo "committed: chore(release): $next"
 
