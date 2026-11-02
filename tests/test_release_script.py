@@ -164,6 +164,30 @@ class ReleaseScriptTests(unittest.TestCase):
         self.assertIn("### Other", kept)
         self.assertIn("v1.4.0", kept.split("### Other", 1)[1])
 
+    def test_exec_changes_are_committed_with_the_release(self) -> None:
+        (self.repo / "lock.txt").write_text("demo 1.3.2\n", encoding="utf-8")
+        _git(["add", "lock.txt"], self.repo)
+        _git(["commit", "-m", "chore: lock"], self.repo)
+        cmd = 'printf "demo %s\\n" "$NEXT_VERSION" > lock.txt'
+        dry = self._run("--dry-run", "--exec", cmd)
+        self.assertEqual(dry.returncode, 0, dry.stderr)
+        self.assertIn(f"exec: {cmd}", dry.stdout)
+        result = self._run("--bump-file", "package.json", "--exec", cmd)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.repo / "lock.txt").read_text(encoding="utf-8"), "demo 1.4.0\n")
+        self.assertEqual(_out(["git", "status", "--porcelain"], self.repo), "")
+        files = _out(["git", "show", "--name-only", "--format=", "v1.4.0^{commit}"], self.repo).split()
+        self.assertEqual(sorted(files), ["CHANGELOG.md", "lock.txt", "package.json"])
+
+    def test_failing_exec_stops_before_commit(self) -> None:
+        result = self._run("--exec", "exit 3")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("--exec failed: exit 3", result.stderr)
+        self.assertEqual(self._tags(), ["v1.3.2"])
+        self.assertEqual(
+            _out(["git", "log", "-1", "--format=%s"], self.repo).strip(), "fix(cli): handle b"
+        )
+
     def test_missing_bump_version_line_fails(self) -> None:
         (self.repo / "VERSION.md").write_text("no version here\n", encoding="utf-8")
         _git(["add", "VERSION.md"], self.repo)

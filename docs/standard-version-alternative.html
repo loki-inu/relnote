@@ -28,7 +28,7 @@
         "name": "standard-version alternative: bump, CHANGELOG.md and tag without Node — relnote",
         "description": "standard-version is deprecated. relnote plus a short release.sh does what npx standard-version did locally: next semver from conventional commits, bump package.json or pyproject.toml, prepend CHANGELOG.md, commit chore(release) and tag. No Node, no config, no GitHub Actions required.",
         "isPartOf": { "@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/" },
-        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.6", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+        "about": { "@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.7", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
       },
       {
         "@type": "BreadcrumbList",
@@ -218,7 +218,8 @@ next step: git push --follow-tags</code></pre>
           <tr><td><code>--infile HISTORY.md</code></td><td><code>--changelog HISTORY.md</code></td></tr>
           <tr><td><code>--tag-prefix api/v</code> (monorepo)</td><td><code>--tag-prefix api/v -- --path packages/api</code></td></tr>
           <tr><td><code>--prerelease rc</code></td><td>not supported; use <code>--release-as v2.0.0-rc.1</code></td></tr>
-          <tr><td><code>.versionrc</code>, lifecycle <code>scripts</code>, presets</td><td>none; edit the script</td></tr>
+          <tr><td>lifecycle <code>scripts.precommit</code></td><td><code>--exec CMD</code> (runs after the bump and CHANGELOG.md; tracked files it changes are committed)</td></tr>
+          <tr><td><code>.versionrc</code>, other lifecycle <code>scripts</code>, presets</td><td>none; edit the script</td></tr>
         </tbody>
       </table>
     </div>

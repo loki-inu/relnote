@@ -254,11 +254,11 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.6
+        uses: loki-inu/relnote@v0.3.7
       - name: Install relnote and release.sh
         if: steps.relnote.outputs.has-changes == &#x27;true&#x27;
         env:
-          V: v0.3.6
+          V: v0.3.7
         run: |
           mkdir -p &quot;$HOME/.local/bin&quot;
           curl -fsSL -o &quot;$HOME/.local/bin/relnote&quot; &quot;https://github.com/loki-inu/relnote/releases/download/$V/relnote&quot;
