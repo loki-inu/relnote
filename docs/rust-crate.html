@@ -235,7 +235,7 @@ next step: git push --follow-tags</code></pre>
 CHANGELOG.md
 Cargo.lock
 Cargo.toml</code></pre>
-    <p>Without it, <code>Cargo.lock</code> still says 1.2.0 and <code>cargo publish --locked</code> stops with &quot;the lock file …/Cargo.lock needs to be updated but --locked was passed to prevent this&quot;. The new <code>CHANGELOG.md</code> section:</p>
+    <p>Without it, <code>Cargo.lock</code> still says 1.2.0 and <code>cargo publish --locked</code> stops with an error that <code>Cargo.lock</code> needs updating but <code>--locked</code> was passed. The new <code>CHANGELOG.md</code> section:</p>
     <pre><code>## [v1.3.0] - 2026-11-02
 
 ### Features

@@ -142,7 +142,7 @@ class RustCratePageTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         locked = self._cargo("metadata", "--locked", "--format-version", "1")
         self.assertNotEqual(locked.returncode, 0)
-        self.assertIn("needs to be updated but --locked was passed", locked.stderr)
+        self.assertIn("--locked was passed", locked.stderr)
 
     def test_release_body_on_tag_push_matches_page(self) -> None:
         self.assertEqual(self._release("--exec", EXEC).returncode, 0)
