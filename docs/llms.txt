@@ -32,6 +32,10 @@ Locally: examples/release.sh --bump-file pyproject.toml (first version = "..." l
 
 Locally: examples/release.sh --bump-file Cargo.toml --exec "cargo update --workspace" (v0.3.7+; --exec runs after the bump and CHANGELOG.md, before the commit, and tracked files it changes such as Cargo.lock are committed; NEXT_VERSION is exported) → next version, Cargo.toml + Cargo.lock bump, CHANGELOG.md section, chore(release) commit, annotated tag. Without the lock sync, cargo publish --locked fails (Cargo.lock needs updating but --locked was passed). Tag-push workflow: check v$version == tag via cargo metadata --no-deps | jq, cargo test --locked, rust-lang/crates-io-auth-action@v1 (trusted publishing; first version published by hand), cargo publish --locked, then gh release create with the loki-inu/relnote action's notes. Shared workspace version: [workspace.package] version in the root Cargo.toml. Guide: https://loki-inu.github.io/relnote/rust-crate.html
 
+## npm packages (package.json, package-lock.json, npmjs)
+
+Locally: examples/release.sh --bump-file package.json --exec "npm install --package-lock-only --ignore-scripts --silent" (v0.3.7+; --exec runs after the bump and CHANGELOG.md, before the commit, and tracked files it changes such as package-lock.json are committed; NEXT_VERSION is exported) → next version, package.json + package-lock.json bump, CHANGELOG.md section, chore(release) commit, annotated tag. Without the lock sync, package-lock.json keeps the old version under packages[""].version and the next npm install dirties the tree. Tag-push workflow: check v$version == tag via node -p require('./package.json').version, npm ci, npm test, npm publish with trusted publishing (environment release, id-token: write; first version published by hand), then gh release create with the loki-inu/relnote action's notes. Workspaces: bump the root or use --tag-prefix / --path per package as on the monorepo page. Yarn Berry: --exec "yarn install --mode=update-lockfile"; pnpm: --exec "pnpm install --lockfile-only". Guide: https://loki-inu.github.io/relnote/npm-package.html
+
 ## Compared to nearby tools
 
 - git-cliff: keep it for templated CHANGELOG.md rebuilt from history and version bump. relnote prints a Release body, can prepend one release to CHANGELOG.md, and needs no config.
@@ -70,6 +74,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - release-please alternative without a release PR (workflow_dispatch: bump version file, CHANGELOG.md, chore(release) commit, tag, gh release create; tested example): https://loki-inu.github.io/relnote/release-please-alternative.html
 - Release a Python package (pyproject.toml bump, CHANGELOG.md, tag, PyPI trusted publishing, GitHub Release; tested example): https://loki-inu.github.io/relnote/python-package.html
 - Release a Rust crate (Cargo.toml + Cargo.lock bump, CHANGELOG.md, tag, crates.io trusted publishing, GitHub Release; tested with real cargo): https://loki-inu.github.io/relnote/rust-crate.html
+- Release an npm package (package.json + package-lock.json bump, CHANGELOG.md, tag, npm trusted publishing, GitHub Release; tested with real npm): https://loki-inu.github.io/relnote/npm-package.html
 - Release notes from squash-merged PR titles (feat: x (#41); PR-title check; CHANGELOG.md PR links from v0.3.5): https://loki-inu.github.io/relnote/squash-merge.html
 - Windows and PowerShell (Scoop, --output vs > redirection, UTF-8/BOM, line endings): https://loki-inu.github.io/relnote/windows.html
 - Compare (git-cliff / gh --generate-notes / swapnanil/relnotes): https://loki-inu.github.io/relnote/compare.html

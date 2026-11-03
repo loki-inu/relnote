@@ -236,6 +236,8 @@ Releasing a Python package? [Release a Python package from conventional commits]
 
 Releasing a Rust crate? [Release a Rust crate from conventional commits](https://loki-inu.github.io/relnote/rust-crate.html) bumps `version` in `Cargo.toml`, syncs `Cargo.lock` with `release.sh --exec "cargo update --workspace"`, prepends CHANGELOG.md, and tags; a tag-push workflow checks the tag against `Cargo.toml`, publishes with `cargo publish --locked` through crates.io trusted publishing, and creates the GitHub Release with relnote notes.
 
+Releasing an npm package? [Release an npm package from conventional commits](https://loki-inu.github.io/relnote/npm-package.html) bumps `version` in `package.json`, syncs `package-lock.json` with `release.sh --exec "npm install --package-lock-only --ignore-scripts --silent"`, prepends CHANGELOG.md, and tags; a tag-push workflow checks the tag against `package.json`, runs `npm ci` / `npm test`, publishes with npm trusted publishing, and creates the GitHub Release with relnote notes.
+
 ```sh
 ./release.sh --dry-run --bump-file package.json
 ./release.sh --bump-file package.json && git push --follow-tags
