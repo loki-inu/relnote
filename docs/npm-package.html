@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release an npm package from conventional commits — relnote</title>
+  <meta name="description" content="Bump the version in package.json, keep package-lock.json in sync, prepend CHANGELOG.md, tag, then publish to the npm registry with trusted publishing and create a GitHub Release with grouped notes. No semantic-release, no release bot, no config file.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/npm-package.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release an npm package from conventional commits — relnote">
+  <meta property="og:description" content="Bump the version in package.json, keep package-lock.json in sync, prepend CHANGELOG.md, tag, then publish to the npm registry with trusted publishing and create a GitHub Release with grouped notes. No semantic-release, no release bot, no config file.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/npm-package.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release an npm package from conventional commits — relnote">
+  <meta name="twitter:description" content="Bump the version in package.json, keep package-lock.json in sync, prepend CHANGELOG.md, tag, then publish to the npm registry with trusted publishing and create a GitHub Release with grouped notes. No semantic-release, no release bot, no config file.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/npm-package.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/npm-package.html",
+      "name": "Release an npm package from conventional commits — relnote",
+      "description": "Bump the version in package.json, keep package-lock.json in sync, prepend CHANGELOG.md, tag, then publish to the npm registry with trusted publishing and create a GitHub Release with grouped notes. No semantic-release, no release bot, no config file.",
+      "isPartOf": {"@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/"},
+      "about": {"@type": "SoftwareApplication", "name": "relnote", "url": "https://github.com/loki-inu/relnote"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/"},
+        {"@type": "ListItem", "position": 2, "name": "npm package releases", "item": "https://loki-inu.github.io/relnote/npm-package.html"}
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Release an npm package from conventional commits",
+      "step": [
+        {"@type": "HowToStep", "name": "Cut the release", "text": "Run release.sh --bump-file package.json --exec \"npm install --package-lock-only --ignore-scripts --silent\": next version from commits, package.json and package-lock.json bump, CHANGELOG.md section, chore(release) commit, annotated tag."},
+        {"@type": "HowToStep", "name": "Push the tag", "text": "git push --follow-tags starts the release workflow."},
+        {"@type": "HowToStep", "name": "Publish", "text": "The workflow checks the tag matches package.json, runs npm ci and npm test, publishes with npm trusted publishing (OIDC id-token), and creates a GitHub Release whose body comes from the loki-inu/relnote action."}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why is package-lock.json in the release commit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "package-lock.json records your package's own version under packages[\"\"].version. release.sh --bump-file package.json only rewrites package.json, so without a follow-up the lockfile still shows the old version and the next npm install dirties the tree. The --exec \"npm install --package-lock-only --ignore-scripts --silent\" step refreshes only the lockfile (no node_modules install, no lifecycle scripts), and release.sh commits every tracked file the command changed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work with npm workspaces?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If the workspace root is the published package, bump the root package.json and run the --exec from the root so the single package-lock.json updates. For packages versioned separately under packages/, use one tag prefix per package (release.sh --tag-prefix demo-core/v --bump-file packages/demo-core/package.json --exec \"npm install --package-lock-only --ignore-scripts --silent\" -- --path packages/demo-core) as on the monorepo page, and publish with npm publish -w."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why trusted publishing instead of an npm token?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "npm trusted publishing exchanges the job's OpenID Connect token for a short-lived publish credential, so there is no long-lived NPM_TOKEN in the repository. Provenance attestations are included automatically. Add a trusted publisher on npmjs.com for this repository with workflow release.yml and environment release before relying on it; publish the first version by hand with npm publish and a normal access token if the package does not exist yet."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if the tag and package.json disagree?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The check step fails before npm ci runs, with an error naming both values. An npm version cannot be reused once published, so the check is worth keeping."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I dry-run the whole thing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Locally, release.sh --dry-run prints the next version, the files it would bump, the --exec commands, and the notes, and changes nothing. npm publish --dry-run packs the tarball without uploading."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about yarn or pnpm?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The bump still uses --bump-file package.json. For Yarn Berry, swap the --exec for yarn install --mode=update-lockfile; for pnpm, use pnpm install --lockfile-only. Keep the matching lockfile committed and use the package manager's ci-equivalent in the workflow (yarn install --immutable, pnpm install --frozen-lockfile)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need semantic-release?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. semantic-release is a good fit when every merge to main should publish from CI with plugins. This page is for people who want to cut the version, changelog, and tag locally from commit messages, then let a tag-push workflow publish and open the GitHub Release."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="python-package.html">Python packages</a> · <a href="rust-crate.html">Rust crates</a> · <a href="standard-version-alternative.html">standard-version alternative</a></p>
+    <h1>Release an npm package from conventional commits</h1>
+    <p class="tag">Bump <code>version</code> in <code>package.json</code>, bring <code>package-lock.json</code> along, prepend a <code>CHANGELOG.md</code> section, and tag in one local command. Pushing the tag runs tests, publishes to the npm registry with trusted publishing, and creates a GitHub Release with grouped notes. No semantic-release, no release bot, no config file.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/examples/release.sh">release.sh</a>
+      · <a href="single-file.html">Single-file install</a>
+    </div>
+
+    <h2>1. The version lives in package.json</h2>
+    <pre><code>{
+  &quot;name&quot;: &quot;demo&quot;,
+  &quot;version&quot;: &quot;1.2.0&quot;,
+  &quot;description&quot;: &quot;A small example package&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;node --test&quot;
+  },
+  &quot;license&quot;: &quot;MIT&quot;,
+  &quot;files&quot;: [
+    &quot;index.js&quot;
+  ],
+  &quot;engines&quot;: {
+    &quot;node&quot;: &quot;&gt;=18&quot;
+  }
+}</code></pre>
+    <p>Commit <code>package-lock.json</code> (npm&#x27;s default for apps and most libraries). It also records your package&#x27;s version under <code>packages[&quot;&quot;].version</code>, which is why the release step below updates it.</p>
+
+    <h2>2. Cut the release locally</h2>
+    <p>Three commits since <code>v1.2.0</code>:</p>
+    <pre><code>git log --oneline v1.2.0..HEAD
+docs: document the --json flag
+fix: handle empty input without panicking
+feat(cli): add --json output</code></pre>
+    <p>Install relnote (<code>pipx install git+https://github.com/loki-inu/relnote.git</code>, <code>brew install loki-inu/tap/relnote</code>, or the <a href="single-file.html">single file</a>), then run the release script pinned to a version:</p>
+    <pre><code>curl -fsSLO https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+bash release.sh --bump-file package.json --exec &quot;npm install --package-lock-only --ignore-scripts --silent&quot;</code></pre>
+    <pre><code>next: v1.3.0
+changelog: CHANGELOG.md
+bump: package.json -&gt; 1.3.0
+exec: npm install --package-lock-only --ignore-scripts --silent
+committed: chore(release): v1.3.0
+tagged: v1.3.0
+next step: git push --follow-tags</code></pre>
+    <p>A <code>feat</code> made it a minor bump. <code>--exec</code> runs after the bump and before the commit; <code>npm install --package-lock-only --ignore-scripts --silent</code> rewrites only <code>package-lock.json</code> (no <code>node_modules</code>, no lifecycle scripts), and release.sh commits it with the rest:</p>
+    <pre><code>git show --name-only --format= v1.3.0
+CHANGELOG.md
+package-lock.json
+package.json</code></pre>
+    <p>Without it, <code>package-lock.json</code> still says 1.2.0 while <code>package.json</code> says 1.3.0, so the next <code>npm install</code> dirties the tree with a lockfile-only change. The new <code>CHANGELOG.md</code> section:</p>
+    <pre><code>## [v1.3.0] - 2026-11-03
+
+### Features
+
+- **cli:** add --json output (`4e39256`) — Ada Lovelace
+
+### Fixes
+
+- handle empty input without panicking (`a8cc6d8`) — Ada Lovelace
+
+### Other
+
+- **docs:** document the --json flag (`83256ad`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+    <p>Output from a test repository built in relnote&#x27;s CI with real <code>npm</code> (<code>tests/test_npm_package_docs.py</code>); your hashes and date differ. Use <code>--dry-run</code> first to see the version and notes without changing anything. Then:</p>
+    <pre><code>git push --follow-tags</code></pre>
+
+    <h2>3. Publish and release on the tag</h2>
+    <p>Save as <code>.github/workflows/release.yml</code>. Publish the first version by hand (<code>npm publish</code> with an access token); then, on npmjs.com, add a trusted publisher for this repository with workflow <code>release.yml</code> and environment <code>release</code>, and create that environment in the repository settings. Trusted publishing needs npm CLI 11.5.1+ and Node 22.14+ on the runner.</p>
+    <pre><code>name: Release
+on:
+  push:
+    tags: [&quot;v*&quot;]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: &quot;22&quot;
+          registry-url: https://registry.npmjs.org
+      - name: Tag matches package.json
+        run: |
+          version=$(node -p &quot;require(&#x27;./package.json&#x27;).version&quot;)
+          if [ &quot;v$version&quot; != &quot;$GITHUB_REF_NAME&quot; ]; then
+            echo &quot;::error::tag $GITHUB_REF_NAME but package.json says $version&quot;
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm test
+      - run: npm publish --access public
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+        run: |
+          printf &#x27;%s\n&#x27; &quot;$NOTES&quot; &gt; notes.md
+          gh release create &quot;$GITHUB_REF_NAME&quot; --verify-tag --notes-file notes.md</code></pre>
+    <p>The first step stops the run if the tag and <code>package.json</code> disagree. <code>npm ci</code> installs from the lockfile committed with the tag. The GitHub Release is created only after the registry accepted the package. Its body is the action&#x27;s <code>notes</code> output, passed through <code>env:</code> because commit subjects can contain backticks:</p>
+    <pre><code>## What&#x27;s changed
+
+### Features
+
+- **cli:** add --json output (`4e39256`) — Ada Lovelace
+
+### Fixes
+
+- handle empty input without panicking (`a8cc6d8`) — Ada Lovelace
+
+### Other
+
+- **docs:** document the --json flag (`83256ad`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `v1.3.0`.
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+    <p>The <code>chore(release): v1.3.0</code> commit is left out of the notes by default.</p>
+
+    <h2>FAQ</h2>
+    <h3>Why is package-lock.json in the release commit?</h3>
+    <p>package-lock.json records your package&#x27;s own version under packages[&quot;&quot;].version. release.sh --bump-file package.json only rewrites package.json, so without a follow-up the lockfile still shows the old version and the next npm install dirties the tree. The --exec &quot;npm install --package-lock-only --ignore-scripts --silent&quot; step refreshes only the lockfile (no node_modules install, no lifecycle scripts), and release.sh commits every tracked file the command changed.</p>
+    <h3>Does it work with npm workspaces?</h3>
+    <p>If the workspace root is the published package, bump the root package.json and run the --exec from the root so the single package-lock.json updates. For packages versioned separately under packages/, use one tag prefix per package (release.sh --tag-prefix demo-core/v --bump-file packages/demo-core/package.json --exec &quot;npm install --package-lock-only --ignore-scripts --silent&quot; -- --path packages/demo-core) as on the monorepo page, and publish with npm publish -w.</p>
+    <h3>Why trusted publishing instead of an npm token?</h3>
+    <p>npm trusted publishing exchanges the job&#x27;s OpenID Connect token for a short-lived publish credential, so there is no long-lived NPM_TOKEN in the repository. Provenance attestations are included automatically. Add a trusted publisher on npmjs.com for this repository with workflow release.yml and environment release before relying on it; publish the first version by hand with npm publish and a normal access token if the package does not exist yet.</p>
+    <h3>What if the tag and package.json disagree?</h3>
+    <p>The check step fails before npm ci runs, with an error naming both values. An npm version cannot be reused once published, so the check is worth keeping.</p>
+    <h3>Can I dry-run the whole thing?</h3>
+    <p>Locally, release.sh --dry-run prints the next version, the files it would bump, the --exec commands, and the notes, and changes nothing. npm publish --dry-run packs the tarball without uploading.</p>
+    <h3>What about yarn or pnpm?</h3>
+    <p>The bump still uses --bump-file package.json. For Yarn Berry, swap the --exec for yarn install --mode=update-lockfile; for pnpm, use pnpm install --lockfile-only. Keep the matching lockfile committed and use the package manager&#x27;s ci-equivalent in the workflow (yarn install --immutable, pnpm install --frozen-lockfile).</p>
+    <h3>Do I need semantic-release?</h3>
+    <p>No. semantic-release is a good fit when every merge to main should publish from CI with plugins. This page is for people who want to cut the version, changelog, and tag locally from commit messages, then let a tag-push workflow publish and open the GitHub Release.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/latest">Latest release</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
