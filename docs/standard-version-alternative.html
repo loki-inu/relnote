@@ -147,7 +147,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="compare.html">Compare</a> · <a href="ci.html">Any CI</a></p>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="semantic-release-alternative.html">semantic-release alternative</a> · <a href="compare.html">Compare</a> · <a href="ci.html">Any CI</a></p>
     <h1>standard-version alternative: bump, CHANGELOG.md and tag without Node</h1>
     <p class="tag"><code>standard-version</code> is deprecated (its README says so and points to release-please or the commit-and-tag-version fork), but it still gets hundreds of thousands of npm downloads a week. If what you liked was one local command that bumps the version, writes the changelog and tags, relnote can do that without Node, without a config file, and without moving your release into a GitHub Actions bot.</p>
     <div class="links">
@@ -236,7 +236,7 @@ gh relnote create v1.4.0          # Release body from the same commits</code></p
     <ul>
       <li><strong>commit-and-tag-version</strong>: the maintained drop-in fork. Keep it if you depend on <code>.versionrc</code>, prerelease bumps, lifecycle scripts or custom presets.</li>
       <li><strong>release-please</strong>: the upstream recommendation for GitHub. It opens a release PR from a bot and does the bump, changelog and Release when you merge it.</li>
-      <li><strong>semantic-release</strong>: fully automated publish from CI, with plugins for npm and others.</li>
+      <li><strong>semantic-release</strong>: fully automated publish from CI, with plugins for npm and others. Prefer a Node-free CI release instead? <a href="semantic-release-alternative.html">semantic-release alternative without npm/Node</a>.</li>
       <li><strong>relnote + release.sh</strong>: you want the old one-command local release, in any language, with no Node and no config. See also <a href="compare.html">git-cliff and gh --generate-notes</a>.</li>
     </ul>
 

@@ -232,6 +232,8 @@ Squash-merging PRs with Conventional Commits titles? Each PR is already one comm
 
 Want the release-please result (version bump, CHANGELOG.md, tag, GitHub Release) without a release PR waiting in your PR list? Run the same script from a one-button `workflow_dispatch` job: [release-please alternative without a release PR](https://loki-inu.github.io/relnote/release-please-alternative.html). From v0.3.6, a version `--changelog-title` such as `v1.4.0` on an untagged `HEAD` makes the CHANGELOG.md compare link end at that tag, so `release.sh` no longer writes `...HEAD` there.
 
+Replacing `semantic-release` without putting Node in the release pipeline? Same job, Node-free tooling (zipapp + `release.sh`): [semantic-release alternative without npm/Node](https://loki-inu.github.io/relnote/semantic-release-alternative.html).
+
 Releasing a Python package? [Release a Python package from conventional commits](https://loki-inu.github.io/relnote/python-package.html) bumps `version` in `pyproject.toml`, prepends CHANGELOG.md, and tags with `release.sh`, then a tag-push workflow checks the tag against `pyproject.toml`, builds, uploads to PyPI with trusted publishing, and creates the GitHub Release with relnote notes.
 
 Releasing a Rust crate? [Release a Rust crate from conventional commits](https://loki-inu.github.io/relnote/rust-crate.html) bumps `version` in `Cargo.toml`, syncs `Cargo.lock` with `release.sh --exec "cargo update --workspace"`, prepends CHANGELOG.md, and tags; a tag-push workflow checks the tag against `Cargo.toml`, publishes with `cargo publish --locked` through crates.io trusted publishing, and creates the GitHub Release with relnote notes.
