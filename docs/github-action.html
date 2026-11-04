@@ -214,7 +214,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./">relnote docs</a> · <a href="monorepo.html">Monorepo</a> · <a href="next-version.html">Next version</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="ci.html">Other CI</a></p>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="monorepo.html">Monorepo</a> · <a href="next-version.html">Next version</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="semantic-release-alternative.html">semantic-release alternative</a> · <a href="ci.html">Other CI</a></p>
     <h1>GitHub Action: release notes from conventional commits</h1>
     <p class="tag"><code>loki-inu/relnote</code> is a composite action. It reads your git history (no GitHub API calls, no token, no config file) and outputs a Release body grouped as Features, Fixes, Breaking, and Other, plus the next semver tag. You create the Release with whatever you already use.</p>
     <div class="links">
@@ -389,6 +389,8 @@ jobs:
     <p>No. relnote reads only the local clone. The token is for whatever creates the Release.</p>
     <h3>Squash merges or merge commits?</h3>
     <p>Either. Merge commits are left out by default and the squashed commit's conventional-commit subject is what gets grouped, so PR titles like <code>feat(cli): add --json output (#42)</code> work as they are (the <code>(#42)</code> stays in the line, and GitHub links it).</p>
+
+    <p>Want a full bump → CHANGELOG → tag → GitHub Release job without Node in the release tooling? <a href="semantic-release-alternative.html">semantic-release alternative without npm/Node</a> (same shape as the <a href="release-please-alternative.html">release-please alternative</a>).</p>
 
     <h2>How this page is tested</h2>
     <p><a href="https://github.com/loki-inu/relnote/blob/main/.github/workflows/ci.yml">CI</a> runs the action with <code>uses: ./</code> on Linux and Windows for a normal range, the no-op case, and a tagged <code>HEAD</code> (the tag-push case), and <a href="https://github.com/loki-inu/relnote/blob/main/tests/test_action.py"><code>tests/test_action.py</code></a> runs the action's shell step against temporary repositories, including the tag-push range above. The tag-push draft (with the tag made inside the job), the matrix, and the no-op case were also run with the published <code>uses: loki-inu/relnote@v0.3.3</code> and <code>@v0.3.4</code> on GitHub-hosted runners, and the workflows pass <a href="https://github.com/rhysd/actionlint">actionlint</a>. Commit hashes in the sample output will differ in your repository.</p>

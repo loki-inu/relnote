@@ -200,7 +200,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="python-package.html">Python packages</a> · <a href="rust-crate.html">Rust crates</a> · <a href="standard-version-alternative.html">standard-version alternative</a></p>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="python-package.html">Python packages</a> · <a href="rust-crate.html">Rust crates</a> · <a href="standard-version-alternative.html">standard-version alternative</a> · <a href="semantic-release-alternative.html">semantic-release alternative</a></p>
     <h1>Release an npm package from conventional commits</h1>
     <p class="tag">Bump <code>version</code> in <code>package.json</code>, bring <code>package-lock.json</code> along, prepend a <code>CHANGELOG.md</code> section, and tag in one local command. Pushing the tag runs tests, publishes to the npm registry with trusted publishing, and creates a GitHub Release with grouped notes. No semantic-release, no release bot, no config file.</p>
     <div class="links">
@@ -344,7 +344,7 @@ Range: `v1.2.0` → `v1.3.0`.
     <h3>What about yarn or pnpm?</h3>
     <p>The bump still uses --bump-file package.json. For Yarn Berry, swap the --exec for yarn install --mode=update-lockfile; for pnpm, use pnpm install --lockfile-only. Keep the matching lockfile committed and use the package manager&#x27;s ci-equivalent in the workflow (yarn install --immutable, pnpm install --frozen-lockfile).</p>
     <h3>Do I need semantic-release?</h3>
-    <p>No. semantic-release is a good fit when every merge to main should publish from CI with plugins. This page is for people who want to cut the version, changelog, and tag locally from commit messages, then let a tag-push workflow publish and open the GitHub Release.</p>
+    <p>No. semantic-release is a good fit when every merge to main should publish from CI with plugins. This page is for people who want to cut the version, changelog, and tag locally from commit messages, then let a tag-push workflow publish and open the GitHub Release. Want that CI loop without Node in the <em>release tooling</em>? See the <a href="semantic-release-alternative.html">semantic-release alternative without npm/Node</a>.</p>
 
     <footer>
       <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/latest">Latest release</a> · <a href="llms.txt">llms.txt</a></p>

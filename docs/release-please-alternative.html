@@ -230,7 +230,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="standard-version-alternative.html">standard-version alternative</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a></p>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="standard-version-alternative.html">standard-version alternative</a> · <a href="semantic-release-alternative.html">semantic-release alternative</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a></p>
     <h1>A release-please alternative without a release PR</h1>
     <p class="tag">release-please keeps a release pull request open, updates it on every merge, and cuts the release when you merge it. If you would rather press one button when you want a release, this workflow does the same work in one run: next version from conventional commits, version bump in <code>pyproject.toml</code> or <code>package.json</code>, a new <code>CHANGELOG.md</code> section, a <code>chore(release)</code> commit, a tag, and a GitHub Release. No bot PR, no config files, no API calls besides the final <code>gh release create</code>.</p>
     <div class="links">
@@ -346,6 +346,8 @@ Range: `v1.3.2` → `v1.4.0`.
 
     <h2>Monorepo packages</h2>
     <p>Pass the package's tag prefix and path to <code>release.sh</code> and to the notes step: <code>bash "$RUNNER_TEMP/release.sh" --tag-prefix api/v --bump-file packages/api/package.json -- --path packages/api</code>, then <code>relnote --tag-prefix api/v --path packages/api --output …</code>. Change the guard's <code>'v*'</code> to <code>'api/v*'</code>. See the <a href="monorepo.html">monorepo guide</a> for a matrix over packages.</p>
+
+    <p>Looking for a <code>semantic-release</code> replacement without Node in the release pipeline? Same workflow under a different angle: <a href="semantic-release-alternative.html">semantic-release alternative without npm/Node</a>.</p>
 
     <p>Publishing to PyPI? <a href="python-package.html">Release a Python package from conventional commits</a> adds the tag check, build, and trusted-publishing upload.</p>
 
