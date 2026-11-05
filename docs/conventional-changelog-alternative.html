@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>conventional-changelog / commitizen alternative without Node plugins — relnote</title>
+  <meta name="description" content="Replace conventional-changelog, commitizen, cz-cli, and conventional-changelog-* plugins with the offline relnote zipapp and examples/release.sh. Local CHANGELOG.md from conventional commits, optional version bump, commit, and tag — no Node plugins for the release tooling.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/conventional-changelog-alternative.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="conventional-changelog / commitizen alternative without Node plugins — relnote">
+  <meta property="og:description" content="Replace conventional-changelog, commitizen, cz-cli, and conventional-changelog-* plugins with the offline relnote zipapp and examples/release.sh. Local CHANGELOG.md from conventional commits, optional version bump, commit, and tag — no Node plugins for the release tooling.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/conventional-changelog-alternative.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="conventional-changelog / commitizen alternative without Node plugins — relnote">
+  <meta name="twitter:description" content="Replace conventional-changelog, commitizen, cz-cli, and conventional-changelog-* plugins with the offline relnote zipapp and examples/release.sh. Local CHANGELOG.md from conventional commits, optional version bump, commit, and tag — no Node plugins for the release tooling.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/conventional-changelog-alternative.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/conventional-changelog-alternative.html",
+      "name": "conventional-changelog / commitizen alternative without Node plugins — relnote",
+      "description": "Replace conventional-changelog, commitizen, cz-cli, and conventional-changelog-* plugins with the offline relnote zipapp and examples/release.sh. Local CHANGELOG.md from conventional commits, optional version bump, commit, and tag — no Node plugins for the release tooling.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "relnote",
+        "url": "https://loki-inu.github.io/relnote/"
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "relnote",
+        "softwareVersion": "0.3.7",
+        "url": "https://github.com/loki-inu/relnote"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "relnote docs",
+          "item": "https://loki-inu.github.io/relnote/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "conventional-changelog alternative",
+          "item": "https://loki-inu.github.io/relnote/conventional-changelog-alternative.html"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Replace conventional-changelog and commitizen with offline relnote",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Pin the zipapp",
+          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release into ~/.local/bin, and download examples/release.sh from the same tag. No npm install and no conventional-changelog-* or cz-* plugins."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Write CHANGELOG.md and tag locally",
+          "text": "Run release.sh. It prepends CHANGELOG.md, commits chore(release): vX.Y.Z, and creates an annotated tag. Pass --bump-file package.json, pyproject.toml, or Cargo.toml to set the version line. Omit --bump-file when you only want the changelog, commit, and tag. --dry-run prints the plan and writes nothing."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Optional GitHub Release",
+          "text": "Add a workflow_dispatch job that gates on the relnote action has-changes output, runs the same release.sh, and publishes with gh release create --notes-file. Never interpolate the notes body inside run:."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does relnote replace commitizen prompts?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. commitizen and cz-cli (with an adapter such as cz-conventional-changelog) ask for type, scope, and subject so the commit is conventional. relnote does not prompt. It reads commits that are already conventional — from commitizen, a pull-request title, or typed by hand — and writes CHANGELOG.md, an optional version bump, and a tag. Keep commitizen if you want the prompt; you do not need it to generate the changelog."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about the conventional-changelog CLI on its own?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "conventional-changelog-cli, with a conventional-changelog-* preset, writes CHANGELOG.md and stops. It does not bump a version file, commit, or tag. relnote --changelog CHANGELOG.md is that step, offline, with no preset package. examples/release.sh adds the optional bump, the chore(release) commit, and the annotated tag."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does this differ from standard-version and commit-and-tag-version?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "standard-version and its fork commit-and-tag-version already combine a conventional-changelog preset with a version bump, commit, and tag, and they need Node. release.sh is that local command without Node and without .versionrc. Keep commit-and-tag-version if you need prerelease bumps, lifecycle scripts, or custom presets. Flag mapping is on the standard-version alternative page."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does this differ from the semantic-release and release-please pages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The semantic-release alternative page is the CI publish loop without Node in the release tooling. The release-please alternative page is the same job for people leaving a release pull request. This page is for the conventional-changelog plus commitizen stack: changelog plugins and commit prompts, with the version bump usually in another tool. The local path is release.sh; the optional Actions job matches those pages."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I dry-run?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Locally, release.sh --dry-run prints the next version, the changelog path, any version file it would bump, and the notes, and writes nothing. Add --bump-file only when a version file should change. Omit --bump-file when you only want a preview of the changelog, commit, and tag. In the Actions job, has-changes false skips the release steps when nothing is unreleased, and a second run whose HEAD is already tagged exits 0."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are chore(release) commits included in the notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No by default. relnote skips chore(release) subjects so the release commit does not appear in its own CHANGELOG.md section or Release body. Pass --include-release-commits on the CLI, or include-release-commits: true on the action, to keep them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does an npm package still need Node?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only for the product, not for this release tooling. The zipapp and release.sh stay free of Node plugins. For an npm package, pass --bump-file package.json, and if you keep a package-lock.json add --exec \"npm install --package-lock-only --ignore-scripts --silent\" so the lock tracks the new version. See the npm package guide."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="standard-version-alternative.html">standard-version alternative</a> · <a href="semantic-release-alternative.html">semantic-release alternative</a> · <a href="release-please-alternative.html">release-please alternative</a> · <a href="github-action.html">GitHub Action</a> · <a href="single-file.html">Single-file zipapp</a></p>
+    <h1>A conventional-changelog and commitizen alternative without Node plugins</h1>
+    <p class="tag"><code>conventional-changelog</code> (and the <code>conventional-changelog-*</code> presets) turns conventional commits into <code>CHANGELOG.md</code>. <code>commitizen</code> and <code>cz-cli</code> prompt for the commit message. Neither command bumps a version file and tags. If you want that changelog — and the bump, commit, and tag — from commits you already wrote, without Node plugins for the release tooling, the relnote zipapp and <code>examples/release.sh</code> do it offline.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="single-file.html">Zipapp install</a>
+      · <a href="changelog.html">CHANGELOG.md guide</a>
+    </div>
+
+    <h2>conventional-changelog + commitizen, or this?</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>conventional-changelog + commitizen</th><th>relnote + release.sh</th></tr></thead>
+        <tbody>
+          <tr><td>Runtime for release tooling</td><td>Node.js and npm packages</td><td>bash, git, Python 3.11 stdlib (zipapp)</td></tr>
+          <tr><td>Plugins</td><td><code>conventional-changelog-cli</code>, a preset (<code>conventional-changelog-conventionalcommits</code>, <code>conventional-changelog-angular</code>, …), <code>cz-cli</code> / <code>commitizen</code>, an adapter (<code>cz-conventional-changelog</code>)</td><td>None; flags on <code>release.sh</code></td></tr>
+          <tr><td>Commit prompt</td><td><code>git cz</code> asks type, scope, and subject</td><td>None. Commits are already conventional</td></tr>
+          <tr><td>Changelog</td><td><code>conventional-changelog -p angular -i CHANGELOG.md -s</code> (preset plugin; changelog only)</td><td><code>relnote --changelog CHANGELOG.md</code> via <code>release.sh</code></td></tr>
+          <tr><td>Version bump, commit, tag</td><td>Not those two CLIs. <code>conventional-recommended-bump</code> prints a bump type; <code>standard-version</code> / <code>commit-and-tag-version</code> do the full release</td><td>One command: optional <code>--bump-file</code>, <code>CHANGELOG.md</code>, <code>chore(release)</code> commit, annotated tag</td></tr>
+          <tr><td>Network while writing the changelog</td><td><code>npm install</code> of plugins; presets resolve from the registry</td><td>Offline until you push or <code>gh release create</code></td></tr>
+          <tr><td>Config</td><td><code>package.json</code> <code>config.commitizen</code>, <code>.czrc</code>, <code>-p</code> preset</td><td>None</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Keep commitizen if you want the questions. Keep a <code>conventional-changelog-*</code> preset if you depend on its writer options. This page replaces the changelog command and the separate bumper, not the prompt.</p>
+
+    <h2>Pin the zipapp</h2>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release (same pin as the <a href="single-file.html">single-file install</a>), plus <code>examples/release.sh</code> from that tag. No npm packages.</p>
+    <pre><code>mkdir -p ~/.local/bin
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+chmod +x ~/.local/bin/relnote
+curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+chmod +x release.sh</code></pre>
+    <p>Put <code>~/.local/bin</code> on <code>PATH</code>. Commit <code>release.sh</code> into the repo (for example <code>scripts/release.sh</code>) so the release command does not depend on the raw URL next time. It is plain bash; read it before you run it.</p>
+
+    <h2>One local command</h2>
+    <p>The working tree must be clean. <code>./release.sh</code> reads conventional commits since the last tag, prepends <code>CHANGELOG.md</code>, commits <code>chore(release): vX.Y.Z</code>, and creates an annotated tag. Nothing is pushed. The version rule is <code>relnote --next-version</code>: breaking → major, <code>feat</code> → minor, otherwise patch (in 0.x a breaking change bumps minor). See <a href="next-version.html">next version</a> and the <a href="changelog.html">CHANGELOG.md guide</a>.</p>
+    <p>Omit <code>--bump-file</code> when you have no version file. Pass it (repeatable) to set the first <code>"version"</code> / <code>version =</code> line in <code>package.json</code>, <code>pyproject.toml</code>, or <code>Cargo.toml</code>. <code>--dry-run</code> prints the plan and the notes and writes nothing. These are three separate invocations, not one script to run top to bottom:</p>
+    <pre><code>./release.sh --dry-run
+./release.sh
+./release.sh --bump-file package.json</code></pre>
+    <p>Afterwards: <code>git push --follow-tags</code>. If <code>HEAD</code> is already tagged, or the next tag already exists, the script exits <code>1</code> instead of guessing.</p>
+    <p>Changelog only, the shape of <code>conventional-changelog -i CHANGELOG.md -s</code> without a preset package — you choose the title, and nothing is committed:</p>
+    <pre><code>relnote --next-version
+relnote --changelog CHANGELOG.md --changelog-title v1.4.0</code></pre>
+    <p>Use the tag <code>--next-version</code> printed. <code>./release.sh</code> fills that title in for you and then commits and tags.</p>
+
+    <h2>Optional GitHub Actions release</h2>
+    <p>When you also want a GitHub Release, save this as <code>.github/workflows/release.yml</code> and use <strong>Actions → Release → Run workflow</strong>. It is the same job as the <a href="semantic-release-alternative.html">semantic-release alternative</a> and the <a href="release-please-alternative.html">release-please alternative</a>: a <code>workflow_dispatch</code> button, a <code>has-changes</code> gate, then <code>release.sh</code>. Drop <code>--bump-file pyproject.toml</code> or point it at another file. No Node install for the tooling. Action inputs: <a href="github-action.html">GitHub Action guide</a>.</p>
+    <pre><code>name: Release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - name: Install relnote and release.sh
+        if: steps.relnote.outputs.has-changes == &#x27;true&#x27;
+        env:
+          V: v0.3.7
+        run: |
+          mkdir -p &quot;$HOME/.local/bin&quot;
+          curl -fsSL -o &quot;$HOME/.local/bin/relnote&quot; &quot;https://github.com/loki-inu/relnote/releases/download/$V/relnote&quot;
+          chmod +x &quot;$HOME/.local/bin/relnote&quot;
+          curl -fsSL -o &quot;$RUNNER_TEMP/release.sh&quot; &quot;https://raw.githubusercontent.com/loki-inu/relnote/$V/examples/release.sh&quot;
+          echo &quot;$HOME/.local/bin&quot; &gt;&gt; &quot;$GITHUB_PATH&quot;
+      - name: Bump, changelog, tag, publish
+        if: steps.relnote.outputs.has-changes == &#x27;true&#x27;
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ -n &quot;$(git tag --points-at HEAD --list &#x27;v*&#x27;)&quot; ]; then
+            echo &quot;HEAD is already tagged; nothing to release.&quot;
+            exit 0
+          fi
+          git config user.name &quot;github-actions[bot]&quot;
+          git config user.email &quot;41898282+github-actions[bot]@users.noreply.github.com&quot;
+          bash &quot;$RUNNER_TEMP/release.sh&quot; --bump-file pyproject.toml
+          tag=$(git describe --tags --exact-match)
+          git push origin HEAD &quot;refs/tags/$tag&quot;
+          relnote --output &quot;$RUNNER_TEMP/notes.md&quot; --quiet
+          gh release create &quot;$tag&quot; --title &quot;$tag&quot; --notes-file &quot;$RUNNER_TEMP/notes.md&quot;</code></pre>
+    <p>The first relnote step only checks whether anything is unreleased (<code>has-changes</code>). Notes go through a file and <code>--notes-file</code>. Never interpolate the body inside <code>run:</code> (backticks in commit subjects break the YAML). Pin the action and the curl URLs to the same tag.</p>
+    <p>A tag-push workflow can publish the same notes after you tag locally: checkout with <code>fetch-depth: 0</code>, run the action, write <code>notes.md</code>, then <code>gh release create</code> with <code>--notes-file</code>. Same rule: do not put the notes in <code>run:</code>. See the tag-push example on the <a href="github-action.html">Action guide</a>.</p>
+
+    <h2>What one run does</h2>
+    <p>Start: <code>v1.3.2</code> is the last tag, <code>pyproject.toml</code> says <code>version = "1.3.2"</code>, and two conventional commits landed since (the kind of subjects commitizen or a squash-merged pull request title would leave). The release step log:</p>
+    <pre><code>next: v1.4.0
+changelog: CHANGELOG.md
+bump: pyproject.toml -&gt; 1.4.0
+committed: chore(release): v1.4.0
+tagged: v1.4.0
+next step: git push --follow-tags
+To https://github.com/you/project.git
+ * [new branch]      HEAD -&gt; main
+ * [new tag]         v1.4.0 -&gt; v1.4.0</code></pre>
+    <p><code>pyproject.toml</code> now says <code>version = "1.4.0"</code>, and <code>CHANGELOG.md</code> gains this section above the previous one:</p>
+    <pre><code>## [v1.4.0] - 2026-10-28
+
+### Features
+
+- add --json output ([#12](https://github.com/you/project/pull/12)) (`e4e9bff`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config ([#13](https://github.com/you/project/pull/13)) (`8c0e206`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/project/compare/v1.3.2...v1.4.0</code></pre>
+    <p>The GitHub Release <code>v1.4.0</code> gets this body; on GitHub, <code>#12</code> links to the pull request:</p>
+    <pre><code>## What&#x27;s changed
+
+### Features
+
+- add --json output (#12) (`e4e9bff`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config (#13) (`8c0e206`) — Ada Lovelace
+
+---
+
+Range: `v1.3.2` → `v1.4.0`.
+
+**Full changelog:** https://github.com/you/project/compare/v1.3.2...v1.4.0</code></pre>
+    <p>The CHANGELOG.md section and Release body are produced by running the workflow&#x27;s last step against a scratch repository in relnote&#x27;s test suite (<code>tests/test_conventional_changelog_docs.py</code>, with <code>gh</code> stubbed); your hashes and dates differ. The <code>chore(release)</code> commit is not listed.</p>
+    <p>Bumping an npm package? Use <code>--bump-file package.json</code>. If you also keep a <code>package-lock.json</code>, add <code>--exec &quot;npm install --package-lock-only --ignore-scripts --silent&quot;</code> so the lock tracks the new version. Node runs there because the product is npm. See the <a href="npm-package.html">npm package guide</a>. The <a href="standard-version-alternative.html">standard-version alternative</a> maps the rest of the flags (<code>--release-as</code>, <code>--skip-commit</code>, <code>--skip-tag</code>, <code>--tag-prefix</code>).</p>
+
+    <h2>FAQ</h2>
+    <h3>Does relnote replace commitizen prompts?</h3>
+    <p>No. commitizen and cz-cli (with an adapter such as cz-conventional-changelog) ask for type, scope, and subject so the commit is conventional. relnote does not prompt. It reads commits that are already conventional — from commitizen, a pull-request title, or typed by hand — and writes CHANGELOG.md, an optional version bump, and a tag. Keep commitizen if you want the prompt; you do not need it to generate the changelog.</p>
+    <h3>What about the conventional-changelog CLI on its own?</h3>
+    <p>conventional-changelog-cli, with a conventional-changelog-* preset, writes CHANGELOG.md and stops. It does not bump a version file, commit, or tag. relnote --changelog CHANGELOG.md is that step, offline, with no preset package. examples/release.sh adds the optional bump, the chore(release) commit, and the annotated tag. Section shape: the <a href="changelog.html">CHANGELOG.md guide</a>.</p>
+    <h3>How does this differ from standard-version and commit-and-tag-version?</h3>
+    <p>standard-version and its fork commit-and-tag-version already combine a conventional-changelog preset with a version bump, commit, and tag, and they need Node. release.sh is that local command without Node and without .versionrc. Keep commit-and-tag-version if you need prerelease bumps, lifecycle scripts, or custom presets. Flag mapping is on the <a href="standard-version-alternative.html">standard-version alternative</a> page.</p>
+    <h3>How does this differ from the semantic-release and release-please pages?</h3>
+    <p>The <a href="semantic-release-alternative.html">semantic-release alternative</a> page is the CI publish loop without Node in the release tooling. The <a href="release-please-alternative.html">release-please alternative</a> page is the same job for people leaving a release pull request. This page is for the conventional-changelog plus commitizen stack: changelog plugins and commit prompts, with the version bump usually in another tool. The local path is release.sh; the optional Actions job matches those pages.</p>
+    <h3>How do I dry-run?</h3>
+    <p>Locally, release.sh --dry-run prints the next version, the changelog path, any version file it would bump, and the notes, and writes nothing. Add --bump-file only when a version file should change. Omit --bump-file when you only want a preview of the changelog, commit, and tag. In the Actions job, has-changes false skips the release steps when nothing is unreleased, and a second run whose HEAD is already tagged exits 0.</p>
+    <h3>Are chore(release) commits included in the notes?</h3>
+    <p>No by default. relnote skips chore(release) subjects so the release commit does not appear in its own CHANGELOG.md section or Release body. Pass --include-release-commits on the CLI, or include-release-commits: true on the action, to keep them.</p>
+    <h3>Does an npm package still need Node?</h3>
+    <p>Only for the product, not for this release tooling. The zipapp and release.sh stay free of Node plugins. For an npm package, pass --bump-file package.json, and if you keep a package-lock.json add --exec &quot;npm install --package-lock-only --ignore-scripts --silent&quot; so the lock tracks the new version. See the <a href="npm-package.html">npm package guide</a>.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
