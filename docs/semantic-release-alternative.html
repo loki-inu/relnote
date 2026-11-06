@@ -239,7 +239,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="release-please-alternative.html">release-please alternative</a> · <a href="standard-version-alternative.html">standard-version alternative</a> · <a href="conventional-changelog-alternative.html">conventional-changelog alternative</a> · <a href="npm-package.html">npm packages</a></p>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="release-please-alternative.html">release-please alternative</a> · <a href="standard-version-alternative.html">standard-version alternative</a> · <a href="conventional-changelog-alternative.html">conventional-changelog alternative</a> · <a href="git-cliff-alternative.html">git-cliff alternative</a> · <a href="npm-package.html">npm packages</a></p>
     <h1>A semantic-release alternative without npm/Node</h1>
     <p class="tag"><code>semantic-release</code> analyzes conventional commits in CI, picks the next version, writes notes, tags, creates a GitHub Release, and optionally publishes — through a Node plugin stack. If you want that loop without installing Node for the release tooling, without <code>.releaserc</code> / <code>release.config.js</code>, and without plugins that need the network during analysis, this workflow does it with the relnote zipapp, <code>examples/release.sh</code>, and a one-button (or tag-push) Actions job.</p>
     <div class="links">
@@ -362,6 +362,7 @@ chmod +x release.sh
 ./release.sh --dry-run --bump-file pyproject.toml</code></pre>
     <p>Same script as the <a href="standard-version-alternative.html">standard-version alternative</a>; nothing is written until you drop <code>--dry-run</code>.</p>
     <p>Replacing <code>conventional-changelog</code> and commitizen (changelog plugins and commit prompts) rather than the semantic-release plugin stack? <a href="conventional-changelog-alternative.html">conventional-changelog / commitizen alternative</a>.</p>
+    <p>Leaving git-cliff (Rust binary, <code>cliff.toml</code>, Tera templates) for a Release body plus one CHANGELOG section? <a href="git-cliff-alternative.html">git-cliff alternative</a>.</p>
 
     <h2>Monorepo packages</h2>
     <p>Pass the package&#x27;s tag prefix and path: <code>bash "$RUNNER_TEMP/release.sh" --tag-prefix api/v --bump-file packages/api/package.json -- --path packages/api</code>, then <code>relnote --tag-prefix api/v --path packages/api --output …</code>. Change the guard&#x27;s <code>'v*'</code> to <code>'api/v*'</code>. See the <a href="monorepo.html">monorepo guide</a>.</p>

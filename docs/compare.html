@@ -210,7 +210,7 @@
       <li><strong><a href="https://git-cliff.org/">git-cliff</a></strong> — changelog generator with <code>cliff.toml</code>, Tera templates, and optional version bump. Heavier, more control.</li>
       <li><strong><a href="https://github.com/swapnanil/relnotes">swapnanil/relnotes</a></strong> — another offline stdlib Python CLI for conventional-commit notes. Optional <code>.relnotes.toml</code>, inferred semver bump, <code>--from</code> / <code>--to</code>.</li>
     </ul>
-    <p>relnote is the smaller offline alternative when you want a GitHub Action and zero-config CI. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file.</p>
+    <p>relnote is the smaller offline alternative when you want a GitHub Action and zero-config CI. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file. Leaving git-cliff for a Release body plus one CHANGELOG section and bump/tag? <a href="git-cliff-alternative.html">git-cliff alternative</a> (curl the zipapp, <code>release.sh</code>, optional Actions).</p>
 
     <h2>Comparison</h2>
     <div class="table-wrap">
@@ -324,7 +324,7 @@ relnote --help</code></pre>
 
     <h2>Common questions</h2>
     <h3>Is relnote a git-cliff alternative?</h3>
-    <p>Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a fully regenerated <code>CHANGELOG.md</code>. Keep git-cliff when you want templated changelogs rebuilt from full history and optional version bump.</p>
+    <p>Yes, when you want a GitHub Release body from conventional commits and do not need Tera templates or a fully regenerated <code>CHANGELOG.md</code>. Keep git-cliff when you want templated changelogs rebuilt from full history and optional version bump. Concrete curl + <code>release.sh</code> + Actions flow: <a href="git-cliff-alternative.html">git-cliff alternative</a>.</p>
     <h3>Is relnote a <code>gh release create --generate-notes</code> alternative?</h3>
     <p>Yes, when you want offline notes grouped by commit type. Keep <code>gh release create --generate-notes</code> when you want official PR-linked notes and the Release created for you.</p>
     <h3>Is there a stdlib Python changelog CLI for conventional commits?</h3>
