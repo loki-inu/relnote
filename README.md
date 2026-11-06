@@ -47,7 +47,7 @@ Synthetic example from a fake commit list for a fictional CLI called harbor — 
 
 relnote is a stdlib Python changelog CLI (and GitHub Action) for offline conventional-commit release notes: no GitHub API, no config file. It groups commits into Features, Fixes, and Breaking.
 
-Keep using `gh release create --generate-notes` when you want GitHub's official, PR-linked notes. Use [git-cliff](https://git-cliff.org/) when you want a full changelog file, Tera templates, and a config.
+Keep using `gh release create --generate-notes` when you want GitHub's official, PR-linked notes. Use [git-cliff](https://git-cliff.org/) when you want a full changelog file, Tera templates, and a config. Coming from git-cliff and only need a Release body plus one CHANGELOG section? See the [git-cliff alternative](https://loki-inu.github.io/relnote/git-cliff-alternative.html).
 
 [swapnanil/relnotes](https://github.com/swapnanil/relnotes) is another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action and zero-config CI (`--quiet` / `--output`); pick that CLI if you want an optional `.relnotes.toml` or inferred semver bump.
 
@@ -235,6 +235,8 @@ Want the release-please result (version bump, CHANGELOG.md, tag, GitHub Release)
 Replacing `semantic-release` without putting Node in the release pipeline? Same job, Node-free tooling (zipapp + `release.sh`): [semantic-release alternative without npm/Node](https://loki-inu.github.io/relnote/semantic-release-alternative.html).
 
 Replacing `conventional-changelog` and commitizen (changelog plugins and commit prompts) without Node plugins for the release tooling? The same zipapp and `release.sh` write CHANGELOG.md, an optional version bump, and a tag offline: [conventional-changelog / commitizen alternative](https://loki-inu.github.io/relnote/conventional-changelog-alternative.html).
+
+Replacing [git-cliff](https://git-cliff.org/) (Rust binary, `cliff.toml`, Tera templates that rebuild CHANGELOG.md from history) with an offline Release body, one Keep a Changelog section, and bump/tag via `release.sh`? [git-cliff alternative](https://loki-inu.github.io/relnote/git-cliff-alternative.html).
 
 Releasing a Python package? [Release a Python package from conventional commits](https://loki-inu.github.io/relnote/python-package.html) bumps `version` in `pyproject.toml`, prepends CHANGELOG.md, and tags with `release.sh`, then a tag-push workflow checks the tag against `pyproject.toml`, builds, uploads to PyPI with trusted publishing, and creates the GitHub Release with relnote notes.
 

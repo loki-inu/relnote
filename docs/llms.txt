@@ -4,7 +4,7 @@
 
 relnote reads the current repository from the latest tag (or --since) to HEAD and prints a GitHub Release body grouped as Features (feat), Fixes (fix), Breaking (type! or BREAKING CHANGE:), and Other. Merge commits are omitted by default. No GitHub API, no config file, no third-party packages. Python 3.11+ and git on PATH.
 
-It is a small git-cliff alternative when you want a Release body rather than a templated CHANGELOG.md. It is a gh release create --generate-notes alternative when you want offline notes grouped by commit type instead of official PR-linked notes.
+It is a small git-cliff alternative when you want a Release body rather than a templated CHANGELOG.md (full guide: https://loki-inu.github.io/relnote/git-cliff-alternative.html). It is a gh release create --generate-notes alternative when you want offline notes grouped by commit type instead of official PR-linked notes.
 
 It does not create the Release or the tag. Since v0.3.0, --next-version prints the next semver tag (breaking → major, feat → minor, else patch; 0.x breaking → minor), and --path DIR / --tag-prefix PREFIX scope notes and versions to one package in a monorepo. Since v0.2.0, --changelog CHANGELOG.md prepends a Keep a Changelog style "## [TITLE] - DATE" section for the new release (older entries untouched; duplicate titles refused). Since v0.3.5, with a github.com origin, (#41) squash-merge references in CHANGELOG.md bullets become pull request links.
 
@@ -44,9 +44,13 @@ Locally: examples/release.sh --bump-file Cargo.toml --exec "cargo update --works
 
 Locally: examples/release.sh --bump-file package.json --exec "npm install --package-lock-only --ignore-scripts --silent" (v0.3.7+; --exec runs after the bump and CHANGELOG.md, before the commit, and tracked files it changes such as package-lock.json are committed; NEXT_VERSION is exported) → next version, package.json + package-lock.json bump, CHANGELOG.md section, chore(release) commit, annotated tag. Without the lock sync, package-lock.json keeps the old version under packages[""].version and the next npm install dirties the tree. Tag-push workflow: check v$version == tag via node -p require('./package.json').version, npm ci, npm test, npm publish with trusted publishing (environment release, id-token: write; first version published by hand), then gh release create with the loki-inu/relnote action's notes. Workspaces: bump the root or use --tag-prefix / --path per package as on the monorepo page. Yarn Berry: --exec "yarn install --mode=update-lockfile"; pnpm: --exec "pnpm install --lockfile-only". Guide: https://loki-inu.github.io/relnote/npm-package.html
 
+## git-cliff alternative
+
+git-cliff (oratorio-rs/git-cliff) is a Rust binary with cliff.toml and Tera templates that rebuild CHANGELOG.md from history. relnote is the offline stdlib Python zipapp alternative when you want a GitHub Release body from conventional commits, one Keep a Changelog section prepended per release (older entries untouched), and optional next-version / bump / commit / tag via examples/release.sh — no cliff.toml, no cargo install, no template language. Pin curl and loki-inu/relnote@v0.3.7. Optional workflow_dispatch: has-changes gate, same release.sh, gh release create --notes-file (never interpolate notes in run:). Keep git-cliff for full-history rebuild, custom Tera templates, commit parsers, or remote contributor metadata. Differs from conventional-changelog-alternative (Node plugins / commitizen prompts) and changelog.html (--changelog flag detail). Guide: https://loki-inu.github.io/relnote/git-cliff-alternative.html
+
 ## Compared to nearby tools
 
-- git-cliff: keep it for templated CHANGELOG.md rebuilt from history and version bump. relnote prints a Release body, can prepend one release to CHANGELOG.md, and needs no config.
+- git-cliff: keep it for templated CHANGELOG.md rebuilt from history and version bump. relnote prints a Release body, can prepend one release to CHANGELOG.md, and needs no config. Full page: https://loki-inu.github.io/relnote/git-cliff-alternative.html
 - gh release create --generate-notes: keep it for official PR-linked notes. relnote runs offline and groups by conventional-commit type.
 - swapnanil/relnotes: another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action, --quiet/--output CI, and bot or secret-looking subject filters. Pick that CLI for optional .relnotes.toml, inferred semver bump, or --from/--to.
 
@@ -82,6 +86,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - release-please alternative without a release PR (workflow_dispatch: bump version file, CHANGELOG.md, chore(release) commit, tag, gh release create; tested example): https://loki-inu.github.io/relnote/release-please-alternative.html
 - semantic-release alternative without npm/Node (workflow_dispatch: zipapp + release.sh, no Node for tooling; tested example): https://loki-inu.github.io/relnote/semantic-release-alternative.html
 - conventional-changelog / commitizen alternative (offline zipapp + release.sh: CHANGELOG.md, optional version bump, tag; no Node plugins; tested example): https://loki-inu.github.io/relnote/conventional-changelog-alternative.html
+- git-cliff alternative (offline zipapp + release.sh: Release body, one CHANGELOG section, bump/tag; no cliff.toml / Tera; tested example): https://loki-inu.github.io/relnote/git-cliff-alternative.html
 - Release a Python package (pyproject.toml bump, CHANGELOG.md, tag, PyPI trusted publishing, GitHub Release; tested example): https://loki-inu.github.io/relnote/python-package.html
 - Release a Rust crate (Cargo.toml + Cargo.lock bump, CHANGELOG.md, tag, crates.io trusted publishing, GitHub Release; tested with real cargo): https://loki-inu.github.io/relnote/rust-crate.html
 - Release an npm package (package.json + package-lock.json bump, CHANGELOG.md, tag, npm trusted publishing, GitHub Release; tested with real npm): https://loki-inu.github.io/relnote/npm-package.html
