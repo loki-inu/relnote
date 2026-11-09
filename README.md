@@ -238,6 +238,8 @@ Replacing `conventional-changelog` and commitizen (changelog plugins and commit 
 
 Replacing [git-cliff](https://git-cliff.org/) (Rust binary, `cliff.toml`, Tera templates that rebuild CHANGELOG.md from history) with an offline Release body, one Keep a Changelog section, and bump/tag via `release.sh`? [git-cliff alternative](https://loki-inu.github.io/relnote/git-cliff-alternative.html).
 
+Replacing [Changesets](https://github.com/changesets/changesets) in a monorepo (`.changeset/*.md` files, Version Packages PR, Node) with per-package notes, `package.json` bump, CHANGELOG.md, and `api@1.4.0` tags straight from scoped conventional commits? [Changesets alternative](https://loki-inu.github.io/relnote/changesets-alternative.html).
+
 Releasing a Python package? [Release a Python package from conventional commits](https://loki-inu.github.io/relnote/python-package.html) bumps `version` in `pyproject.toml`, prepends CHANGELOG.md, and tags with `release.sh`, then a tag-push workflow checks the tag against `pyproject.toml`, builds, uploads to PyPI with trusted publishing, and creates the GitHub Release with relnote notes.
 
 Releasing a Rust crate? [Release a Rust crate from conventional commits](https://loki-inu.github.io/relnote/rust-crate.html) bumps `version` in `Cargo.toml`, syncs `Cargo.lock` with `release.sh --exec "cargo update --workspace"`, prepends CHANGELOG.md, and tags; a tag-push workflow checks the tag against `Cargo.toml`, publishes with `cargo publish --locked` through crates.io trusted publishing, and creates the GitHub Release with relnote notes.

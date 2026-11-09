@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Changesets alternative without .changeset files — relnote</title>
+  <meta name="description" content="Replace Changesets (.changeset/*.md files, the changeset CLI, a Version Packages PR, Node) with offline relnote: per-package notes, next version, CHANGELOG.md, package.json bump, and pkg@x.y.z tags straight from conventional commits. No .changeset folder, no npx, no bot PR.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/changesets-alternative.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Changesets alternative without .changeset files — relnote">
+  <meta property="og:description" content="Replace Changesets (.changeset/*.md files, the changeset CLI, a Version Packages PR, Node) with offline relnote: per-package notes, next version, CHANGELOG.md, package.json bump, and pkg@x.y.z tags straight from conventional commits. No .changeset folder, no npx, no bot PR.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/changesets-alternative.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Changesets alternative without .changeset files — relnote">
+  <meta name="twitter:description" content="Replace Changesets (.changeset/*.md files, the changeset CLI, a Version Packages PR, Node) with offline relnote: per-package notes, next version, CHANGELOG.md, package.json bump, and pkg@x.y.z tags straight from conventional commits. No .changeset folder, no npx, no bot PR.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/changesets-alternative.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/changesets-alternative.html",
+      "name": "Changesets alternative without .changeset files — relnote",
+      "description": "Replace Changesets (.changeset/*.md files, the changeset CLI, a Version Packages PR, Node) with offline relnote: per-package notes, next version, CHANGELOG.md, package.json bump, and pkg@x.y.z tags straight from conventional commits. No .changeset folder, no npx, no bot PR.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "relnote",
+        "url": "https://loki-inu.github.io/relnote/"
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "relnote",
+        "softwareVersion": "0.3.7",
+        "url": "https://github.com/loki-inu/relnote"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "relnote docs",
+          "item": "https://loki-inu.github.io/relnote/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Changesets alternative",
+          "item": "https://loki-inu.github.io/relnote/changesets-alternative.html"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Replace Changesets with offline relnote in a monorepo",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Pin the zipapp",
+          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release and examples/release.sh from the same tag. No @changesets/cli, no .changeset folder, no npx."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Write conventional commits with a scope",
+          "text": "feat(api): ... and fix(web): ... replace hand-written changeset files. The bump comes from the commit types since the package's last pkg@x.y.z tag, limited with --path packages/NAME."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Release one package",
+          "text": "Run release.sh --tag-prefix api@ --changelog packages/api/CHANGELOG.md --bump-file packages/api/package.json -- --path packages/api. In Actions, pick the package on workflow_dispatch, gate on has-changes, push the tag, and publish with gh release create --notes-file."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When should I keep Changesets?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Keep Changesets when you want release intent written by humans in PRs instead of commit messages, automatic bumps of dependent workspace packages, linked or fixed version groups, pre-release mode, or the Version Packages PR from changesets/action. relnote does not track dependencies between packages."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do my tags have to change?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Changesets tags look like api@1.3.2 or @scope/api@1.3.2. Pass that prefix (api@ or @scope/api@) to --tag-prefix and relnote reads the last tag and prints the next one in the same shape, for example api@1.4.0."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about package-lock.json or pnpm-lock.yaml?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Add release.sh --exec with your package manager's lockfile-only command, for example --exec \"npm install --package-lock-only --ignore-scripts --silent\". Tracked files it changes are committed with the release. See the npm package guide."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I dry-run?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "release.sh --dry-run with the same --tag-prefix, --changelog, --bump-file, and -- --path flags prints the next tag, files, and notes and writes nothing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are chore(release) commits included in the notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No by default. relnote skips chore(release) subjects, even when they touch the package directory. Pass --include-release-commits to keep them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I pin versions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7)."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="monorepo.html">Monorepo</a> · <a href="npm-package.html">npm package</a> · <a href="semantic-release-alternative.html">semantic-release alternative</a> · <a href="git-cliff-alternative.html">git-cliff alternative</a> · <a href="github-action.html">GitHub Action</a> · <a href="single-file.html">Single-file zipapp</a></p>
+    <h1>A Changesets alternative without .changeset files</h1>
+    <p class="tag"><a href="https://github.com/changesets/changesets">Changesets</a> asks every PR to add a markdown file under <code>.changeset/</code>, then <code>changeset version</code> (usually through a bot&#x27;s Version Packages PR) turns those files into bumps and per-package <code>CHANGELOG.md</code> entries. If your commits already follow conventional commits with a scope, relnote can read them directly: per-package notes, next version, <code>CHANGELOG.md</code>, <code>package.json</code> bump, and <code>api@1.4.0</code>-style tags. No <code>.changeset</code> folder, no <code>npx changeset</code>, and no bot PR.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="monorepo.html">Monorepo guide</a>
+      · <a href="single-file.html">Zipapp install</a>
+      · <a href="changelog.html">CHANGELOG.md guide</a>
+    </div>
+
+    <h2>Changesets, or this?</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>Changesets</th><th>relnote + release.sh</th></tr></thead>
+        <tbody>
+          <tr><td>Source of release notes</td><td>Hand-written <code>.changeset/*.md</code> files added in each PR</td><td>Conventional commit subjects (<code>feat(api): ...</code>) since the package&#x27;s last tag</td></tr>
+          <tr><td>Runtime</td><td>Node + <code>@changesets/cli</code> in devDependencies</td><td>Python 3.11+ stdlib zipapp; <code>release.sh</code> is bash + git</td></tr>
+          <tr><td>Bump decision</td><td>Chosen per changeset (patch / minor / major)</td><td><code>relnote --next-version</code> from commit types (<code>feat</code> minor, <code>fix</code> patch, <code>!</code> major)</td></tr>
+          <tr><td>Per-package scope</td><td>Workspace packages from the package manager</td><td><code>--path packages/api</code> plus <code>--tag-prefix api@</code></td></tr>
+          <tr><td>Tags</td><td><code>api@1.4.0</code> / <code>@scope/api@1.4.0</code></td><td>Same shape; the prefix you pass is kept</td></tr>
+          <tr><td>Release flow</td><td>Version Packages PR from <code>changesets/action</code>, then publish</td><td>One <code>workflow_dispatch</code> run per package, or <code>release.sh</code> locally</td></tr>
+          <tr><td>Dependent packages</td><td>Bumps internal dependents automatically</td><td>Not handled; release each package you changed</td></tr>
+          <tr><td>Network</td><td>npm registry for install and publish</td><td>Offline until you push or <code>gh release create</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Keep Changesets when you want release intent written by people in PRs, automatic bumps of internal dependents, or linked version groups. This page replaces the simpler case: each package releases on its own, and the commit log already says what changed.</p>
+
+    <h2>Pin the zipapp</h2>
+    <p>Python 3.11+ and git on <code>PATH</code>. Download the v0.3.7 zipapp from the GitHub Release and <code>examples/release.sh</code> from the same tag. No <code>npm install @changesets/cli</code>.</p>
+    <pre><code>mkdir -p ~/.local/bin
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+chmod +x ~/.local/bin/relnote
+curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+chmod +x release.sh</code></pre>
+    <p>Commit <code>release.sh</code> into the repo (for example <code>scripts/release.sh</code>). It is plain bash; read it before you run it. You can delete <code>.changeset/</code> and <code>@changesets/cli</code> once your existing <code>api@x.y.z</code> tags are in place, since relnote starts from the last tag.</p>
+
+    <h2>Release one package locally</h2>
+    <p>Preview the next tag for one package, then cut it. <code>--path</code> limits commits to that directory, and <code>--tag-prefix</code> picks that package&#x27;s tags. Use <code>@scope/api@</code> as the prefix if your tags carry the npm scope.</p>
+    <pre><code>relnote --next-version --tag-prefix api@ --path packages/api
+./release.sh --dry-run --tag-prefix api@ --changelog packages/api/CHANGELOG.md \
+  --bump-file packages/api/package.json -- --path packages/api</code></pre>
+    <p>Drop <code>--dry-run</code> to write it: <code>packages/api/package.json</code> gets the new version, <code>packages/api/CHANGELOG.md</code> gets one new section, and you get a <code>chore(release): api@1.4.0</code> commit and an <code>api@1.4.0</code> tag. Nothing is pushed. Add <code>--exec "npm install --package-lock-only --ignore-scripts --silent"</code> if the lockfile records workspace versions (see the <a href="npm-package.html">npm package guide</a>). Afterwards: <code>git push --follow-tags</code>.</p>
+
+    <h2>GitHub Actions: pick a package, release it</h2>
+    <p>Save this as <code>.github/workflows/release.yml</code>, list your package directories under <code>options</code>, and use <strong>Actions → Release → Run workflow</strong>. The action&#x27;s <code>has-changes</code> output skips the run when that package has nothing unreleased. Action inputs: <a href="github-action.html">GitHub Action guide</a>.</p>
+    <pre><code>name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package directory name under packages/
+        type: choice
+        options: [api, web]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+        with:
+          path: packages/${{ inputs.package }}
+          tag-prefix: ${{ inputs.package }}@
+      - name: Install relnote and release.sh
+        if: steps.relnote.outputs.has-changes == &#x27;true&#x27;
+        env:
+          V: v0.3.7
+        run: |
+          mkdir -p &quot;$HOME/.local/bin&quot;
+          curl -fsSL -o &quot;$HOME/.local/bin/relnote&quot; &quot;https://github.com/loki-inu/relnote/releases/download/$V/relnote&quot;
+          chmod +x &quot;$HOME/.local/bin/relnote&quot;
+          curl -fsSL -o &quot;$RUNNER_TEMP/release.sh&quot; &quot;https://raw.githubusercontent.com/loki-inu/relnote/$V/examples/release.sh&quot;
+          echo &quot;$HOME/.local/bin&quot; &gt;&gt; &quot;$GITHUB_PATH&quot;
+      - name: Bump, changelog, tag, publish
+        if: steps.relnote.outputs.has-changes == &#x27;true&#x27;
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PKG: ${{ inputs.package }}
+        run: |
+          set -euo pipefail
+          prefix=&quot;$PKG@&quot;
+          dir=&quot;packages/$PKG&quot;
+          if [ -n &quot;$(git tag --points-at HEAD --list &quot;$prefix*&quot;)&quot; ]; then
+            echo &quot;HEAD is already tagged for $PKG; nothing to release.&quot;
+            exit 0
+          fi
+          git config user.name &quot;github-actions[bot]&quot;
+          git config user.email &quot;41898282+github-actions[bot]@users.noreply.github.com&quot;
+          bash &quot;$RUNNER_TEMP/release.sh&quot; --tag-prefix &quot;$prefix&quot; \
+            --changelog &quot;$dir/CHANGELOG.md&quot; --bump-file &quot;$dir/package.json&quot; -- --path &quot;$dir&quot;
+          tag=$(git describe --tags --exact-match --match &quot;$prefix*&quot;)
+          git push origin HEAD &quot;refs/tags/$tag&quot;
+          relnote --tag-prefix &quot;$prefix&quot; --path &quot;$dir&quot; --output &quot;$RUNNER_TEMP/notes.md&quot; --quiet
+          gh release create &quot;$tag&quot; --title &quot;$tag&quot; --notes-file &quot;$RUNNER_TEMP/notes.md&quot;</code></pre>
+    <p>Notes go through a file and <code>--notes-file</code>. Never interpolate the body inside <code>run:</code> (backticks in commit subjects break the shell). Add an <code>npm publish</code> step afterwards if the package goes to npm; trusted publishing is on the <a href="npm-package.html">npm package guide</a>.</p>
+
+    <h2>What one run does</h2>
+    <p>Start: <code>packages/api</code> is at <code>api@1.3.2</code> and <code>packages/web</code> at <code>web@0.4.0</code>. Since then, <code>feat(api): add --json output (#12)</code> touched <code>packages/api</code> and <code>fix(web): handle empty config (#13)</code> touched <code>packages/web</code>. Running the workflow with <code>package: api</code> leaves <code>web</code> alone. <code>packages/api/package.json</code> now says <code>"version": "1.4.0"</code>, and <code>packages/api/CHANGELOG.md</code> gets:</p>
+    <pre><code>## [api@1.4.0] - 2026-11-09
+
+### Features
+
+- **api:** add --json output ([#12](https://github.com/you/monorepo/pull/12)) (`57fc221`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/monorepo/compare/api@1.3.2...api@1.4.0</code></pre>
+    <p>The GitHub Release <code>api@1.4.0</code> gets this body:</p>
+    <pre><code>## What&#x27;s changed
+
+### Features
+
+- **api:** add --json output (#12) (`57fc221`) — Ada Lovelace
+
+---
+
+Range: `api@1.3.2` → `api@1.4.0`.
+
+**Full changelog:** https://github.com/you/monorepo/compare/api@1.3.2...api@1.4.0</code></pre>
+    <p>Both blocks come from running the workflow&#x27;s last step against a scratch monorepo in relnote&#x27;s test suite (<code>tests/test_changesets_docs.py</code>, with <code>gh</code> stubbed); your hashes and dates differ. The <code>fix(web)</code> commit is not in the api notes, and the <code>chore(release)</code> commit is not listed.</p>
+
+    <h2>FAQ</h2>
+    <h3>When should I keep Changesets?</h3>
+    <p>Keep Changesets when you want release intent written by people in PRs instead of commit messages, automatic bumps of dependent workspace packages, linked or fixed version groups, pre-release mode, or the Version Packages PR from <code>changesets/action</code>. relnote does not track dependencies between packages.</p>
+    <h3>Do my tags have to change?</h3>
+    <p>No. Changesets tags look like <code>api@1.3.2</code> or <code>@scope/api@1.3.2</code>. Pass that prefix (<code>api@</code> or <code>@scope/api@</code>) to <code>--tag-prefix</code> and relnote reads the last tag and prints the next one in the same shape, for example <code>api@1.4.0</code>. More tag shapes: the <a href="monorepo.html">monorepo guide</a>.</p>
+    <h3>What about package-lock.json or pnpm-lock.yaml?</h3>
+    <p>Add <code>release.sh --exec</code> with your package manager&#x27;s lockfile-only command, for example <code>--exec "npm install --package-lock-only --ignore-scripts --silent"</code>. Tracked files it changes are committed with the release. See the <a href="npm-package.html">npm package guide</a>.</p>
+    <h3>How do I dry-run?</h3>
+    <p><code>release.sh --dry-run</code> with the same <code>--tag-prefix</code>, <code>--changelog</code>, <code>--bump-file</code>, and <code>-- --path</code> flags prints the next tag, files, and notes and writes nothing. Version rules: <a href="next-version.html">next version</a>.</p>
+    <h3>Are chore(release) commits included in the notes?</h3>
+    <p>No by default. relnote skips <code>chore(release)</code> subjects, even when they touch the package directory. Pass <code>--include-release-commits</code> to keep them.</p>
+    <h3>How is this different from the semantic-release alternative?</h3>
+    <p>The <a href="semantic-release-alternative.html">semantic-release alternative</a> and <a href="release-please-alternative.html">release-please alternative</a> release one version for the whole repo. This page is for monorepos that release packages separately with <code>pkg@x.y.z</code> tags.</p>
+    <h3>Should I pin versions?</h3>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). Floating <code>latest</code> can change behaviour under you.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
