@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release Drafter alternative without PR labels — relnote</title>
+  <meta name="description" content="Replace Release Drafter (PR labels, .github/release-drafter.yml, and a GitHub token to draft the Release) with offline relnote. Conventional commits become the Release body, the next version, and an optional CHANGELOG.md section. No labels to maintain and no config file.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/release-drafter-alternative.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release Drafter alternative without PR labels — relnote">
+  <meta property="og:description" content="Replace Release Drafter (PR labels, .github/release-drafter.yml, and a GitHub token to draft the Release) with offline relnote. Conventional commits become the Release body, the next version, and an optional CHANGELOG.md section. No labels to maintain and no config file.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/release-drafter-alternative.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release Drafter alternative without PR labels — relnote">
+  <meta name="twitter:description" content="Replace Release Drafter (PR labels, .github/release-drafter.yml, and a GitHub token to draft the Release) with offline relnote. Conventional commits become the Release body, the next version, and an optional CHANGELOG.md section. No labels to maintain and no config file.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/release-drafter-alternative.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/release-drafter-alternative.html",
+      "name": "Release Drafter alternative without PR labels — relnote",
+      "description": "Replace Release Drafter (PR labels, .github/release-drafter.yml, and a GitHub token to draft the Release) with offline relnote. Conventional commits become the Release body, the next version, and an optional CHANGELOG.md section. No labels to maintain and no config file.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "relnote",
+        "url": "https://loki-inu.github.io/relnote/"
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "relnote",
+        "softwareVersion": "0.3.7",
+        "url": "https://github.com/loki-inu/relnote"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "relnote docs",
+          "item": "https://loki-inu.github.io/relnote/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Release Drafter alternative",
+          "item": "https://loki-inu.github.io/relnote/release-drafter-alternative.html"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Replace Release Drafter with offline relnote",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Install the zipapp",
+          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release. No .github/release-drafter.yml and no release-drafter action."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Write the Release body from commits",
+          "text": "python3 -m relnote --next-version prints the next tag. python3 -m relnote --output notes.md --quiet writes the Release body. python3 -m relnote --changelog CHANGELOG.md --changelog-title vX.Y.Z prepends one section and does not commit."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Publish with the existing GitHub Action workflows",
+          "text": "On a tag push, loki-inu/relnote@v0.3.7 plus softprops/action-gh-release@v2 opens a draft, or gh release create --draft receives the notes through env. A workflow_dispatch job gates on has-changes and runs gh release create with next-version. The relnote step does not call the GitHub API."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When should I keep Release Drafter?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Keep Release Drafter when pull requests are labeled and commits are not conventional, when you want one draft release updated on every push to the default branch, or when you want Autolabeler to apply labels from the title, branch, files, or body. relnote does not read labels and does not update a draft on each merge."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does relnote need a token to generate notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The CLI and the loki-inu/relnote action read the local checkout only. They are not a GitHub App. The later step that creates the Release uses github.token, as on the GitHub Action guide. Release Drafter's example needs contents: write and pull-requests: read because it reads pull requests and writes the draft through the GitHub API."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this update a draft on every merge?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Release Drafter's example workflow runs on push to the default branch and creates or updates one draft. The workflows on this page create a Release when you push a tag, or when you run the workflow_dispatch job. They do not edit a draft each time a pull request merges."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I pin versions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7)."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="compare.html">Compare</a> · <a href="github-action.html">GitHub Action</a> · <a href="offline-github-release-notes.html">Offline release notes</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="squash-merge.html">Squash merges</a> · <a href="single-file.html">Single-file zipapp</a></p>
+    <h1>A Release Drafter alternative without PR labels</h1>
+    <p class="tag"><a href="https://github.com/release-drafter/release-drafter">Release Drafter</a> (<code>release-drafter/release-drafter</code>) drafts the next GitHub Release as pull requests merge. Its example workflow runs on push to the default branch, and <code>.github/release-drafter.yml</code> groups those pull requests by labels. If the commits already follow conventional commits, relnote builds the Release body from the local git log: no labels to maintain, no config file, and no token to generate the notes.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml">examples/draft-release.yml (v0.3.7)</a>
+      · <a href="github-action.html">GitHub Action guide</a>
+      · <a href="offline-github-release-notes.html">Offline release notes</a>
+      · <a href="single-file.html">Zipapp install</a>
+    </div>
+
+    <h2>Release Drafter, or this?</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>Release Drafter</th><th>relnote</th></tr></thead>
+        <tbody>
+          <tr><td>What gets grouped</td><td>Merged pull requests. The documented example matches labels (<code>feature</code>, <code>enhancement</code>, <code>fix</code>, <code>bugfix</code>, <code>bug</code>, <code>chore</code>). A <code>when.conventional</code> rule can match the pull request title instead</td><td>Commit subjects since the previous tag. <code>feat</code> → Features, <code>fix</code> → Fixes, <code>type!</code> or a <code>BREAKING CHANGE:</code> footer → Breaking, anything else → Other</td></tr>
+          <tr><td>Config file</td><td>Required. The action loads <code>.github/release-drafter.yml</code> through the GitHub API (override the name with <code>config-name</code>)</td><td>None</td></tr>
+          <tr><td>Needs GitHub API</td><td>Yes, to read pull requests and create or update the draft. The example permissions are <code>contents: write</code> and <code>pull-requests: read</code>. Checkout is optional</td><td>Not for the notes. The CLI and <code>loki-inu/relnote</code> read the checkout. A token is only for the later <code>gh release create</code> or <code>softprops/action-gh-release</code> step</td></tr>
+          <tr><td>Works offline</td><td>No</td><td>Yes, until you push or create the Release</td></tr>
+          <tr><td>Next version</td><td><code>$RESOLVED_VERSION</code> from category <code>semver-increment</code> (example: minor for Features, major for a <code>major</code> label, patch by default; the highest match wins). <code>$NEXT_PATCH_VERSION</code>, <code>$NEXT_MINOR_VERSION</code>, and <code>$NEXT_MAJOR_VERSION</code> each move that one component</td><td><code>relnote --next-version</code>, also the action output <code>next-version</code>: breaking → major, <code>feat</code> → minor, anything else → patch. While the major is 0, a breaking change bumps the minor. Prints the tag; does not create it</td></tr>
+          <tr><td>CHANGELOG.md</td><td>The draft release body is the notes. The action's configuration does not write a <code>CHANGELOG.md</code> in the repository</td><td><code>relnote --changelog CHANGELOG.md</code> prepends one Keep a Changelog section. Older entries stay. A duplicate title is refused. The command does not commit</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Keep Release Drafter when the team labels pull requests and does not use conventional commits, when the draft should update on every push to the default branch, or when you want <a href="https://github.com/release-drafter/release-drafter#autolabeler">Autolabeler</a> (<code>release-drafter/release-drafter/autolabeler</code>) to add labels from the title, branch, files, or body. That action needs <code>pull-requests: write</code>. The <code>release-drafter</code> npm package also has a CLI (<code>npx release-drafter owner/repo</code>); it still needs a forge token and the config file, and it does not read the local git log.</p>
+
+    <h2>Install</h2>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page.</p>
+    <pre><code>mkdir -p ~/.local/bin
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+chmod +x ~/.local/bin/relnote</code></pre>
+
+    <h2>Release body, next version, CHANGELOG section</h2>
+    <p>Three separate invocations, the same flags as the <a href="offline-github-release-notes.html">offline guide</a>, the <a href="next-version.html">next version guide</a>, and the <a href="changelog.html">CHANGELOG.md guide</a>. Nothing is pushed, and no GitHub API is called. <code>--since REF</code> starts somewhere other than the latest tag.</p>
+    <pre><code>python3 -m relnote --next-version
+python3 -m relnote --output notes.md --quiet
+python3 -m relnote --changelog CHANGELOG.md --changelog-title v1.4.0 --quiet</code></pre>
+    <p><code>--next-version</code> prints one line, such as <code>v1.4.0</code>. <code>--output notes.md --quiet</code> writes the Release body and prints nothing; paste <code>notes.md</code> into a new or existing Release. <code>--changelog</code> prepends one section. With <code>--changelog-title v1.4.0</code> on an untagged <code>HEAD</code>, that section's compare link ends at <code>v1.4.0</code> (v0.3.6+). The command does not commit the file.</p>
+
+    <h2>What those commands write</h2>
+    <p>Start: the last tag is <code>v1.3.2</code>, then <code>feat: add --json output (#12)</code> and <code>fix: handle empty config (#13)</code>. <code>--next-version</code> prints <code>v1.4.0</code>. <code>notes.md</code> is the Release body. Because <code>HEAD</code> is not tagged yet, the range ends at <code>HEAD</code>:</p>
+    <pre><code>## What's changed
+
+### Features
+
+- add --json output (#12) (`4a5b395`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config (#13) (`7e08d2c`) — Ada Lovelace
+
+---
+
+Range: `v1.3.2` → `HEAD`.
+
+**Full changelog:** https://github.com/you/project/compare/v1.3.2...HEAD</code></pre>
+    <p><code>CHANGELOG.md</code> gains this section above the previous entries. <code>(#12)</code> becomes a pull request link when <code>origin</code> is a github.com remote (v0.3.5+):</p>
+    <pre><code>## [v1.4.0] - 2026-11-17
+
+### Features
+
+- add --json output ([#12](https://github.com/you/project/pull/12)) (`4a5b395`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config ([#13](https://github.com/you/project/pull/13)) (`7e08d2c`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/project/compare/v1.3.2...v1.4.0</code></pre>
+    <p>Both blocks come from running those three commands against a scratch repository in relnote's test suite (<code>tests/test_release_drafter_docs.py</code>). Your hashes and the date differ. A squash-merged pull request whose title is already <code>feat: … (#12)</code> is one commit, so it shows up as one line. Merge commits are omitted. Details: <a href="squash-merge.html">squash-merged PR titles</a>.</p>
+
+    <h2>Draft a Release when the tag is pushed</h2>
+    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. It does not refresh a draft on every merge to the default branch.</p>
+    <pre><code>name: Draft release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: ${{ github.ref_name }}
+          body: ${{ steps.relnote.outputs.notes }}</code></pre>
+    <p><code>fetch-depth: 0</code> is required so the checkout has tags. <code>contents: write</code> is for the release step. The relnote step only reads the checkout. On a tag push, <code>HEAD</code> is the new tag, so the range and the compare link end at that tag (v0.3.4+), not at <code>HEAD</code>.</p>
+    <p>No third-party release action? The guide's GitHub CLI step passes the notes through the environment, not inline in the script (commit subjects contain backticks):</p>
+    <pre><code>      - run: gh release create "$GITHUB_REF_NAME" --draft --title "$GITHUB_REF_NAME" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.relnote.outputs.notes }}</code></pre>
+
+    <h2>Or create the Release from a button</h2>
+    <p>This is the <code>workflow_dispatch</code> job from the same guide. <code>next-version</code> is the tag. <code>has-changes</code> is <code>false</code> when there is nothing new, and the step still succeeds, so the <code>gh</code> step is gated on it. <code>gh release create</code> makes the tag at <code>--target</code>.</p>
+    <pre><code>name: Release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - if: steps.relnote.outputs.has-changes == 'true'
+        run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.relnote.outputs.next-version }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+      - if: steps.relnote.outputs.has-changes != 'true'
+        run: echo "Nothing to release since the last tag."</code></pre>
+    <p>Set <code>fail-on-empty: true</code> if an empty range should fail the step. An unknown <code>since</code> ref still fails. Inputs and outputs: the <a href="github-action.html">Action guide</a>.</p>
+
+    <h2>Map the example categories to commit types</h2>
+    <p>The labels below are the ones in Release Drafter's documented <code>.github/release-drafter.yml</code> example. relnote has no label list; the commit type is the category.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Release Drafter example</th><th>relnote</th></tr></thead>
+        <tbody>
+          <tr><td><code>feature</code>, <code>enhancement</code> (Features, <code>semver-increment: minor</code>)</td><td><code>feat:</code> or <code>feat(scope):</code> → Features. <code>--next-version</code> bumps minor</td></tr>
+          <tr><td><code>fix</code>, <code>bugfix</code>, <code>bug</code> (Bug Fixes; increment defaults to patch)</td><td><code>fix:</code> → Fixes. <code>--next-version</code> bumps patch</td></tr>
+          <tr><td><code>chore</code> (Maintenance)</td><td><code>chore</code>, <code>docs</code>, <code>refactor</code>, and any other type, including a subject that is not a conventional commit → Other. Patch, unless the range also has a <code>feat</code> or a breaking change</td></tr>
+          <tr><td><code>major</code> label (<code>type: version-resolver</code>, <code>semver-increment: major</code>)</td><td><code>type!</code> (for example <code>feat!:</code>) or a <code>BREAKING CHANGE:</code> footer → Breaking. Major bump, or minor while the version is <code>0.y.z</code></td></tr>
+          <tr><td><code>skip-changelog</code> (<code>type: pre-exclude</code>)</td><td>No label. Merge commits are omitted. <code>chore(release): …</code> is omitted unless you pass <code>--include-release-commits</code> (action input <code>include-release-commits: true</code>)</td></tr>
+          <tr><td><code>when.conventional.type: feat</code> on the pull request title</td><td>Already how <code>feat</code> commits are grouped. No config key. A squash merge keeps the title as the commit subject</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Release Drafter's version resolver picks the highest matching <code>semver-increment</code>. relnote does the same kind of choice from the commit categories in the range, with the <code>0.y.z</code> exception above. A version-resolver category with no <code>when</code> is Release Drafter's fallback; the example sets that fallback to patch. relnote's fallback is also patch, when the range has no breaking change and no <code>feat</code>.</p>
+
+    <h2>FAQ</h2>
+    <h3>When should I keep Release Drafter?</h3>
+    <p>Keep it when pull requests are labeled and commits are not conventional, when you want one draft release updated on every push to the default branch, or when you want Autolabeler to apply labels from the title, branch, files, or body. relnote does not read labels and does not update a draft on each merge.</p>
+    <h3>Does relnote need a token to generate notes?</h3>
+    <p>No. The CLI and the <code>loki-inu/relnote</code> action read the local checkout only. They are not a GitHub App. The later step that creates the Release uses <code>github.token</code>, as on the <a href="github-action.html">GitHub Action guide</a>. Release Drafter's example needs <code>contents: write</code> and <code>pull-requests: read</code> because it reads pull requests and writes the draft through the GitHub API.</p>
+    <h3>Does this update a draft on every merge?</h3>
+    <p>No. Release Drafter's example workflow runs on push to the default branch and creates or updates one draft. The workflows on this page create a Release when you push a tag, or when you run the <code>workflow_dispatch</code> job. They do not edit a draft each time a pull request merges.</p>
+    <h3>How is this different from the git-cliff and release-please pages?</h3>
+    <p>The <a href="git-cliff-alternative.html">git-cliff alternative</a> replaces a Rust changelog binary and <code>cliff.toml</code>. The <a href="release-please-alternative.html">release-please alternative</a> replaces a release pull request, including the version bump and tag via <code>examples/release.sh</code>. This page replaces label-based draft notes. The publish steps are the ones already on the <a href="github-action.html">Action guide</a>.</p>
+    <h3>Should I pin versions?</h3>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). Floating <code>latest</code> can change behaviour under you.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
