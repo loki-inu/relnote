@@ -100,6 +100,14 @@
           },
           {
             "@type": "Question",
+            "name": "Is relnote an auto-changelog alternative?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, when you want a Release body and one new CHANGELOG.md section from conventional commits, and you do not need a changelog rebuilt from every semver tag. Keep auto-changelog when you want Handlebars templates, the npm version hook, merge and issue lists, or GitLab, BitBucket, and Azure DevOps links."
+            }
+          },
+          {
+            "@type": "Question",
             "name": "How does relnote differ from swapnanil/relnotes?",
             "acceptedAnswer": {
               "@type": "Answer",
@@ -218,7 +226,7 @@
       <li><strong><a href="https://git-cliff.org/">git-cliff</a></strong> — changelog generator with <code>cliff.toml</code>, Tera templates, and optional version bump. Heavier, more control.</li>
       <li><strong><a href="https://github.com/swapnanil/relnotes">swapnanil/relnotes</a></strong> — another offline stdlib Python CLI for conventional-commit notes. Optional <code>.relnotes.toml</code>, inferred semver bump, <code>--from</code> / <code>--to</code>.</li>
     </ul>
-    <p>relnote is the smaller offline alternative when you want a GitHub Action and zero-config CI. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file. Leaving git-cliff for a Release body plus one CHANGELOG section and bump/tag? <a href="git-cliff-alternative.html">git-cliff alternative</a> (curl the zipapp, <code>release.sh</code>, optional Actions). Leaving <a href="https://github.com/release-drafter/release-drafter">Release Drafter</a> (draft releases from pull request labels in <code>.github/release-drafter.yml</code>)? <a href="release-drafter-alternative.html">Release Drafter alternative</a> builds the body from conventional commits, with no labels and no config file.</p>
+    <p>relnote is the smaller offline alternative when you want a GitHub Action and zero-config CI. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file. Leaving git-cliff for a Release body plus one CHANGELOG section and bump/tag? <a href="git-cliff-alternative.html">git-cliff alternative</a> (curl the zipapp, <code>release.sh</code>, optional Actions). Leaving <a href="https://github.com/release-drafter/release-drafter">Release Drafter</a> (draft releases from pull request labels in <code>.github/release-drafter.yml</code>)? <a href="release-drafter-alternative.html">Release Drafter alternative</a> builds the body from conventional commits, with no labels and no config file. Leaving <a href="https://github.com/cookpete/auto-changelog">auto-changelog</a> (npm package, changelog rebuilt from semver tags)? <a href="auto-changelog-alternative.html">auto-changelog alternative</a> prepends one section and writes the Release body, with no Node package and no Handlebars template.</p>
 
     <h2>Comparison</h2>
     <div class="table-wrap">
@@ -329,6 +337,7 @@ relnote --help</code></pre>
       <li>It does not replace <code>gh --generate-notes</code> if you want PR-linked official notes.</li>
       <li>It does not replace swapnanil/relnotes if you want a config file.</li>
       <li>It does not replace <a href="https://github.com/release-drafter/release-drafter">Release Drafter</a> if you want a draft that updates from pull request labels on every merge. See the <a href="release-drafter-alternative.html">Release Drafter alternative</a>.</li>
+      <li>It does not replace <a href="https://github.com/cookpete/auto-changelog">auto-changelog</a> if you want <code>CHANGELOG.md</code> rebuilt from every semver tag, Handlebars templates, or the <code>npm version</code> hook. See the <a href="auto-changelog-alternative.html">auto-changelog alternative</a>.</li>
     </ul>
 
     <h2>Common questions</h2>
@@ -342,6 +351,8 @@ relnote --help</code></pre>
     <p>Use <code>loki-inu/relnote@v0.3.7</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>. The action writes grouped notes to an output. A draft-release example is in the repo.</p>
     <h3>Is relnote a Release Drafter alternative?</h3>
     <p>Yes, when commits already use conventional commits and you want the Release body from local git history. Keep Release Drafter when you label pull requests, want the draft updated on every merge, or use Autolabeler. Guide: <a href="release-drafter-alternative.html">Release Drafter alternative</a>.</p>
+    <h3>Is relnote an auto-changelog alternative?</h3>
+    <p>Yes, when you want a Release body and one new <code>CHANGELOG.md</code> section from conventional commits, and you do not need a changelog rebuilt from every semver tag. Keep auto-changelog when you want Handlebars templates, the <code>npm version</code> hook, merge and issue lists, or GitLab, BitBucket, and Azure DevOps links. Guide: <a href="auto-changelog-alternative.html">auto-changelog alternative</a>.</p>
     <h3>How does relnote differ from swapnanil/relnotes?</h3>
     <p>Both are offline stdlib Python CLIs that group conventional commits. Pick relnote for the GitHub Action, <code>--quiet</code>/<code>--output</code> CI, and bot or secret-looking subject filters. Pick swapnanil/relnotes for optional <code>.relnotes.toml</code>, inferred semver bump, or <code>--from</code>/<code>--to</code> range names.</p>
 
