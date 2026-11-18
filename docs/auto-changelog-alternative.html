@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>auto-changelog alternative without a full-history rebuild — relnote</title>
+  <meta name="description" content="Replace auto-changelog (npm, Node, Handlebars templates, and a CHANGELOG.md rebuilt from semver tags, default commit-limit 3) with offline relnote. Conventional commits become the Release body, the next version, and one new CHANGELOG.md section. No Node package and no config file.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/auto-changelog-alternative.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="auto-changelog alternative without a full-history rebuild — relnote">
+  <meta property="og:description" content="Replace auto-changelog (npm, Node, Handlebars templates, and a CHANGELOG.md rebuilt from semver tags, default commit-limit 3) with offline relnote. Conventional commits become the Release body, the next version, and one new CHANGELOG.md section. No Node package and no config file.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/auto-changelog-alternative.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="auto-changelog alternative without a full-history rebuild — relnote">
+  <meta name="twitter:description" content="Replace auto-changelog (npm, Node, Handlebars templates, and a CHANGELOG.md rebuilt from semver tags, default commit-limit 3) with offline relnote. Conventional commits become the Release body, the next version, and one new CHANGELOG.md section. No Node package and no config file.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/auto-changelog-alternative.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/auto-changelog-alternative.html",
+      "name": "auto-changelog alternative without a full-history rebuild — relnote",
+      "description": "Replace auto-changelog (npm, Node, Handlebars templates, and a CHANGELOG.md rebuilt from semver tags, default commit-limit 3) with offline relnote. Conventional commits become the Release body, the next version, and one new CHANGELOG.md section. No Node package and no config file.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "relnote",
+        "url": "https://loki-inu.github.io/relnote/"
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "relnote",
+        "softwareVersion": "0.3.7",
+        "url": "https://github.com/loki-inu/relnote"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "relnote docs",
+          "item": "https://loki-inu.github.io/relnote/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "auto-changelog alternative",
+          "item": "https://loki-inu.github.io/relnote/auto-changelog-alternative.html"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Replace auto-changelog with offline relnote",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Install the zipapp",
+          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release. No npm install of auto-changelog, no .auto-changelog file, and no package.json auto-changelog key."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Write the Release body and one changelog section",
+          "text": "python3 -m relnote --next-version prints the next tag. python3 -m relnote --output notes.md --quiet writes the Release body. python3 -m relnote --changelog CHANGELOG.md --changelog-title vX.Y.Z prepends one section before the first ## heading and does not commit. Older sections stay."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Replace the npm version hook and publish",
+          "text": "Drop auto-changelog -p from the package.json version script. examples/release.sh --bump-file package.json bumps that file, prepends CHANGELOG.md, commits chore(release), and tags. On a tag push, loki-inu/relnote@v0.3.7 plus softprops/action-gh-release@v2 opens a draft, or a workflow_dispatch job gates on has-changes and runs gh release create."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When should I keep auto-changelog?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Keep auto-changelog when you want CHANGELOG.md rebuilt from semver tags, Handlebars templates, merged pull requests and closed issues in the log, or the npm version hook. Also keep it when compare and issue links must cover GitLab, BitBucket, or Azure DevOps. relnote prepends one section, groups conventional commits with no template, and builds a compare link when origin is a github.com remote."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does relnote rebuild CHANGELOG.md from every tag?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. auto-changelog rebuilds the file from tagged versions. relnote inserts one section before the first ## heading and leaves older sections as they were. A duplicate title is refused. The command does not commit."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this replace npm version?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not by itself. auto-changelog does not choose the next version; the documented setup runs auto-changelog -p inside the package.json version script so npm version updates the changelog. relnote --next-version only prints a tag. examples/release.sh --bump-file package.json is the local bump, changelog, commit, and tag. You can also keep npm version and stop calling auto-changelog."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is this different from the conventional-changelog and git-cliff pages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The conventional-changelog page is for conventional-changelog presets and commitizen prompts. The git-cliff page is for a Rust binary, cliff.toml, and Tera templates. This page is for the npm package auto-changelog: a Handlebars changelog rebuilt from semver tags, with a default commit-limit of 3."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I pin versions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7). The auto-changelog facts here are from the published 2.7.0 README and npm package, not from an unreleased major."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="compare.html">Compare</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="npm-package.html">npm package</a> · <a href="conventional-changelog-alternative.html">conventional-changelog alternative</a> · <a href="git-cliff-alternative.html">git-cliff alternative</a> · <a href="github-action.html">GitHub Action</a> · <a href="single-file.html">Single-file zipapp</a></p>
+    <h1>An auto-changelog alternative without a full-history rebuild</h1>
+    <p class="tag"><a href="https://github.com/cookpete/auto-changelog">auto-changelog</a> (<a href="https://www.npmjs.com/package/auto-changelog"><code>auto-changelog</code> on npm</a>, <code>cookpete/auto-changelog</code>) generates a changelog from git tags and commit history. The published package is 2.7.0. Its README says it is used by Modernizr, Netlify, Neutrino, and Velocity.js. If the commits already follow conventional commits and you want a GitHub Release body plus one new <code>CHANGELOG.md</code> section, relnote does that from the local git log: no Node package, no Handlebars template, and no config file.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="changelog.html">CHANGELOG.md guide</a>
+      · <a href="npm-package.html">npm package guide</a>
+      · <a href="single-file.html">Zipapp install</a>
+    </div>
+
+    <h2>auto-changelog, or this?</h2>
+    <p>Facts in this table are from the <code>auto-changelog@2.7.0</code> README and the npm registry entry for that version. <code>npm install auto-changelog</code> resolves to 2.7.0. The repository's default-branch README documents an unreleased v3 (git 2.16 or later, and Node <code>^22.23 || ^24.20 || &gt;= 25.9</code>). That v3 text is not what 2.7.0 installs.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>auto-changelog 2.7.0</th><th>relnote</th></tr></thead>
+        <tbody>
+          <tr><td>What it writes</td><td>A changelog file. Default <code>CHANGELOG.md</code> (<code>-o</code> / <code>--output</code>). <code>--stdout</code> prints it. Templates: <code>compact</code> (default), <code>keepachangelog</code>, <code>json</code>, a Handlebars file, or a URL passed on the command line</td><td>A GitHub Release body on stdout, or <code>--output</code>. <code>--changelog CHANGELOG.md</code> also prepends one section. The command does not commit</td></tr>
+          <tr><td>How the file changes</td><td>Rebuilds from semver tags in the history. <code>--starting-version</code>, <code>--ending-version</code>, and <code>--starting-date</code> bound that history. <code>--prepend</code> and the <code>&lt;!-- auto-changelog-above --&gt;</code> comment keep existing text below the generated part</td><td>Inserts one section before the first <code>## </code> heading. The preamble stays above it. Older sections stay byte-for-byte. A duplicate title exits with an error and writes nothing</td></tr>
+          <tr><td>What gets listed</td><td>The README describes tagged versions, merged pull requests, and closed issues. Grouping <code>feat:</code> commits is a custom template using the <code>commit-list</code> helper. <code>--breaking-pattern</code> (the README example is <code>"BREAKING CHANGE:"</code>) always lists matches, even when a commit limit would hide them</td><td>Commit subjects since the previous tag. <code>feat</code> → Features, <code>fix</code> → Fixes, <code>type!</code> or a <code>BREAKING CHANGE:</code> footer → Breaking, anything else → Other. Merge commits are omitted unless you pass <code>--include-merges</code></td></tr>
+          <tr><td>How many commits</td><td><code>--commit-limit</code> defaults to 3 per release. <code>--commit-limit false</code> shows all. <code>--backfill-limit</code> defaults to 3 for empty releases</td><td>Every commit left after the filters. <code>--max N</code> keeps at most N (newest first). There is no default cap of 3</td></tr>
+          <tr><td>Config</td><td><code>package.json</code> key <code>auto-changelog</code> (camelCase) or a <code>.auto-changelog</code> file. Values in <code>package.json</code> win. In-repo config is untrusted: options that load code, fetch a URL template, or write outside the repo are refused unless you pass <code>--unsafe-config</code></td><td>None</td></tr>
+          <tr><td>Runtime</td><td>Node. The 2.7.0 package on npm sets <code>engines.node</code> to <code>&gt;= 10</code>. The README requires git 1.7.2 or later, and semver tag names (what <code>npm version</code> creates by default). Install: <code>npm install -g auto-changelog</code> or <code>npm install auto-changelog --save-dev</code></td><td>Python 3.11+ and git on <code>PATH</code>. No third-party packages. The notes come from local git; a token is only for a later <code>gh release create</code> step</td></tr>
+          <tr><td>Next version</td><td>Does not choose the next tag. <code>-p</code> / <code>--package</code> uses the <code>version</code> in <code>package.json</code> as the latest release, so commits that would have been <code>Unreleased</code> are filed under that version. <code>-v</code> / <code>--latest-version</code> passes a version on the command line</td><td><code>relnote --next-version</code> prints the next tag and does not create it: breaking → major, <code>feat</code> → minor, anything else → patch. While the major is 0, a breaking change bumps the minor. <code>--changelog-title</code> names the section; it does not read <code>package.json</code></td></tr>
+          <tr><td>GitHub Release and other hosts</td><td>The command writes the changelog. It does not create a GitHub Release. Commit, issue, merge, and compare links are filled in from the git remote for GitHub, GitLab, BitBucket, and Azure DevOps. Override a pattern with <code>--commit-url</code>, <code>--issue-url</code>, <code>--merge-url</code>, or <code>--compare-url</code></td><td>The CLI does not create the Release. The <a href="github-action.html">Action guide</a> does, with <code>gh</code> or <code>softprops/action-gh-release</code>. A compare link is added when <code>origin</code> is a github.com remote. From v0.3.5, <code>(#12)</code> in a changelog bullet becomes a pull request link</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Keep auto-changelog when the changelog should be rebuilt from every semver tag, when you want a Handlebars template (<code>compact</code>, <code>keepachangelog</code>, <code>json</code>, or your own), when merged pull requests and closed issues are the list you want, or when those links must work for GitLab, BitBucket, or Azure DevOps. The README's suggested hook is a <code>package.json</code> <code>version</code> script, so <code>npm version</code> refreshes <code>CHANGELOG.md</code> and stages it. Keep that path if the bump should stay <code>npm version</code>.</p>
+    <p>relnote is the better fit when commits are already conventional, including squash-merged titles such as <code>feat: … (#12)</code>, and you want those subjects grouped with no template and no three-commit cap. It is also the fit when older changelog entries must stay untouched, when the release tooling should not be a Node package, and when the next step is a GitHub Release body. It is a poor fit when the history you care about is merge commits: those are omitted by default, while auto-changelog is built to list them.</p>
+
+    <h2>Install</h2>
+    <p>What you are leaving, from the 2.7.0 README:</p>
+    <pre><code>npm install -g auto-changelog
+auto-changelog</code></pre>
+    <p>Or as a dev dependency, which is the README's other install: <code>npm install auto-changelog --save-dev</code>.</p>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page. Remove <code>auto-changelog</code> from <code>devDependencies</code> when nothing else imports it. relnote does not read <code>.auto-changelog</code> or the <code>package.json</code> key.</p>
+    <pre><code>mkdir -p ~/.local/bin
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+chmod +x ~/.local/bin/relnote</code></pre>
+
+    <h2>Release body, next version, CHANGELOG section</h2>
+    <p>Three separate invocations, the same flags as the <a href="offline-github-release-notes.html">offline guide</a>, the <a href="next-version.html">next version guide</a>, and the <a href="changelog.html">CHANGELOG.md guide</a>. Nothing is pushed, and no GitHub API is called. <code>--since REF</code> starts somewhere other than the latest tag, which is the relnote equivalent of <code>--starting-version</code> for a single range.</p>
+    <pre><code>python3 -m relnote --next-version
+python3 -m relnote --output notes.md --quiet
+python3 -m relnote --changelog CHANGELOG.md --changelog-title v1.4.0 --quiet</code></pre>
+    <p><code>--next-version</code> prints one line, such as <code>v1.4.0</code>. <code>--output notes.md --quiet</code> writes the Release body and prints nothing. <code>--changelog</code> prepends one section. With <code>--changelog-title v1.4.0</code> on an untagged <code>HEAD</code>, that section's compare link ends at <code>v1.4.0</code> (v0.3.6+). Without <code>--changelog-title</code>, an untagged <code>HEAD</code> is titled <code>Unreleased</code>. The command does not commit the file, and it does not read <code>package.json</code> the way <code>auto-changelog -p</code> does.</p>
+
+    <h2>What those commands write</h2>
+    <p>Start: the last tag is <code>v1.3.2</code>, then <code>feat: add --json output (#12)</code> and <code>fix: handle empty config (#13)</code>. <code>--next-version</code> prints <code>v1.4.0</code> (a <code>feat</code> is a minor bump). <code>notes.md</code> is the Release body. Because <code>HEAD</code> is not tagged yet, the range ends at <code>HEAD</code>:</p>
+    <pre><code>## What's changed
+
+### Features
+
+- add --json output (#12) (`4a5b395`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config (#13) (`7e08d2c`) — Ada Lovelace
+
+---
+
+Range: `v1.3.2` → `HEAD`.
+
+**Full changelog:** https://github.com/you/project/compare/v1.3.2...HEAD</code></pre>
+    <p><code>CHANGELOG.md</code> gains this section above the previous entries. <code>(#12)</code> becomes a pull request link when <code>origin</code> is a github.com remote (v0.3.5+):</p>
+    <pre><code>## [v1.4.0] - 2026-11-18
+
+### Features
+
+- add --json output ([#12](https://github.com/you/project/pull/12)) (`4a5b395`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config ([#13](https://github.com/you/project/pull/13)) (`7e08d2c`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/project/compare/v1.3.2...v1.4.0</code></pre>
+    <p>Both blocks come from running those three commands against a scratch repository in relnote's test suite (<code>tests/test_auto_changelog_docs.py</code>). Your hashes and the date differ. A squash-merged pull request whose title is already <code>feat: … (#12)</code> is one commit, so it shows up as one line. Details: <a href="squash-merge.html">squash-merged PR titles</a>.</p>
+
+    <h2>Migration</h2>
+    <ol>
+      <li>Install the zipapp above and pin it to <code>v0.3.7</code>. Stop running <code>auto-changelog</code> in CI and locally.</li>
+      <li>Leave the current <code>CHANGELOG.md</code> in the repo. The next <code>--changelog</code> run inserts one section before the first <code>## </code> heading. Older sections are not rewritten, and there is no commit-limit of 3 on that section. The <code>&lt;!-- auto-changelog-above --&gt;</code> comment is ordinary preamble to relnote; it stays above the new section. Delete the comment once you no longer regenerate the file.</li>
+      <li>Remove <code>auto-changelog</code> from the <code>version</code> script. The 2.7.0 README's example is <code>auto-changelog -p &amp;&amp; git add CHANGELOG.md</code>. <code>npm version</code> will no longer refresh the changelog. Two replacements: keep <code>npm version</code> for the bump and run the three relnote commands yourself, or use <code>examples/release.sh</code> for the bump, the section, the commit, and the tag.</li>
+      <li>Publish the GitHub Release with the workflows on the <a href="github-action.html">Action guide</a>, copied below. relnote still does not push.</li>
+    </ol>
+    <p><code>examples/release.sh</code> is the local stand-in for that version script plus the tag. <code>--dry-run</code> prints the plan and writes nothing. <code>--bump-file package.json</code> sets the first <code>version</code> line. For an npm package that also commits <code>package-lock.json</code>, the <a href="npm-package.html">npm package guide</a> adds <code>--exec</code>. Nothing in the script is pushed.</p>
+    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+chmod +x release.sh
+./release.sh --dry-run --bump-file package.json
+./release.sh --bump-file package.json</code></pre>
+    <p>That URL is <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh"><code>examples/release.sh</code> on the v0.3.7 tag</a>. The v0.3.7 release assets are <code>relnote</code>, <code>relnote.pyz</code>, and <code>SHA256SUMS</code>, so the script is not a release asset. It calls <code>relnote</code> on <code>PATH</code>.</p>
+    <p>Monorepos: auto-changelog 2.7.0 ships <code>--autodetect-monorepo-disabled</code>, which defaults to true, so detection is off. <code>--no-autodetect-monorepo-disabled</code> turns it on. The README says a detected package (a <code>repository.directory</code> field, or an ancestor <code>package.json</code> with npm <code>workspaces</code>) takes its tag prefix from the package <code>name</code> unless one is already set, and strips that prefix from headings. The option is documented to default to false in the next major. relnote does not autodetect workspaces. Pass <code>--path</code> and <code>--tag-prefix</code> (or <code>release.sh --tag-prefix</code>). Guide: <a href="monorepo.html">monorepo release notes</a>.</p>
+
+    <h2>Draft a Release when the tag is pushed</h2>
+    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. There is no auto-changelog step and no <code>npm install</code>.</p>
+    <pre><code>name: Draft release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: ${{ github.ref_name }}
+          body: ${{ steps.relnote.outputs.notes }}</code></pre>
+    <p><code>fetch-depth: 0</code> is required so the checkout has tags. <code>contents: write</code> is for the release step. The relnote step only reads the checkout. On a tag push, <code>HEAD</code> is the new tag, so the range and the compare link end at that tag (v0.3.4+), not at <code>HEAD</code>.</p>
+    <p>No third-party release action? The guide's GitHub CLI step passes the notes through the environment, not inline in the script (commit subjects contain backticks):</p>
+    <pre><code>      - run: gh release create "$GITHUB_REF_NAME" --draft --title "$GITHUB_REF_NAME" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.relnote.outputs.notes }}</code></pre>
+
+    <h2>Or create the Release from a button</h2>
+    <p>This is the <code>workflow_dispatch</code> job from the same guide. <code>next-version</code> is the tag. <code>has-changes</code> is <code>false</code> when there is nothing new, and the step still succeeds, so the <code>gh</code> step is gated on it. <code>gh release create</code> makes the tag at <code>--target</code>.</p>
+    <pre><code>name: Release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - if: steps.relnote.outputs.has-changes == 'true'
+        run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.relnote.outputs.next-version }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+      - if: steps.relnote.outputs.has-changes != 'true'
+        run: echo "Nothing to release since the last tag."</code></pre>
+    <p>Set <code>fail-on-empty: true</code> if an empty range should fail the step. An unknown <code>since</code> ref still fails. Inputs and outputs: the <a href="github-action.html">Action guide</a>.</p>
+
+    <h2>Map the 2.7.0 flags</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>auto-changelog 2.7.0</th><th>relnote</th></tr></thead>
+        <tbody>
+          <tr><td><code>auto-changelog</code> (default <code>CHANGELOG.md</code>, <code>compact</code> template)</td><td><code>python3 -m relnote --changelog CHANGELOG.md</code>. The section is already <code>## [title] - date</code> with Features, Fixes, Breaking, and Other. There is no template name to pick</td></tr>
+          <tr><td><code>--stdout</code></td><td>The Release body is stdout unless you pass <code>--output</code>. <code>--quiet</code> with <code>--output</code> prints nothing</td></tr>
+          <tr><td><code>--unreleased</code>, and <code>-p</code> / <code>--package</code> filing those commits under <code>package.json</code>'s version</td><td>An untagged <code>HEAD</code> with no <code>--changelog-title</code> is titled <code>Unreleased</code>. <code>--changelog-title v1.4.0</code> names the section. <code>package.json</code> changes only if you run <code>release.sh --bump-file package.json</code></td></tr>
+          <tr><td><code>--commit-limit false</code></td><td>The default. Pass <code>--max N</code> to cap the list</td></tr>
+          <tr><td><code>--breaking-pattern "BREAKING CHANGE:"</code></td><td>A <code>BREAKING CHANGE:</code> footer, or <code>type!</code> such as <code>feat!:</code>, is the Breaking section. There is no regex flag</td></tr>
+          <tr><td><code>--tag-prefix</code> (default <code>v</code>) and <code>--tag-pattern</code></td><td><code>--tag-prefix PREFIX</code> starts the range at the newest tag with that prefix. The default range is the latest tag. There is no tag-pattern regex</td></tr>
+          <tr><td><code>--starting-version</code></td><td><code>--since REF</code></td></tr>
+          <tr><td><code>--ignore-commit-pattern</code> / <code>--commit-pattern</code></td><td>No include/ignore regex. Merge commits are omitted by default. <code>chore(release): …</code> is omitted unless you pass <code>--include-release-commits</code></td></tr>
+          <tr><td><code>--hide-credit</code></td><td>The notes have no credit line to hide</td></tr>
+          <tr><td><code>version</code> script <code>auto-changelog -p &amp;&amp; git add CHANGELOG.md</code></td><td><code>./release.sh --bump-file package.json</code> (bump, section, <code>chore(release)</code> commit, annotated tag). <code>--dry-run</code> writes nothing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>FAQ</h2>
+    <h3>When should I keep auto-changelog?</h3>
+    <p>Keep it when you want <code>CHANGELOG.md</code> rebuilt from semver tags, Handlebars templates, merged pull requests and closed issues in the log, or the <code>npm version</code> hook. Also keep it when compare and issue links must cover GitLab, BitBucket, or Azure DevOps. relnote prepends one section, groups conventional commits with no template, and builds a compare link when <code>origin</code> is a github.com remote.</p>
+    <h3>Does relnote rebuild CHANGELOG.md from every tag?</h3>
+    <p>No. auto-changelog rebuilds the file from tagged versions. relnote inserts one section before the first <code>## </code> heading and leaves older sections as they were. A duplicate title is refused. The command does not commit.</p>
+    <h3>Does this replace <code>npm version</code>?</h3>
+    <p>Not by itself. auto-changelog does not choose the next version; the documented setup runs <code>auto-changelog -p</code> inside the <code>package.json</code> <code>version</code> script so <code>npm version</code> updates the changelog. <code>relnote --next-version</code> only prints a tag. <code>examples/release.sh --bump-file package.json</code> is the local bump, changelog, commit, and tag. You can also keep <code>npm version</code> and stop calling auto-changelog.</p>
+    <h3>How is this different from the conventional-changelog and git-cliff pages?</h3>
+    <p>The <a href="conventional-changelog-alternative.html">conventional-changelog page</a> is for <code>conventional-changelog</code> presets and commitizen prompts. The <a href="git-cliff-alternative.html">git-cliff page</a> is for a Rust binary, <code>cliff.toml</code>, and Tera templates. This page is for the npm package auto-changelog: a Handlebars changelog rebuilt from semver tags, with a default commit-limit of 3.</p>
+    <h3>Should I pin versions?</h3>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). The auto-changelog facts here are from the published 2.7.0 README and npm package, not from an unreleased major. Floating <code>latest</code> on the relnote zipapp can change behaviour under you.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
