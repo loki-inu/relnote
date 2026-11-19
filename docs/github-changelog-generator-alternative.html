@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>github-changelog-generator alternative without a GitHub token — relnote</title>
+  <meta name="description" content="Replace github-changelog-generator (Ruby gem github_changelog_generator 1.18.0: CHANGELOG.md rebuilt from GitHub tags, issues, and pull requests, and a token to go past the documented rate limit of 50 unauthenticated requests per hour) with offline relnote. Conventional commits become the Release body, the next version, and one new CHANGELOG.md section. No Ruby gem and no token to generate the notes.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/github-changelog-generator-alternative.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="github-changelog-generator alternative without a GitHub token — relnote">
+  <meta property="og:description" content="Replace github-changelog-generator (Ruby gem github_changelog_generator 1.18.0: CHANGELOG.md rebuilt from GitHub tags, issues, and pull requests, and a token to go past the documented rate limit of 50 unauthenticated requests per hour) with offline relnote. Conventional commits become the Release body, the next version, and one new CHANGELOG.md section. No Ruby gem and no token to generate the notes.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/github-changelog-generator-alternative.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="github-changelog-generator alternative without a GitHub token — relnote">
+  <meta name="twitter:description" content="Replace github-changelog-generator (Ruby gem github_changelog_generator 1.18.0: CHANGELOG.md rebuilt from GitHub tags, issues, and pull requests, and a token to go past the documented rate limit of 50 unauthenticated requests per hour) with offline relnote. Conventional commits become the Release body, the next version, and one new CHANGELOG.md section. No Ruby gem and no token to generate the notes.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/github-changelog-generator-alternative.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/github-changelog-generator-alternative.html",
+      "name": "github-changelog-generator alternative without a GitHub token — relnote",
+      "description": "Replace github-changelog-generator (Ruby gem github_changelog_generator 1.18.0: CHANGELOG.md rebuilt from GitHub tags, issues, and pull requests, and a token to go past the documented rate limit of 50 unauthenticated requests per hour) with offline relnote. Conventional commits become the Release body, the next version, and one new CHANGELOG.md section. No Ruby gem and no token to generate the notes.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "relnote",
+        "url": "https://loki-inu.github.io/relnote/"
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "relnote",
+        "softwareVersion": "0.3.7",
+        "url": "https://github.com/loki-inu/relnote"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "relnote docs",
+          "item": "https://loki-inu.github.io/relnote/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "github-changelog-generator alternative",
+          "item": "https://loki-inu.github.io/relnote/github-changelog-generator-alternative.html"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Replace github-changelog-generator with offline relnote",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Install the zipapp",
+          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release. No gem install of github_changelog_generator, no .github_changelog_generator file, and no CHANGELOG_GITHUB_TOKEN."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Write the Release body and one changelog section",
+          "text": "python3 -m relnote --next-version prints the next tag. python3 -m relnote --output notes.md --quiet writes the Release body. python3 -m relnote --changelog CHANGELOG.md --changelog-title vX.Y.Z prepends one section before the first ## heading and does not commit. Older sections stay."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Publish with the existing GitHub Action workflows",
+          "text": "On a tag push, loki-inu/relnote@v0.3.7 plus softprops/action-gh-release@v2 opens a draft, or gh release create --draft receives the notes through env. A workflow_dispatch job gates on has-changes and runs gh release create with next-version. The relnote step does not call the GitHub API."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When should I keep github-changelog-generator?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Keep github-changelog-generator when CHANGELOG.md should be rebuilt from GitHub tags, closed issues, and merged pull requests grouped by labels, when those issues are not conventional commit subjects, or when the repository is on GitHub Enterprise (--github-site and --github-api). relnote reads the local git log, prepends one section, and does not call the GitHub API to generate notes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does relnote need a token to generate notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The CLI and the loki-inu/relnote action read the local checkout only. github_changelog_generator 1.18.0 fetches tags, closed issues, and merged pull requests through the GitHub API. Its --token help says a GitHub token is required to make more than 50 requests per hour. Pass --token or set CHANGELOG_GITHUB_TOKEN. The README says a private repository needs that token with the repo scope."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does relnote rebuild CHANGELOG.md from every tag?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. github_changelog_generator overwrites the output file (default CHANGELOG.md) with entries for the tags it includes, then appends HISTORY.md when that file exists (the default of --base). relnote inserts one section before the first ## heading and leaves older sections as they were. A duplicate title is refused. The command does not commit."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is this different from the Release Drafter and auto-changelog pages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Release Drafter page is for a GitHub Action that updates a draft Release from pull request labels. The auto-changelog page is for the npm package that rebuilds CHANGELOG.md from local semver tags. This page is for the Ruby gem github_changelog_generator, which rebuilds CHANGELOG.md from GitHub issues and pull requests and needs a token because of the API rate limit."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I pin versions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7). The github-changelog-generator facts here are from the published 1.18.0 README, gemspec, and parser, not from an unreleased change."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="compare.html">Compare</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="release-drafter-alternative.html">Release Drafter alternative</a> · <a href="auto-changelog-alternative.html">auto-changelog alternative</a> · <a href="github-action.html">GitHub Action</a> · <a href="single-file.html">Single-file zipapp</a></p>
+    <h1>A github-changelog-generator alternative without a GitHub token</h1>
+    <p class="tag"><a href="https://github.com/github-changelog-generator/github-changelog-generator">github-changelog-generator</a> (Ruby gem <a href="https://rubygems.org/gems/github_changelog_generator"><code>github_changelog_generator</code></a>, repository <code>github-changelog-generator/github-changelog-generator</code>) rebuilds a changelog from GitHub tags, closed issues, and merged pull requests. The published gem is 1.18.0. If the commits already follow conventional commits and you want a GitHub Release body plus one new <code>CHANGELOG.md</code> section, relnote does that from the local git log: no Ruby gem, no config file, and no token to generate the notes.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="changelog.html">CHANGELOG.md guide</a>
+      · <a href="github-action.html">GitHub Action guide</a>
+      · <a href="single-file.html">Zipapp install</a>
+    </div>
+
+    <h2>github-changelog-generator, or this?</h2>
+    <p>Facts in this table are from the <code>github_changelog_generator</code> 1.18.0 README, gemspec, and command-line parser on the v1.18.0 tag. <code>gem install github_changelog_generator</code> resolves to 1.18.0. The gemspec requires Ruby <code>&gt;= 3.0</code>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>github_changelog_generator 1.18.0</th><th>relnote</th></tr></thead>
+        <tbody>
+          <tr><td>What it writes</td><td>A changelog file. Default <code>CHANGELOG.md</code> (<code>-o</code> / <code>--output</code>). A blank <code>--output</code> prints to stdout. The README's example sections are label groups such as <strong>Implemented enhancements</strong>, <strong>Fixed bugs</strong>, and <strong>Merged pull requests</strong></td><td>A GitHub Release body on stdout, or <code>--output</code>. <code>--changelog CHANGELOG.md</code> also prepends one section. The command does not commit</td></tr>
+          <tr><td>How the file changes</td><td>Overwrites the output file with entries for the tags it includes. If <code>HISTORY.md</code> exists, that file is appended (the default of <code>-b</code> / <code>--base</code>). <code>--since-tag</code> starts after a tag. <code>--unreleased-only</code> keeps only the unreleased section</td><td>Inserts one section before the first <code>## </code> heading. The preamble stays above it. Older sections stay byte-for-byte. A duplicate title exits with an error and writes nothing</td></tr>
+          <tr><td>What gets listed</td><td>Closed issues and merged pull requests from the GitHub API, grouped by labels. Parser defaults: <code>breaking</code> → Breaking changes, <code>enhancement</code> → Implemented enhancements, <code>bug</code> → Fixed bugs, plus deprecated, removed, and security labels, then closed issues and merged pull requests. Default exclude labels include <code>question</code>, <code>duplicate</code>, <code>invalid</code>, and <code>wontfix</code></td><td>Commit subjects since the previous tag. <code>feat</code> → Features, <code>fix</code> → Fixes, <code>type!</code> or a <code>BREAKING CHANGE:</code> footer → Breaking, anything else → Other. Merge commits are omitted unless you pass <code>--include-merges</code></td></tr>
+          <tr><td>Where the list comes from</td><td>The GitHub API: tags, closed issues, and merged pull requests. The usage banner is <code>github_changelog_generator --user USER --project PROJECT</code>. It does not read the local commit log. The README also documents <code>--github-site</code> and <code>--github-api</code> for GitHub Enterprise</td><td>Local git, from the latest tag (or <code>--since</code>) to <code>HEAD</code>. No GitHub API call. A compare link is added when <code>origin</code> is a github.com remote. There is no GitHub Enterprise option</td></tr>
+          <tr><td>Token and rate limit</td><td>The README says GitHub allows 50 unauthenticated requests per hour. The <code>--token</code> help says a token is required to make more than 50 requests per hour. Pass <code>--token</code> or set <code>CHANGELOG_GITHUB_TOKEN</code>. The README says a private repository needs that token with the <code>repo</code> scope. With no token the fetcher warns and continues</td><td>No token to generate the notes. The CLI and <code>loki-inu/relnote</code> read the checkout. A token is only for a later <code>gh release create</code> or <code>softprops/action-gh-release</code> step</td></tr>
+          <tr><td>Config</td><td>Optional <code>.github_changelog_generator</code> in the project root (the README example sets <code>unreleased</code>, <code>future-release</code>, and <code>since-tag</code>). Command-line options are applied again after the file, so they win. <code>--user</code> and <code>--project</code> are still required unless the file sets them. A Rake task, <code>GitHubChangelogGenerator::RakeTask</code>, takes the same options</td><td>None</td></tr>
+          <tr><td>Runtime</td><td>Ruby. The 1.18.0 gemspec sets <code>required_ruby_version</code> to <code>&gt;= 3.0</code>. Install: <code>gem install github_changelog_generator</code>. The executable is <code>github_changelog_generator</code>. The README also documents a Docker image, <code>githubchangeloggenerator/github-changelog-generator</code>, as another way to run it</td><td>Python 3.11+ and git on <code>PATH</code>. No third-party packages. The notes come from local git</td></tr>
+          <tr><td>Next version</td><td>Does not choose the next tag. <code>--future-release</code> puts unreleased changes under the version you pass. <code>--unreleased</code> defaults to true and adds closed issues that are not in a release yet</td><td><code>relnote --next-version</code> prints the next tag and does not create it: breaking → major, <code>feat</code> → minor, anything else → patch. While the major is 0, a breaking change bumps the minor. <code>--changelog-title</code> names the section</td></tr>
+          <tr><td>GitHub Release</td><td>The gem writes the changelog file. It does not create the Release. The README's "Creating GitHub Release Notes" section then runs <code>gh release create</code> with <code>--notes-file</code></td><td>The CLI does not create the Release. The <a href="github-action.html">Action guide</a> does, with <code>gh</code> or <code>softprops/action-gh-release</code>. From v0.3.5, <code>(#12)</code> in a changelog bullet becomes a pull request link when <code>origin</code> is a github.com remote</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Keep github-changelog-generator when the changelog should list closed issues and merged pull requests grouped by labels, when those issues are not already conventional commit subjects, when <code>CHANGELOG.md</code> should be rebuilt from GitHub tags, or when the repository is on GitHub Enterprise (<code>--github-site</code> and <code>--github-api</code>). The README's Rake task is the path to keep if generation should stay a <code>rake</code> target in a Ruby project.</p>
+    <p>relnote is the better fit when commits are already conventional, including squash-merged titles such as <code>feat: … (#12)</code>, and you want those subjects grouped with no label list and no API call. It is also the fit when older changelog entries must stay untouched, when the release tooling should not be a Ruby gem, and when the next step is a GitHub Release body. It is a poor fit when the history you care about is GitHub issues that never became commit subjects: relnote never sees those issues.</p>
+
+    <h2>Install</h2>
+    <p>What you are leaving, from the 1.18.0 README:</p>
+    <pre><code>gem install github_changelog_generator
+github_changelog_generator -u USER -p PROJECT</code></pre>
+    <p>The same README says you may need <code>sudo gem install github_changelog_generator</code> on Linux. A Gemfile development group is the other install it documents: <code>gem 'github_changelog_generator', require: false</code>.</p>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page. Remove <code>github_changelog_generator</code> from the Gemfile when nothing else loads it. relnote does not read <code>.github_changelog_generator</code>.</p>
+    <pre><code>mkdir -p ~/.local/bin
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+chmod +x ~/.local/bin/relnote</code></pre>
+
+    <h2>Release body, next version, CHANGELOG section</h2>
+    <p>Three separate invocations, the same flags as the <a href="offline-github-release-notes.html">offline guide</a>, the <a href="next-version.html">next version guide</a>, and the <a href="changelog.html">CHANGELOG.md guide</a>. Nothing is pushed, and no GitHub API is called. <code>--since REF</code> starts somewhere other than the latest tag, which is the relnote equivalent of <code>--since-tag</code> for a single git range.</p>
+    <pre><code>python3 -m relnote --next-version
+python3 -m relnote --output notes.md --quiet
+python3 -m relnote --changelog CHANGELOG.md --changelog-title v1.4.0 --quiet</code></pre>
+    <p><code>--next-version</code> prints one line, such as <code>v1.4.0</code>. <code>--output notes.md --quiet</code> writes the Release body and prints nothing. <code>--changelog</code> prepends one section. With <code>--changelog-title v1.4.0</code> on an untagged <code>HEAD</code>, that section's compare link ends at <code>v1.4.0</code> (v0.3.6+). Without <code>--changelog-title</code>, an untagged <code>HEAD</code> is titled <code>Unreleased</code>. The command does not commit the file, and it does not take <code>--user</code> or <code>--project</code>.</p>
+
+    <h2>What those commands write</h2>
+    <p>Start: the last tag is <code>v1.3.2</code>, then <code>feat: add --json output (#12)</code> and <code>fix: handle empty config (#13)</code>. <code>--next-version</code> prints <code>v1.4.0</code> (a <code>feat</code> is a minor bump). <code>notes.md</code> is the Release body. Because <code>HEAD</code> is not tagged yet, the range ends at <code>HEAD</code>:</p>
+    <pre><code>## What's changed
+
+### Features
+
+- add --json output (#12) (`4a5b395`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config (#13) (`7e08d2c`) — Ada Lovelace
+
+---
+
+Range: `v1.3.2` → `HEAD`.
+
+**Full changelog:** https://github.com/you/project/compare/v1.3.2...HEAD</code></pre>
+    <p><code>CHANGELOG.md</code> gains this section above the previous entries. <code>(#12)</code> becomes a pull request link when <code>origin</code> is a github.com remote (v0.3.5+):</p>
+    <pre><code>## [v1.4.0] - 2026-11-19
+
+### Features
+
+- add --json output ([#12](https://github.com/you/project/pull/12)) (`4a5b395`) — Ada Lovelace
+
+### Fixes
+
+- handle empty config ([#13](https://github.com/you/project/pull/13)) (`7e08d2c`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/project/compare/v1.3.2...v1.4.0</code></pre>
+    <p>Both blocks come from running those three commands against a scratch repository in relnote's test suite (<code>tests/test_github_changelog_generator_docs.py</code>). Your hashes and the date differ. A squash-merged pull request whose title is already <code>feat: … (#12)</code> is one commit, so it shows up as one line. The gem would list that pull request from the GitHub API instead, under the label section that matches. Details: <a href="squash-merge.html">squash-merged PR titles</a>.</p>
+
+    <h2>Migration</h2>
+    <ol>
+      <li>Install the zipapp above and pin it to <code>v0.3.7</code>. Stop running <code>github_changelog_generator</code> in CI and locally. You can drop <code>CHANGELOG_GITHUB_TOKEN</code> from the job that only generated the changelog.</li>
+      <li>Leave the current <code>CHANGELOG.md</code> in the repo. The next <code>--changelog</code> run inserts one section before the first <code>## </code> heading. Older sections are not rewritten. relnote does not read <code>HISTORY.md</code> and does not append <code>--base</code>. If the gem already folded <code>HISTORY.md</code> into <code>CHANGELOG.md</code>, that text stays where it is.</li>
+      <li>Remove the gem. The 1.18.0 README's Gemfile example is <code>gem 'github_changelog_generator', require: false</code> inside a <code>:development</code> group. Delete a <code>GitHubChangelogGenerator::RakeTask</code> from the Rakefile if that task only existed to refresh the changelog. <code>.github_changelog_generator</code> is unused after that. Delete it once nothing else reads it.</li>
+      <li>Publish the GitHub Release with the workflows on the <a href="github-action.html">Action guide</a>, copied below. relnote still does not push. The gem's own release example (<code>gh release create</code> with <code>--notes-file</code>) is a separate step you no longer need for the notes file it wrote.</li>
+    </ol>
+    <p><code>examples/release.sh</code> is the local stand-in for choosing the version, prepending the section, committing, and tagging. <code>--dry-run</code> prints the plan and writes nothing. <code>--bump-file package.json</code> sets the first <code>version</code> line. Nothing in the script is pushed. The gem's <code>--future-release</code> only names the unreleased section. It does not edit a version file.</p>
+    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+chmod +x release.sh
+./release.sh --dry-run --bump-file package.json
+./release.sh --bump-file package.json</code></pre>
+    <p>That URL is <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh"><code>examples/release.sh</code> on the v0.3.7 tag</a>. The v0.3.7 release assets are <code>relnote</code>, <code>relnote.pyz</code>, and <code>SHA256SUMS</code>, so the script is not a release asset. It calls <code>relnote</code> on <code>PATH</code>.</p>
+    <p>Monorepos: the gem takes one <code>--user</code> and one <code>--project</code>, which is one GitHub repository. relnote does not split a GitHub repository into packages by itself. Pass <code>--path</code> and <code>--tag-prefix</code> (or <code>release.sh --tag-prefix</code>) so notes and <code>--next-version</code> only see one package. Guide: <a href="monorepo.html">monorepo release notes</a>.</p>
+
+    <h2>Draft a Release when the tag is pushed</h2>
+    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. There is no <code>github_changelog_generator</code> step and no Ruby install.</p>
+    <pre><code>name: Draft release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: ${{ github.ref_name }}
+          body: ${{ steps.relnote.outputs.notes }}</code></pre>
+    <p><code>fetch-depth: 0</code> is required so the checkout has tags. <code>contents: write</code> is for the release step. The relnote step only reads the checkout. On a tag push, <code>HEAD</code> is the new tag, so the range and the compare link end at that tag (v0.3.4+), not at <code>HEAD</code>.</p>
+    <p>No third-party release action? The guide's GitHub CLI step passes the notes through the environment, not inline in the script (commit subjects contain backticks):</p>
+    <pre><code>      - run: gh release create "$GITHUB_REF_NAME" --draft --title "$GITHUB_REF_NAME" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.relnote.outputs.notes }}</code></pre>
+
+    <h2>Or create the Release from a button</h2>
+    <p>This is the <code>workflow_dispatch</code> job from the same guide. <code>next-version</code> is the tag. <code>has-changes</code> is <code>false</code> when there is nothing new, and the step still succeeds, so the <code>gh</code> step is gated on it. <code>gh release create</code> makes the tag at <code>--target</code>.</p>
+    <pre><code>name: Release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - if: steps.relnote.outputs.has-changes == 'true'
+        run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.relnote.outputs.next-version }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+      - if: steps.relnote.outputs.has-changes != 'true'
+        run: echo "Nothing to release since the last tag."</code></pre>
+    <p>Set <code>fail-on-empty: true</code> if an empty range should fail the step. An unknown <code>since</code> ref still fails. Inputs and outputs: the <a href="github-action.html">Action guide</a>.</p>
+
+    <h2>Map the 1.18.0 flags</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>github_changelog_generator 1.18.0</th><th>relnote</th></tr></thead>
+        <tbody>
+          <tr><td><code>github_changelog_generator -u USER -p PROJECT</code></td><td><code>python3 -m relnote</code> in the git checkout. There is no user or project flag</td></tr>
+          <tr><td><code>--token</code>, or <code>CHANGELOG_GITHUB_TOKEN</code></td><td>Not used to generate the notes</td></tr>
+          <tr><td><code>--output CHANGELOG.md</code> (the default; overwrites the file)</td><td><code>python3 -m relnote --changelog CHANGELOG.md</code>. One new section. Older sections stay. Stdout is the Release body unless you pass <code>--output</code></td></tr>
+          <tr><td><code>--since-tag TAG</code></td><td><code>--since REF</code>, a git ref such as <code>v1.3.2</code></td></tr>
+          <tr><td><code>--future-release VERSION</code></td><td><code>--changelog-title v1.4.0</code> names the section. <code>--next-version</code> prints the next tag from the commits. The gem does not compute that tag</td></tr>
+          <tr><td><code>--unreleased</code> (default true)</td><td>An untagged <code>HEAD</code> with no <code>--changelog-title</code> is titled <code>Unreleased</code></td></tr>
+          <tr><td>Label sections (<code>enhancement</code>, <code>bug</code>, <code>breaking</code>, and the other parser defaults)</td><td><code>feat</code> → Features, <code>fix</code> → Fixes, <code>type!</code> or a <code>BREAKING CHANGE:</code> footer → Breaking, anything else → Other. There is no label list</td></tr>
+          <tr><td>Exclude labels (<code>question</code>, <code>duplicate</code>, <code>invalid</code>, <code>wontfix</code>, and the other parser defaults)</td><td>No label filter. Merge commits are omitted by default. <code>chore(release): …</code> is omitted unless you pass <code>--include-release-commits</code></td></tr>
+          <tr><td><code>.github_changelog_generator</code></td><td>No config file. relnote does not read that file</td></tr>
+          <tr><td><code>--github-site</code> and <code>--github-api</code></td><td>No equivalent. A compare link is added only when <code>origin</code> is a github.com remote. Keep the gem for GitHub Enterprise</td></tr>
+          <tr><td><code>GitHubChangelogGenerator::RakeTask</code></td><td><code>./release.sh --bump-file package.json</code> (bump, section, <code>chore(release)</code> commit, annotated tag). <code>--dry-run</code> writes nothing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>FAQ</h2>
+    <h3>When should I keep github-changelog-generator?</h3>
+    <p>Keep it when <code>CHANGELOG.md</code> should be rebuilt from GitHub tags, closed issues, and merged pull requests grouped by labels, when those issues are not conventional commit subjects, or when the repository is on GitHub Enterprise (<code>--github-site</code> and <code>--github-api</code>). relnote reads the local git log, prepends one section, and does not call the GitHub API to generate notes.</p>
+    <h3>Does relnote need a token to generate notes?</h3>
+    <p>No. The CLI and the <code>loki-inu/relnote</code> action read the local checkout only. <code>github_changelog_generator</code> 1.18.0 fetches tags, closed issues, and merged pull requests through the GitHub API. Its <code>--token</code> help says a GitHub token is required to make more than 50 requests per hour. Pass <code>--token</code> or set <code>CHANGELOG_GITHUB_TOKEN</code>. The README says a private repository needs that token with the <code>repo</code> scope. The later step that creates the Release uses <code>github.token</code>, as on the <a href="github-action.html">GitHub Action guide</a>.</p>
+    <h3>Does relnote rebuild CHANGELOG.md from every tag?</h3>
+    <p>No. <code>github_changelog_generator</code> overwrites the output file (default <code>CHANGELOG.md</code>) with entries for the tags it includes, then appends <code>HISTORY.md</code> when that file exists (the default of <code>--base</code>). relnote inserts one section before the first <code>## </code> heading and leaves older sections as they were. A duplicate title is refused. The command does not commit.</p>
+    <h3>How is this different from the Release Drafter and auto-changelog pages?</h3>
+    <p>The <a href="release-drafter-alternative.html">Release Drafter page</a> is for a GitHub Action that updates a draft Release from pull request labels. The <a href="auto-changelog-alternative.html">auto-changelog page</a> is for the npm package that rebuilds <code>CHANGELOG.md</code> from local semver tags. This page is for the Ruby gem <code>github_changelog_generator</code>, which rebuilds <code>CHANGELOG.md</code> from GitHub issues and pull requests and needs a token because of the API rate limit.</p>
+    <h3>Should I pin versions?</h3>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). The github-changelog-generator facts here are from the published 1.18.0 README, gemspec, and parser, not from an unreleased change. Floating <code>latest</code> on the relnote zipapp can change behaviour under you.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
