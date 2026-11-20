@@ -116,6 +116,14 @@
           },
           {
             "@type": "Question",
+            "name": "Is relnote a towncrier alternative?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, when commits already follow conventional commits and you do not want a news fragment file per change. Keep towncrier when you want curated fragments, towncrier check on each branch, or the Python package integration (pyproject.toml, package version, newsfragments)."
+            }
+          },
+          {
+            "@type": "Question",
             "name": "How does relnote differ from swapnanil/relnotes?",
             "acceptedAnswer": {
               "@type": "Answer",
@@ -234,7 +242,7 @@
       <li><strong><a href="https://git-cliff.org/">git-cliff</a></strong> — changelog generator with <code>cliff.toml</code>, Tera templates, and optional version bump. Heavier, more control.</li>
       <li><strong><a href="https://github.com/swapnanil/relnotes">swapnanil/relnotes</a></strong> — another offline stdlib Python CLI for conventional-commit notes. Optional <code>.relnotes.toml</code>, inferred semver bump, <code>--from</code> / <code>--to</code>.</li>
     </ul>
-    <p>relnote is the smaller offline alternative when you want a GitHub Action and zero-config CI. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file. Leaving git-cliff for a Release body plus one CHANGELOG section and bump/tag? <a href="git-cliff-alternative.html">git-cliff alternative</a> (curl the zipapp, <code>release.sh</code>, optional Actions). Leaving <a href="https://github.com/release-drafter/release-drafter">Release Drafter</a> (draft releases from pull request labels in <code>.github/release-drafter.yml</code>)? <a href="release-drafter-alternative.html">Release Drafter alternative</a> builds the body from conventional commits, with no labels and no config file. Leaving <a href="https://github.com/cookpete/auto-changelog">auto-changelog</a> (npm package, changelog rebuilt from semver tags)? <a href="auto-changelog-alternative.html">auto-changelog alternative</a> prepends one section and writes the Release body, with no Node package and no Handlebars template. Leaving <a href="https://github.com/github-changelog-generator/github-changelog-generator">github-changelog-generator</a> (Ruby gem, changelog rebuilt from GitHub issues and pull requests)? <a href="github-changelog-generator-alternative.html">github-changelog-generator alternative</a> writes the Release body from local commits, with no token and no API rate limit.</p>
+    <p>relnote is the smaller offline alternative when you want a GitHub Action and zero-config CI. Keep <code>gh</code> when you want official GitHub notes. Keep git-cliff when you want a maintained changelog file. Leaving git-cliff for a Release body plus one CHANGELOG section and bump/tag? <a href="git-cliff-alternative.html">git-cliff alternative</a> (curl the zipapp, <code>release.sh</code>, optional Actions). Leaving <a href="https://github.com/release-drafter/release-drafter">Release Drafter</a> (draft releases from pull request labels in <code>.github/release-drafter.yml</code>)? <a href="release-drafter-alternative.html">Release Drafter alternative</a> builds the body from conventional commits, with no labels and no config file. Leaving <a href="https://github.com/cookpete/auto-changelog">auto-changelog</a> (npm package, changelog rebuilt from semver tags)? <a href="auto-changelog-alternative.html">auto-changelog alternative</a> prepends one section and writes the Release body, with no Node package and no Handlebars template. Leaving <a href="https://github.com/github-changelog-generator/github-changelog-generator">github-changelog-generator</a> (Ruby gem, changelog rebuilt from GitHub issues and pull requests)? <a href="github-changelog-generator-alternative.html">github-changelog-generator alternative</a> writes the Release body from local commits, with no token and no API rate limit. Leaving <a href="https://github.com/twisted/towncrier">towncrier</a> (news fragment files, <code>towncrier.toml</code> or <code>pyproject.toml</code>)? <a href="towncrier-alternative.html">towncrier alternative</a> writes the Release body from conventional commits, with no fragment files.</p>
 
     <h2>Comparison</h2>
     <div class="table-wrap">
@@ -347,6 +355,7 @@ relnote --help</code></pre>
       <li>It does not replace <a href="https://github.com/release-drafter/release-drafter">Release Drafter</a> if you want a draft that updates from pull request labels on every merge. See the <a href="release-drafter-alternative.html">Release Drafter alternative</a>.</li>
       <li>It does not replace <a href="https://github.com/cookpete/auto-changelog">auto-changelog</a> if you want <code>CHANGELOG.md</code> rebuilt from every semver tag, Handlebars templates, or the <code>npm version</code> hook. See the <a href="auto-changelog-alternative.html">auto-changelog alternative</a>.</li>
       <li>It does not replace <a href="https://github.com/github-changelog-generator/github-changelog-generator">github-changelog-generator</a> if you want <code>CHANGELOG.md</code> rebuilt from GitHub issues and merged pull requests, label sections, or GitHub Enterprise. See the <a href="github-changelog-generator-alternative.html">github-changelog-generator alternative</a>.</li>
+      <li>It does not replace <a href="https://github.com/twisted/towncrier">towncrier</a> if you want a news fragment written for each change, <code>towncrier check</code> to require one on a branch, or version text taken from a Python package. See the <a href="towncrier-alternative.html">towncrier alternative</a>.</li>
     </ul>
 
     <h2>Common questions</h2>
@@ -364,6 +373,8 @@ relnote --help</code></pre>
     <p>Yes, when you want a Release body and one new <code>CHANGELOG.md</code> section from conventional commits, and you do not need a changelog rebuilt from every semver tag. Keep auto-changelog when you want Handlebars templates, the <code>npm version</code> hook, merge and issue lists, or GitLab, BitBucket, and Azure DevOps links. Guide: <a href="auto-changelog-alternative.html">auto-changelog alternative</a>.</p>
     <h3>Is relnote a github-changelog-generator alternative?</h3>
     <p>Yes, when commits already follow conventional commits and you want the Release body from local git history, with no token. Keep github-changelog-generator when <code>CHANGELOG.md</code> should be rebuilt from GitHub issues and merged pull requests grouped by labels, or when the repository is on GitHub Enterprise. Guide: <a href="github-changelog-generator-alternative.html">github-changelog-generator alternative</a>.</p>
+    <h3>Is relnote a towncrier alternative?</h3>
+    <p>Yes, when commits already follow conventional commits and you do not want a news fragment file per change. Keep towncrier when you want curated fragments, <code>towncrier check</code> on each branch, or the Python package integration (<code>pyproject.toml</code>, package version, <code>newsfragments</code>). Guide: <a href="towncrier-alternative.html">towncrier alternative</a>.</p>
     <h3>How does relnote differ from swapnanil/relnotes?</h3>
     <p>Both are offline stdlib Python CLIs that group conventional commits. Pick relnote for the GitHub Action, <code>--quiet</code>/<code>--output</code> CI, and bot or secret-looking subject filters. Pick swapnanil/relnotes for optional <code>.relnotes.toml</code>, inferred semver bump, or <code>--from</code>/<code>--to</code> range names.</p>
 
