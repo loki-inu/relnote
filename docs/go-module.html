@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release notes for a Go module from git tags — relnote</title>
+  <meta name="description" content="Write GitHub release notes for a Go module from conventional commits between two tags (v1.2.0..v1.3.0). A tag-push workflow uses the loki-inu/relnote action for the Release body. For v2 and later, the module path in go.mod ends in /vN. GoReleaser takes the same file with --release-notes.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/go-module.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release notes for a Go module from git tags — relnote">
+  <meta property="og:description" content="Write GitHub release notes for a Go module from conventional commits between two tags (v1.2.0..v1.3.0). A tag-push workflow uses the loki-inu/relnote action for the Release body. For v2 and later, the module path in go.mod ends in /vN. GoReleaser takes the same file with --release-notes.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/go-module.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release notes for a Go module from git tags — relnote">
+  <meta name="twitter:description" content="Write GitHub release notes for a Go module from conventional commits between two tags (v1.2.0..v1.3.0). A tag-push workflow uses the loki-inu/relnote action for the Release body. For v2 and later, the module path in go.mod ends in /vN. GoReleaser takes the same file with --release-notes.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/go-module.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/go-module.html",
+      "name": "Release notes for a Go module from git tags — relnote",
+      "description": "Write GitHub release notes for a Go module from conventional commits between two tags (v1.2.0..v1.3.0). A tag-push workflow uses the loki-inu/relnote action for the Release body. For v2 and later, the module path in go.mod ends in /vN. GoReleaser takes the same file with --release-notes.",
+      "isPartOf": {"@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/"},
+      "about": {"@type": "SoftwareApplication", "name": "relnote", "url": "https://github.com/loki-inu/relnote"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/"},
+        {"@type": "ListItem", "position": 2, "name": "Go module release notes", "item": "https://loki-inu.github.io/relnote/go-module.html"}
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Release notes for a Go module from git tags",
+      "step": [
+        {"@type": "HowToStep", "name": "Notes between two tags", "text": "Run python3 -m relnote --since v1.2.0 --until v1.3.0. The notes are the commits after the first tag up to the second. When HEAD is already the new tag, python3 -m relnote with no flags uses the previous tag through that tag."},
+        {"@type": "HowToStep", "name": "Create the GitHub Release on tag push", "text": "A workflow on push of v* tags checks out with fetch-depth 0, runs loki-inu/relnote@v0.3.7, writes the notes output to a file through env, and runs gh release create with --notes-file."},
+        {"@type": "HowToStep", "name": "Optional GoReleaser", "text": "Write the same notes to a file and pass goreleaser release --clean --release-notes=notes.md. GoReleaser skips its own changelog and uses the file. changelog.disable ignores that flag."}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does relnote read go.mod?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It reads git tags and commits. go.mod keeps the module path and the go line. The version other modules require is the tag, such as v1.3.0."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What changes at v2?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Starting at major version 2, the module path must end with a major-version suffix that matches the tag, such as github.com/you/demo/v2 for the tag v2.0.0. v0 and v1 have no suffix. When the module is in the repository root, or in a major-version subdirectory named v2, the tag is v2.0.0, not v2/v2.0.0. A module in some other subdirectory uses a tag prefix such as gopls/v0.4.0; pass --tag-prefix, as on the monorepo page."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why fetch-depth: 0?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The default checkout is one commit and has no tags, so relnote cannot find the previous release. On a tag push, HEAD is the new tag, and relnote starts the range at the tag before it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I give the notes to GoReleaser?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "goreleaser release --release-notes=notes.md uses that Markdown file and skips GoReleaser's own changelog. The same flag goes in the args input of goreleaser/goreleaser-action. If changelog.disable is true, GoReleaser ignores --release-notes and the release notes are empty. If a release for that tag already has body text, GoReleaser keeps it unless release.mode is replace (the default is keep-existing)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does pkg.go.dev read the GitHub Release body?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The module proxy and pkg.go.dev resolve the version from the git tag. The Release body is for people reading the repository on GitHub."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I pick the next tag?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "python3 -m relnote --next-version prints it from the commits since the previous tag: a breaking change bumps the major, a feat bumps the minor, and anything else bumps the patch. While the major is 0, a breaking change bumps the minor. v2.0.0 is the point where the module path gains /v2."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="python-package.html">Python packages</a> · <a href="npm-package.html">npm packages</a> · <a href="rust-crate.html">Rust crates</a> · <a href="monorepo.html">Monorepo</a></p>
+    <h1>Release notes for a Go module from git tags</h1>
+    <p class="tag">The version a Go module publishes is the git tag. relnote turns the commits between two tags, such as <code>v1.2.0..v1.3.0</code>, into a GitHub Release body. For v2 and later, the module path in <code>go.mod</code> ends with <code>/vN</code>. No config file.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/action.yml">action.yml</a>
+      · <a href="github-action.html">GitHub Action</a>
+      · <a href="single-file.html">Single-file install</a>
+    </div>
+
+    <h2>1. The module path lives in go.mod</h2>
+    <pre><code>module github.com/you/demo
+
+go 1.22</code></pre>
+    <p><code>go.mod</code> names the module and the Go version. It has no version field for relnote to bump. The version other modules require is the tag you push (<code>v1.2.0</code>, <code>v1.3.0</code>). <a href="https://pkg.go.dev/">pkg.go.dev</a> and the module proxy resolve that tag; the GitHub Release body is separate, and it is what this page writes.</p>
+    <p>Starting at major version 2, the module path must end with a major-version suffix that matches the tag (<a href="https://go.dev/ref/mod#major-version-suffixes">Go modules reference</a>). <code>v0</code> and <code>v1</code> have no suffix.</p>
+    <pre><code>module github.com/you/demo/v2
+
+go 1.22</code></pre>
+    <p>That file is the <code>v2.0.0</code> module. When it sits in the repository root, or in a major-version subdirectory named <code>v2</code>, the tag is <code>v2.0.0</code>, not <code>v2/v2.0.0</code>. The suffix is part of the module path, not a tag prefix. A module in some other subdirectory (for example <code>golang.org/x/tools/gopls</code>) does use a prefix, <code>gopls/v0.4.0</code>. Pass <code>--tag-prefix gopls/v</code> and, if you want only that directory, <code>--path gopls</code>. See <a href="monorepo.html">monorepo release notes</a>.</p>
+
+    <h2>2. Notes between two tags</h2>
+    <p>Three commits since <code>v1.2.0</code>:</p>
+    <pre><code>git log --oneline v1.2.0..HEAD
+docs: note the /v2 module path
+fix: return a sentinel error from Open
+feat(api): add a context to Client.Do</code></pre>
+    <p>Install relnote (<code>pipx install git+https://github.com/loki-inu/relnote.git</code>, <code>brew install loki-inu/tap/relnote</code>, or the <a href="single-file.html">single file</a>). Before you tag, the next version from those commits is a minor bump, because one of them is a <code>feat</code>:</p>
+    <pre><code>python3 -m relnote --next-version</code></pre>
+    <pre><code>v1.3.0</code></pre>
+    <p>Tag that (<code>git tag -a v1.3.0 -m v1.3.0</code>) and print the notes for the range. <code>--since</code> is exclusive and <code>--until</code> is inclusive, same as <code>git log v1.2.0..v1.3.0</code>:</p>
+    <pre><code>python3 -m relnote --since v1.2.0 --until v1.3.0</code></pre>
+    <pre><code>## What&#x27;s changed
+
+### Features
+
+- **api:** add a context to Client.Do (`b97ce10`) — Ada Lovelace
+
+### Fixes
+
+- return a sentinel error from Open (`4ca3722`) — Ada Lovelace
+
+### Other
+
+- **docs:** note the /v2 module path (`cbfba98`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `v1.3.0`.
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+    <p>Output from a test repository built in relnote&#x27;s CI (<code>tests/test_go_module_docs.py</code>); your hashes differ. Once <code>HEAD</code> is the new tag, the same text comes from no flags at all. The range starts at the previous tag and the compare link ends at <code>v1.3.0</code>, not at <code>HEAD</code>:</p>
+    <pre><code>python3 -m relnote</code></pre>
+    <p>To write a file and stay quiet:</p>
+    <pre><code>python3 -m relnote --since v1.2.0 --until v1.3.0 --output notes.md --quiet</code></pre>
+
+    <h2>3. GitHub Actions on a tag push</h2>
+    <p>Save as <code>.github/workflows/release.yml</code>. Pushing <code>v1.3.0</code> checks out the full history, runs the action, and creates the GitHub Release. The <code>notes</code> output is the body. It is passed through <code>env:</code> because commit subjects can contain backticks:</p>
+    <pre><code>name: Release
+on:
+  push:
+    tags: [&quot;v*&quot;]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NOTES: ${{ steps.relnote.outputs.notes }}
+        run: |
+          printf &#x27;%s\n&#x27; &quot;$NOTES&quot; &gt; notes.md
+          gh release create &quot;$GITHUB_REF_NAME&quot; --verify-tag --notes-file notes.md</code></pre>
+    <p><code>fetch-depth: 0</code> is required. The default checkout is one commit with no tags, so relnote cannot find <code>v1.2.0</code>. On a tag push, <code>HEAD</code> is the new tag, and the action starts the range at the tag before it. The action&#x27;s <code>no-bots</code> input defaults to true, so Dependabot and Renovate commits are left out; the CLI includes them unless you pass <code>--no-bots</code>. The sample above has neither, so the Release body matches it. More workflows (a draft Release, <code>has-changes</code>, <code>changelog</code>): <a href="github-action.html">GitHub Action guide</a>.</p>
+
+    <h2>4. Alongside GoReleaser</h2>
+    <p>If you already publish with <a href="https://goreleaser.com/">GoReleaser</a>, it can take the notes from a file. The <a href="https://goreleaser.com/customization/publish/scm/">release docs</a> say <code>--release-notes=FILE</code> skips GoReleaser&#x27;s own changelog and uses that Markdown file instead:</p>
+    <pre><code>python3 -m relnote --since v1.2.0 --until v1.3.0 --output notes.md --quiet
+goreleaser release --clean --release-notes=notes.md</code></pre>
+    <p>On a tag push, the same flag is the <code>args</code> input of <a href="https://goreleaser.com/customization/ci/actions/"><code>goreleaser/goreleaser-action</code></a>. Their example listens for every tag and checks out with <code>fetch-depth: 0</code> (GoReleaser needs the history too). The workflow below listens for <code>v*</code>, which is the form Go module tags take, writes the action&#x27;s notes to <code>notes.md</code>, and passes that path. Checkout and setup-go are the major versions in that guide:</p>
+    <pre><code>name: goreleaser
+on:
+  push:
+    tags: [&quot;v*&quot;]
+permissions:
+  contents: write
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: stable
+      - id: relnote
+        uses: loki-inu/relnote@v0.3.7
+      - name: Write notes
+        env:
+          NOTES: ${{ steps.relnote.outputs.notes }}
+        run: printf &#x27;%s\n&#x27; &quot;$NOTES&quot; &gt; notes.md
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v7
+        with:
+          distribution: goreleaser
+          version: &quot;~&gt; v2&quot;
+          args: release --clean --release-notes=notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}</code></pre>
+    <p>Two limits from those docs. If <code>changelog.disable</code> is true, GoReleaser ignores <code>--release-notes</code> and the release notes are empty. If a GitHub Release for the tag already has body text, GoReleaser keeps it unless <code>release.mode</code> is <code>replace</code> (the default is <code>keep-existing</code>). Use this workflow instead of the <code>gh release create</code> job above, not after it. The GoReleaser action does not install Go; the setup-go step does.</p>
+
+    <h2>FAQ</h2>
+    <h3>Does relnote read go.mod?</h3>
+    <p>No. It reads git tags and commits. go.mod keeps the module path and the go line. The version other modules require is the tag, such as v1.3.0.</p>
+    <h3>What changes at v2?</h3>
+    <p>Starting at major version 2, the module path must end with a major-version suffix that matches the tag, such as github.com/you/demo/v2 for the tag v2.0.0. v0 and v1 have no suffix. When the module is in the repository root, or in a major-version subdirectory named v2, the tag is v2.0.0, not v2/v2.0.0. A module in some other subdirectory uses a tag prefix such as gopls/v0.4.0; pass --tag-prefix, as on the monorepo page.</p>
+    <h3>Why fetch-depth: 0?</h3>
+    <p>The default checkout is one commit and has no tags, so relnote cannot find the previous release. On a tag push, HEAD is the new tag, and relnote starts the range at the tag before it.</p>
+    <h3>How do I give the notes to GoReleaser?</h3>
+    <p>goreleaser release --release-notes=notes.md uses that Markdown file and skips GoReleaser&#x27;s own changelog. The same flag goes in the args input of goreleaser/goreleaser-action. If changelog.disable is true, GoReleaser ignores --release-notes and the release notes are empty. If a release for that tag already has body text, GoReleaser keeps it unless release.mode is replace (the default is keep-existing).</p>
+    <h3>Does pkg.go.dev read the GitHub Release body?</h3>
+    <p>No. The module proxy and pkg.go.dev resolve the version from the git tag. The Release body is for people reading the repository on GitHub.</p>
+    <h3>How do I pick the next tag?</h3>
+    <p>python3 -m relnote --next-version prints it from the commits since the previous tag: a breaking change bumps the major, a feat bumps the minor, and anything else bumps the patch. While the major is 0, a breaking change bumps the minor. v2.0.0 is the point where the module path gains /v2.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/latest">Latest release</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
