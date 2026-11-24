@@ -367,7 +367,7 @@ chmod +x release.sh
     <h2>Monorepo packages</h2>
     <p>Pass the package&#x27;s tag prefix and path: <code>bash "$RUNNER_TEMP/release.sh" --tag-prefix api/v --bump-file packages/api/package.json -- --path packages/api</code>, then <code>relnote --tag-prefix api/v --path packages/api --output …</code>. Change the guard&#x27;s <code>'v*'</code> to <code>'api/v*'</code>. See the <a href="monorepo.html">monorepo guide</a>.</p>
 
-    <p>Publishing the artifact? <a href="python-package.html">Python / PyPI</a>, <a href="rust-crate.html">Rust / crates.io</a>, or <a href="npm-package.html">npm</a> add the language-specific publish steps after the tag.</p>
+    <p>Publishing the artifact? <a href="python-package.html">Python / PyPI</a>, <a href="rust-crate.html">Rust / crates.io</a>, <a href="npm-package.html">npm</a>, or <a href="go-module.html">a Go module</a> add the language-specific steps after the tag.</p>
 
     <h2>FAQ</h2>
     <h3>Why leave semantic-release?</h3>

@@ -254,6 +254,8 @@ Releasing a Rust crate? [Release a Rust crate from conventional commits](https:/
 
 Releasing an npm package? [Release an npm package from conventional commits](https://loki-inu.github.io/relnote/npm-package.html) bumps `version` in `package.json`, syncs `package-lock.json` with `release.sh --exec "npm install --package-lock-only --ignore-scripts --silent"`, prepends CHANGELOG.md, and tags; a tag-push workflow checks the tag against `package.json`, runs `npm ci` / `npm test`, publishes with npm trusted publishing, and creates the GitHub Release with relnote notes.
 
+Releasing a Go module? [Release notes for a Go module from git tags](https://loki-inu.github.io/relnote/go-module.html) writes the GitHub Release body from conventional commits between two tags (`v1.2.0..v1.3.0`). The version is the tag; for v2 and later the module path in `go.mod` ends in `/vN`. A tag-push workflow uses the relnote action. GoReleaser can take the same notes with `--release-notes`.
+
 ```sh
 ./release.sh --dry-run --bump-file package.json
 ./release.sh --bump-file package.json && git push --follow-tags
