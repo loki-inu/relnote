@@ -1,0 +1,17 @@
+- id: relnote
+  name: relnote
+  description: >-
+    Print release notes from the latest tag to HEAD.
+    Exit 0 when notes are written. Exit 1 when nothing is left to
+    print (merge commits and chore(release) commits are omitted, and
+    a subject that looks like a token is omitted), when the directory
+    is not a git repository, or when a ref is unknown. Exit 2 when
+    --quiet has no --output or --changelog, or when an unexpected
+    argument is passed.
+  entry: relnote
+  language: python
+  always_run: true
+  pass_filenames: false
+  stages: [pre-push, manual]
+  verbose: true
+  minimum_pre_commit_version: "3.2.0"
