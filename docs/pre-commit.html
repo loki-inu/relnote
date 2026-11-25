@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release notes with pre-commit / git hooks — relnote</title>
+  <meta name="description" content="Print or check GitHub release notes from a pre-push hook or the pre-commit framework. relnote reads commits already in the repository, from the latest tag to HEAD. Exit 0 writes the notes, exit 1 is an empty range or a bad ref, and exit 2 is a bad --quiet or an extra argument. There is no --check flag.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/pre-commit.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release notes with pre-commit / git hooks — relnote">
+  <meta property="og:description" content="Print or check GitHub release notes from a pre-push hook or the pre-commit framework. relnote reads commits already in the repository, from the latest tag to HEAD. Exit 0 writes the notes, exit 1 is an empty range or a bad ref, and exit 2 is a bad --quiet or an extra argument. There is no --check flag.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/pre-commit.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release notes with pre-commit / git hooks — relnote">
+  <meta name="twitter:description" content="Print or check GitHub release notes from a pre-push hook or the pre-commit framework. relnote reads commits already in the repository, from the latest tag to HEAD. Exit 0 writes the notes, exit 1 is an empty range or a bad ref, and exit 2 is a bad --quiet or an extra argument. There is no --check flag.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/pre-commit.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/pre-commit.html",
+      "name": "Release notes with pre-commit / git hooks — relnote",
+      "description": "Print or check GitHub release notes from a pre-push hook or the pre-commit framework. relnote reads commits already in the repository, from the latest tag to HEAD. Exit 0 writes the notes, exit 1 is an empty range or a bad ref, and exit 2 is a bad --quiet or an extra argument. There is no --check flag.",
+      "isPartOf": {"@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/"},
+      "about": {"@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.7", "url": "https://github.com/loki-inu/relnote"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/"},
+        {"@type": "ListItem", "position": 2, "name": "pre-commit and git hooks", "item": "https://loki-inu.github.io/relnote/pre-commit.html"}
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Release notes with pre-commit / git hooks",
+      "step": [
+        {"@type": "HowToStep", "name": "Read the exit status", "text": "relnote has no --check flag. Exit 0 means notes were written. Exit 1 means the range has no commits left after filters, the directory is not a git repository, or a ref is unknown. Exit 2 means --quiet was set without --output or --changelog, or an unexpected argument was passed."},
+        {"@type": "HowToStep", "name": "Preview from pre-push", "text": "Install relnote on PATH. A .git/hooks/pre-push script runs relnote and then exits 0, so the push continues when the range is empty. The script reads HEAD. It does not read the refs listed on the hook's standard input."},
+        {"@type": "HowToStep", "name": "Check with pre-commit", "text": "The repository's .pre-commit-hooks.yaml defines id relnote with language python, entry relnote, pass_filenames false, always_run true, and stages pre-push and manual. Pin rev to a commit that contains that file. pre-commit install --hook-type pre-push installs the git hook. A non-zero relnote status fails the push."}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does relnote have a --check flag?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. relnote --help has no --check flag and no --dry-run flag. The exit status is the signal a hook can use. Exit 0 means notes were written (or --next-version printed a tag). Exit 1 covers an empty range and the other failures in the table on this page. Exit 2 means --quiet was used without --output or --changelog, or an argument was not recognized."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why pre-push?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "pre-push runs after the commits exist, so the notes include them. The pre-commit stage runs before the new commit object is written, so the notes stop at the previous commit. Tagging does not run a separate hook. After git tag, HEAD is that tag, and relnote starts the range at the previous tag. Pushing the tag runs the pre-push hook."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does the hook read?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The scripts on this page run relnote with no arguments, so the range ends at HEAD. Git passes the refs being pushed on the hook's standard input. relnote does not read that list. A push of another branch, or a remote delete, still evaluates HEAD."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why pass_filenames: false?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "pre-commit appends staged filenames unless pass_filenames is false. relnote has no filename arguments. python3 -m relnote README exits 2 and the error says unrecognized arguments: README. always_run: true runs the hook when no files match."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does an empty range fail the GitHub Action too?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The CLI exits 1 and prints relnote: no commits in range SINCE..UNTIL. The GitHub Action treats that line as success and sets has-changes to false, unless fail-on-empty is true. A hook runs the CLI."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I set rev to the v0.3.7 tag?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. pre-commit clones the rev you pin and reads .pre-commit-hooks.yaml there. The v0.3.7 tag does not contain that file. Pin the full commit SHA of a revision that contains it. A branch name such as main is a moving target; pre-commit warns and does not keep updating it."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="github-action.html">GitHub Action</a> · <a href="ci.html">CI</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="single-file.html">Single-file install</a></p>
+    <h1>Release notes with pre-commit / git hooks</h1>
+    <p class="tag">relnote reads commits that are already in the repository and prints a GitHub Release body. A <code>pre-push</code> hook runs after those commits exist. The <code>pre-commit</code> stage runs before the new commit object is written, so the notes stop at the previous commit. relnote has no <code>--check</code> flag. The exit status is the signal.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">GitHub</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/main/.pre-commit-hooks.yaml">.pre-commit-hooks.yaml</a>
+      · <a href="github-action.html">GitHub Action</a>
+      · <a href="single-file.html">Single-file install</a>
+    </div>
+
+    <h2>1. Exit status</h2>
+    <p>Install so the <code>relnote</code> command is on <code>PATH</code> (<code>pip install git+https://github.com/loki-inu/relnote.git</code>, <code>pipx</code>, <code>brew install loki-inu/tap/relnote</code>, or the <a href="single-file.html">single file</a>). From a checkout, <code>python3 -m relnote</code> is the same command. <code>relnote --help</code> has no <code>--check</code> flag and no <code>--dry-run</code> flag.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Status</th><th>When</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>0</td>
+            <td>Notes were written to stdout. <code>--output FILE</code> writes the same text to that file. <code>--quiet</code> with <code>--output</code> or <code>--changelog</code> leaves stdout empty. <code>--next-version</code> prints the next tag and writes no notes.</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td><code>relnote: not a git repository (or any parent)</code>. <code>relnote: unknown ref: no-such-tag</code>. <code>relnote: no commits in range HEAD..HEAD</code> when nothing is left after filters. <code>relnote: --max must be &gt;= 1</code>. <code>relnote: --date must look like YYYY-MM-DD</code>. <code>relnote: output directory does not exist</code>. <code>relnote: changelog already has a section for</code> that title, and the file is left unchanged. <code>relnote: tag 'not-semver' is not a semantic version (x.y.z)</code> from <code>--next-version</code>.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>relnote: --quiet requires --output or --changelog</code>. <code>unrecognized arguments: README</code> when a filename or other unknown argument is passed.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Merge commits are omitted unless you pass <code>--include-merges</code>. <code>chore(release): ...</code> commits are omitted unless you pass <code>--include-release-commits</code>. A subject that looks like a token is omitted. When every commit in the range is omitted, the status is 1 and stderr is <code>relnote: no commits in range SINCE..UNTIL</code>.</p>
+    <p>These three commands are the status 2 case and two status 1 cases. Each one prints to stderr and writes nothing to stdout:</p>
+    <pre><code>python3 -m relnote --quiet
+python3 -m relnote README
+python3 -m relnote --since no-such-tag
+python3 -m relnote --since HEAD</code></pre>
+    <p>The GitHub Action treats the empty-range line as success and sets <code>has-changes</code> to <code>false</code>, unless <code>fail-on-empty</code> is <code>true</code>. A hook runs the CLI, which exits 1. See the <a href="github-action.html">GitHub Action guide</a>.</p>
+
+    <h2>2. Notes since the latest tag</h2>
+    <p>Two commits after <code>v1.2.0</code>:</p>
+    <pre><code>git log --oneline v1.2.0..HEAD
+fix: return a sentinel error from Open
+feat(api): add a context to Client.Do</code></pre>
+    <pre><code>python3 -m relnote</code></pre>
+    <pre><code>## What&#x27;s changed
+
+### Features
+
+- **api:** add a context to Client.Do (`4febe8e`) — Ada Lovelace
+
+### Fixes
+
+- return a sentinel error from Open (`9034e17`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `HEAD`.
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...HEAD</code></pre>
+    <p>Output from a test repository built in relnote&#x27;s CI (<code>tests/test_pre_commit_docs.py</code>); your hashes differ. To write a file and stay quiet:</p>
+    <pre><code>python3 -m relnote --output notes.md --quiet</code></pre>
+    <p>After you tag that commit, the same command with no flags ends the range at the tag. On a tag push, <code>HEAD</code> is the new tag, and the compare link uses it:</p>
+    <pre><code>git tag -a v1.3.0 -m v1.3.0
+python3 -m relnote</code></pre>
+    <pre><code>## What&#x27;s changed
+
+### Features
+
+- **api:** add a context to Client.Do (`4febe8e`) — Ada Lovelace
+
+### Fixes
+
+- return a sentinel error from Open (`9034e17`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `v1.3.0`.
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+
+    <h2>3. An empty range exits 1</h2>
+    <p>The only commit after <code>v1.2.0</code> is the release commit, which is omitted by default:</p>
+    <pre><code>git log --oneline v1.2.0..HEAD
+chore(release): v1.3.0</code></pre>
+    <pre><code>python3 -m relnote</code></pre>
+    <pre><code>relnote: no commits in range v1.2.0..HEAD</code></pre>
+    <p>The status is 1. <code>--include-release-commits</code> keeps that commit and exits 0:</p>
+    <pre><code>python3 -m relnote --include-release-commits</code></pre>
+    <pre><code>## What&#x27;s changed
+
+### Other
+
+- **release:** v1.3.0 (`b077e70`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `HEAD`.
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...HEAD</code></pre>
+
+    <h2>4. A pre-push hook that prints and does not block</h2>
+    <p>Save this as <code>.git/hooks/pre-push</code> and run <code>chmod +x .git/hooks/pre-push</code>. <code>git push</code> runs it. The script prints the notes for <code>HEAD</code>, then exits 0, so an empty range does not block the push. If <code>relnote</code> is missing from <code>PATH</code>, the script still exits 0.</p>
+    <pre><code>#!/bin/sh
+# .git/hooks/pre-push
+# Print notes for HEAD. The push continues even when relnote exits non-zero.
+relnote
+exit 0</code></pre>
+    <p>Git writes the refs being pushed to the hook&#x27;s standard input, one line per ref. This script does not read that list. The notes are always for <code>HEAD</code>. Pushing a different branch, or deleting a remote branch, still prints <code>HEAD</code>.</p>
+
+    <h2>5. A pre-push hook that checks</h2>
+    <p>This script replaces the shell with <code>relnote</code>, so the push is blocked when the status is non-zero. That includes an empty range, a missing <code>relnote</code> on <code>PATH</code> (status 127), and a push whose stdin lists some other ref: the check still evaluates <code>HEAD</code>.</p>
+    <pre><code>#!/bin/sh
+# .git/hooks/pre-push
+# Block the push when relnote exits non-zero.
+exec relnote</code></pre>
+    <p>Tagging itself does not run a hook. After <code>git tag</code>, <code>HEAD</code> is that tag and the notes cover the range from the previous tag, as in the sample above. Pushing the tag runs <code>pre-push</code>.</p>
+
+    <h2>6. pre-commit framework, local hook</h2>
+    <p>A local hook calls the <code>relnote</code> already on <code>PATH</code>. <code>pass_filenames: false</code> is required: the default is to append staged paths, and <code>python3 -m relnote README</code> exits 2 with <code>unrecognized arguments: README</code>. <code>always_run: true</code> runs the hook when no file matches. <code>stages</code> is <code>pre-push</code> and <code>manual</code>, so a normal <code>git commit</code> does not run it. <code>verbose: true</code> prints the notes when the hook passes.</p>
+    <p>pre-commit 4.4.0 renamed <code>language: system</code> to <code>language: unsupported</code>. The old name still loads and is scheduled to be removed. On 4.3 and earlier, use <code>system</code>.</p>
+    <pre><code>default_install_hook_types: [pre-push]
+repos:
+  - repo: local
+    hooks:
+      - id: relnote
+        name: relnote
+        entry: relnote
+        language: unsupported
+        types: [file]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push, manual]
+        verbose: true</code></pre>
+    <p><code>default_install_hook_types</code> makes <code>pre-commit install</code> write <code>.git/hooks/pre-push</code>. The default install list is only the <code>pre-commit</code> hook, and this hook&#x27;s stages do not include that one, so nothing would run. You can also install the type by hand:</p>
+    <pre><code>pre-commit install --hook-type pre-push
+pre-commit run relnote --hook-stage pre-push</code></pre>
+    <p>The status from <code>relnote</code> is the hook status. An empty range fails the hook.</p>
+
+    <h2>7. pre-commit preview that does not fail the push</h2>
+    <p>pre-commit 4.5.0 added <code>pre-commit hazmat ignore-exit-code</code>. It runs the command and then exits 0. The pre-commit docs put a trailing <code>--</code> on that entry so filename arguments stay separate. relnote rejects a trailing <code>--</code> as an unrecognized argument (status 2), so this entry does not end with <code>--</code>. <code>pass_filenames: false</code> keeps filenames off the command, and <code>args</code> is empty so nothing else is appended. <code>verbose: true</code> is what shows the notes when the hook passes.</p>
+    <pre><code>minimum_pre_commit_version: &quot;4.5.0&quot;
+repos:
+  - repo: local
+    hooks:
+      - id: relnote-preview
+        name: preview release notes
+        entry: pre-commit hazmat ignore-exit-code relnote
+        language: unsupported
+        types: [file]
+        args: []
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push, manual]
+        verbose: true</code></pre>
+    <pre><code>pre-commit run relnote-preview --hook-stage manual</code></pre>
+
+    <h2>8. repo: https://github.com/loki-inu/relnote</h2>
+    <p>The repository root contains <code>.pre-commit-hooks.yaml</code>. pre-commit clones the <code>rev</code> you pin, installs that revision with pip (the project declares the <code>relnote</code> console script), and runs it. The hook id, entry, and stages are:</p>
+    <pre><code>- id: relnote
+  name: relnote
+  description: &gt;-
+    Print release notes from the latest tag to HEAD.
+    Exit 0 when notes are written. Exit 1 when nothing is left to
+    print (merge commits and chore(release) commits are omitted, and
+    a subject that looks like a token is omitted), when the directory
+    is not a git repository, or when a ref is unknown. Exit 2 when
+    --quiet has no --output or --changelog, or when an unexpected
+    argument is passed.
+  entry: relnote
+  language: python
+  always_run: true
+  pass_filenames: false
+  stages: [pre-push, manual]
+  verbose: true
+  minimum_pre_commit_version: &quot;3.2.0&quot;</code></pre>
+    <p>Pin <code>rev</code> to the full commit SHA of a revision that contains that file. The v0.3.7 tag does not contain it, so that tag cannot be the rev. A branch name such as <code>main</code> moves; pre-commit warns that a mutable rev is not updated after the first install.</p>
+    <pre><code>default_install_hook_types: [pre-push]
+repos:
+  - repo: https://github.com/loki-inu/relnote
+    rev: &lt;commit that contains .pre-commit-hooks.yaml&gt;
+    hooks:
+      - id: relnote</code></pre>
+    <p><code>minimum_pre_commit_version</code> is 3.2.0 because the stage names are <code>pre-push</code> and <code>manual</code>. The hook fails when relnote exits non-zero, including <code>relnote: no commits in range v1.2.0..HEAD</code>. To print the notes and let the push continue, use the shell script in section 4 or the <code>ignore-exit-code</code> hook in section 7.</p>
+
+    <h2>FAQ</h2>
+    <h3>Does relnote have a --check flag?</h3>
+    <p>No. relnote --help has no --check flag and no --dry-run flag. The exit status is the signal a hook can use. Exit 0 means notes were written (or --next-version printed a tag). Exit 1 covers an empty range and the other failures in the table on this page. Exit 2 means --quiet was used without --output or --changelog, or an argument was not recognized.</p>
+    <h3>Why pre-push?</h3>
+    <p>pre-push runs after the commits exist, so the notes include them. The pre-commit stage runs before the new commit object is written, so the notes stop at the previous commit. Tagging does not run a separate hook. After git tag, HEAD is that tag, and relnote starts the range at the previous tag. Pushing the tag runs the pre-push hook.</p>
+    <h3>What does the hook read?</h3>
+    <p>The scripts on this page run relnote with no arguments, so the range ends at HEAD. Git passes the refs being pushed on the hook&#x27;s standard input. relnote does not read that list. A push of another branch, or a remote delete, still evaluates HEAD.</p>
+    <h3>Why pass_filenames: false?</h3>
+    <p>pre-commit appends staged filenames unless pass_filenames is false. relnote has no filename arguments. python3 -m relnote README exits 2 and the error says unrecognized arguments: README. always_run: true runs the hook when no files match.</p>
+    <h3>Does an empty range fail the GitHub Action too?</h3>
+    <p>The CLI exits 1 and prints relnote: no commits in range SINCE..UNTIL. The GitHub Action treats that line as success and sets has-changes to false, unless fail-on-empty is true. A hook runs the CLI.</p>
+    <h3>Can I set rev to the v0.3.7 tag?</h3>
+    <p>No. pre-commit clones the rev you pin and reads .pre-commit-hooks.yaml there. The v0.3.7 tag does not contain that file. Pin the full commit SHA of a revision that contains it. A branch name such as main is a moving target; pre-commit warns and does not keep updating it.</p>
+
+    <footer>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/latest">Latest release</a> · <a href="llms.txt">llms.txt</a></p>
+    </footer>
+  </main>
+</body>
+</html>
