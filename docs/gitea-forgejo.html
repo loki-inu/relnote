@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Release notes for Gitea and Forgejo — relnote</title>
+  <meta name="description" content="Write release notes for a Gitea or Forgejo project, including Codeberg, from conventional commits. Generate them locally or in Gitea Actions or Forgejo Actions, then paste the file or publish it with the releases API or tea. A GitHub compare link is added only when origin is github.com.">
+  <link rel="canonical" href="https://loki-inu.github.io/relnote/gitea-forgejo.html">
+  <link rel="alternate" type="text/plain" href="https://loki-inu.github.io/relnote/llms.txt" title="llms.txt">
+  <meta property="og:site_name" content="relnote">
+  <meta property="og:title" content="Release notes for Gitea and Forgejo — relnote">
+  <meta property="og:description" content="Write release notes for a Gitea or Forgejo project, including Codeberg, from conventional commits. Generate them locally or in Gitea Actions or Forgejo Actions, then paste the file or publish it with the releases API or tea. A GitHub compare link is added only when origin is github.com.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://loki-inu.github.io/relnote/gitea-forgejo.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Release notes for Gitea and Forgejo — relnote">
+  <meta name="twitter:description" content="Write release notes for a Gitea or Forgejo project, including Codeberg, from conventional commits. Generate them locally or in Gitea Actions or Forgejo Actions, then paste the file or publish it with the releases API or tea. A GitHub compare link is added only when origin is github.com.">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://loki-inu.github.io/relnote/gitea-forgejo.html#webpage",
+      "url": "https://loki-inu.github.io/relnote/gitea-forgejo.html",
+      "name": "Release notes for Gitea and Forgejo — relnote",
+      "description": "Write release notes for a Gitea or Forgejo project, including Codeberg, from conventional commits. Generate them locally or in Gitea Actions or Forgejo Actions, then paste the file or publish it with the releases API or tea. A GitHub compare link is added only when origin is github.com.",
+      "isPartOf": {"@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/"},
+      "about": {"@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.7", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "relnote docs", "item": "https://loki-inu.github.io/relnote/"},
+        {"@type": "ListItem", "position": 2, "name": "Gitea and Forgejo", "item": "https://loki-inu.github.io/relnote/gitea-forgejo.html"}
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Publish conventional-commit release notes on Gitea or Forgejo",
+      "step": [
+        {"@type": "HowToStep", "name": "Write the notes from git", "text": "With HEAD tagged, python3 -m relnote prints the release body from the previous tag. python3 -m relnote --output notes.md --quiet writes that file. relnote reads only the local clone."},
+        {"@type": "HowToStep", "name": "Expect no GitHub compare link", "text": "A Full changelog link is added only when origin is a github.com remote. A Gitea, Forgejo, or Codeberg origin keeps the range line and omits that link. (#41) stays plain text in the release body."},
+        {"@type": "HowToStep", "name": "Publish the file", "text": "Paste notes.md into the release description, run tea releases create --note-file notes.md, or POST the file as the body of /repos/{owner}/{repo}/releases from Gitea Actions or Forgejo Actions."}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does relnote call the Gitea or Forgejo API?",
+          "acceptedAnswer": {"@type": "Answer", "text": "No. relnote reads the local git history and writes a file or stdout. Creating the release is a separate step: the web form, tea, or POST /repos/{owner}/{repo}/releases."}
+        },
+        {
+          "@type": "Question",
+          "name": "Why is there no Full changelog link?",
+          "acceptedAnswer": {"@type": "Answer", "text": "The compare URL is built only when origin matches a github.com remote (https://github.com/owner/repo, git@github.com:owner/repo, or ssh://git@github.com/owner/repo). A codeberg.org, gitea.com, or other Gitea or Forgejo origin produces the range line and no compare link."}
+        },
+        {
+          "@type": "Question",
+          "name": "Can Forgejo Actions use the relnote GitHub Action?",
+          "acceptedAnswer": {"@type": "Answer", "text": "No. uses: loki-inu/relnote@v0.3.7 is the composite action for GitHub Actions. Forgejo prefixes a short uses name with DEFAULT_ACTIONS_URL, https://data.forgejo.org by default, so that line does not load this repository. Download the zipapp and run the CLI. The CLI exits 1 when the range is empty. has-changes exists only on the GitHub Action."}
+        },
+        {
+          "@type": "Question",
+          "name": "Does (#41) become a pull request link?",
+          "acceptedAnswer": {"@type": "Answer", "text": "In the release body, no. Stdout and --output keep (#41) as text on every remote. --changelog rewrites (#41) into a https://github.com/owner/repo/pull/41 link only when origin is github.com. On Gitea or Forgejo the changelog bullet keeps (#41)."}
+        },
+        {
+          "@type": "Question",
+          "name": "What happens when there is nothing to release?",
+          "acceptedAnswer": {"@type": "Answer", "text": "The CLI exits 1 and prints relnote: no commits in range SINCE..UNTIL. A Gitea Actions or Forgejo Actions step that runs the zipapp fails on that status. The GitHub Action turns the same line into has-changes false unless fail-on-empty is true."}
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f6f4ef, #161513);
+      --fg: light-dark(#1c1916, #ece8e1);
+      --muted: light-dark(#5c564e, #b4aea4);
+      --accent: light-dark(#1d4f8a, #8cbcf0);
+      --card: light-dark(#fffdf8, #221f1c);
+      --border: light-dark(#d8d2c6, #3a3530);
+      --code-bg: light-dark(#efeae1, #0f0e0c);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.6rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.35rem;
+    }
+    p, li { max-width: 40rem; }
+    a { color: var(--accent); }
+    pre, code {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      color: #ece8e1;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 0;
+    }
+    table {
+      width: 100%;
+      min-width: 36rem;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.45rem 0.75rem 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child, td:first-child {
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+</head>
+<body>
+  <main>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="ci.html">CI</a> · <a href="github-action.html">GitHub Action</a> · <a href="single-file.html">Single-file install</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="compare.html">Compare</a></p>
+    <h1>Release notes for Gitea and Forgejo</h1>
+    <p class="tag">relnote reads conventional commits in the local clone and prints a release body. It does not call Gitea, Forgejo, or Codeberg. You paste that body, or the job publishes it with their releases API or with <code>tea</code>.</p>
+    <div class="links">
+      <a href="https://github.com/loki-inu/relnote">Source (MIT)</a>
+      · <a href="https://docs.gitea.com/api/operations/repo-create-release/">Gitea: create a release</a>
+      · <a href="https://forgejo.org/docs/latest/user/repository/releases/">Forgejo: tags and releases</a>
+      · <a href="https://docs.codeberg.org/ci/actions/">Codeberg: Forgejo Actions</a>
+    </div>
+
+    <h2>Notes from the commits after the last tag</h2>
+    <p>Two commits after <code>v1.2.0</code>, in a clone whose <code>origin</code> is <code>https://codeberg.org/you/demo.git</code> (a Gitea remote such as <code>https://gitea.com/you/demo.git</code> behaves the same):</p>
+    <pre><code>git log --oneline v1.2.0..HEAD
+fix: return a sentinel error from Open
+feat(api): add paging (#41)</code></pre>
+    <p><code>--next-version</code> prints the next tag and does not create it. A breaking change bumps major, a <code>feat</code> bumps minor, anything else bumps patch (while the major is 0, a breaking change bumps minor):</p>
+    <pre><code>python3 -m relnote --next-version</code></pre>
+    <pre><code>v1.3.0</code></pre>
+    <p>Tag that commit. <code>HEAD</code> is now <code>v1.3.0</code>, so relnote starts the range at the tag before it and names the end <code>v1.3.0</code>:</p>
+    <pre><code>git tag -a v1.3.0 -m v1.3.0
+python3 -m relnote</code></pre>
+    <pre><code>## What's changed
+
+### Features
+
+- **api:** add paging (#41) (`62fd860`) — Ada Lovelace
+
+### Fixes
+
+- return a sentinel error from Open (`c0615d6`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `v1.3.0`.</code></pre>
+    <p>There is no <strong>Full changelog</strong> line. relnote adds <code>https://github.com/&lt;owner&gt;/&lt;repo&gt;/compare/&lt;since&gt;...&lt;until&gt;</code> only when <code>origin</code> matches one of these:</p>
+    <ul>
+      <li><code>https://github.com/&lt;owner&gt;/&lt;repo&gt;</code> (optional <code>.git</code>)</li>
+      <li><code>git@github.com:&lt;owner&gt;/&lt;repo&gt;</code></li>
+      <li><code>ssh://git@github.com/&lt;owner&gt;/&lt;repo&gt;</code></li>
+    </ul>
+    <p>The same history with <code>origin</code> set to <code>https://github.com/you/demo.git</code> keeps the groups and adds the link:</p>
+    <pre><code>## What's changed
+
+### Features
+
+- **api:** add paging (#41) (`62fd860`) — Ada Lovelace
+
+### Fixes
+
+- return a sentinel error from Open (`c0615d6`) — Ada Lovelace
+
+---
+
+Range: `v1.2.0` → `v1.3.0`.
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0</code></pre>
+    <p>Output from a test repository in relnote's CI (<code>tests/test_gitea_forgejo_docs.py</code>); your hashes differ. <code>--format github</code> (the default) is Markdown: headings, bold scopes, and backtick hashes. <code>--format plain</code> is the same groups without that emphasis. Neither format calls GitHub, Gitea, or Forgejo. A Gitea or Forgejo release description renders the Markdown.</p>
+    <p>The same notes, written to a file and kept out of the log:</p>
+    <pre><code>python3 -m relnote --since v1.2.0 --until v1.3.0
+python3 -m relnote --output notes.md --quiet</code></pre>
+    <p><code>(#41)</code> stays text in that file. GitHub's release form autolinks it; relnote does not rewrite it for Gitea or Forgejo, and it does not rewrite it on stdout for GitHub either.</p>
+
+    <h2>CHANGELOG.md</h2>
+    <p><code>--changelog</code> prepends one Keep a Changelog section. On a Codeberg, Gitea, or Forgejo <code>origin</code> the bullet keeps <code>(#41)</code>, and there is no compare link to copy into the section:</p>
+    <pre><code>python3 -m relnote --since v1.2.0 --until v1.3.0 --changelog CHANGELOG.md --changelog-title v1.3.0 --date 2026-11-26 --quiet</code></pre>
+    <pre><code># Changelog
+
+All notable changes to this project are documented in this file.
+
+## [v1.3.0] - 2026-11-26
+
+### Features
+
+- **api:** add paging (#41) (`62fd860`) — Ada Lovelace
+
+### Fixes
+
+- return a sentinel error from Open (`c0615d6`) — Ada Lovelace
+</code></pre>
+    <p>With a <code>github.com</code> origin, from v0.3.5, that same command links the pull request and keeps the compare URL. The release body above does not change:</p>
+    <pre><code># Changelog
+
+All notable changes to this project are documented in this file.
+
+## [v1.3.0] - 2026-11-26
+
+### Features
+
+- **api:** add paging ([#41](https://github.com/you/demo/pull/41)) (`62fd860`) — Ada Lovelace
+
+### Fixes
+
+- return a sentinel error from Open (`c0615d6`) — Ada Lovelace
+
+**Full changelog:** https://github.com/you/demo/compare/v1.2.0...v1.3.0
+</code></pre>
+    <p>A second run with the same title exits 1 and leaves the file as it was. Older sections stay. Details: <a href="changelog.html">CHANGELOG.md from conventional commits</a>.</p>
+
+    <h2>Paste, or tea</h2>
+    <p>Forgejo's releases page says a release (notes and attachments, as opposed to a git tag alone) is created in the web interface or through the API. The description field is the release body. Paste <code>notes.md</code> there. Gitea's <a href="https://docs.gitea.com/api/operations/repo-create-release/">create-release</a> operation is the same idea: <code>tag_name</code> is required, and <code>body</code> is the notes.</p>
+    <p><code>tea releases create</code> sends that file. These flags are the ones in current tea (<code>gitea.dev/tea</code>): <code>--tag</code> (if the tag does not exist yet, Gitea creates it), <code>--title</code> (<code>-t</code>), <code>--note-file</code> (<code>-f</code>; when set, <code>--note</code> is ignored), <code>--draft</code> (<code>-d</code>), and <code>--repo</code> (<code>-r</code>, <code>owner/name</code>). <code>--login</code> (<code>-l</code>) selects the saved login:</p>
+    <pre><code>tea releases create --tag v1.3.0 --title v1.3.0 --note-file notes.md --draft --repo you/demo</code></pre>
+    <p>The <a href="https://gitea.com/gitea/tea">tea repository</a> says tea is replaced by <a href="https://gitea.com/gitea/cli"><code>gt</code></a>. The command above is tea. This page does not document <code>gt</code> flags.</p>
+
+    <h2>Gitea Actions</h2>
+    <p>The <a href="https://docs.gitea.com/usage/actions/quickstart/">Gitea Actions quickstart</a> puts a <code>.yaml</code> file in <code>.gitea/workflows/</code>, uses <code>on: [push]</code>, <code>runs-on: ubuntu-latest</code>, and <code>actions/checkout@v4</code>. Repository Actions start disabled; the repository settings page turns them on. The label <code>ubuntu-latest</code> has to be one a runner registered. The image for that label needs Python 3.11+, git, and curl, because the job runs the zipapp, not a composite action.</p>
+    <p><code>actions/checkout@v4</code> fetches one commit unless <code>fetch-depth</code> is <code>0</code>, which the checkout readme describes as all history for all branches and tags. relnote needs the previous tag. The quickstart also says <code>actions/checkout</code> may not work in a SHA256 repository or when Gitea is served from a subpath. A shallow clone can be completed with the two git lines on the <a href="ci.html">CI page</a> (<code>git fetch --unshallow</code> when the clone is shallow, then <code>git fetch --tags --force</code>).</p>
+    <p>Gitea's variables page sets <code>gitea.ref_type</code> to <code>branch</code> or <code>tag</code>, <code>gitea.ref_name</code> to the short name, <code>gitea.repository</code> to <code>owner/name</code>, and <code>gitea.api_url</code> to the REST API (the example is <code>https://gitea.com/api/v1</code>). <code>github.*</code> is an alias of <code>gitea.*</code>. The job token is <code>secrets.GITEA_TOKEN</code> (<code>gitea.token</code> / <code>github.token</code> in an expression). API calls use the header from <a href="https://docs.gitea.com/development/api-usage/">Gitea's API authentication</a>: <code>Authorization: token</code> and the token. <a href="https://docs.gitea.com/usage/actions/token-permissions/">Token permissions</a> apply to that token: <code>contents: read</code> lets checkout read the code, and <code>releases: write</code> is the scope that covers releases. The quickstart trigger is every push, so the script returns before it creates a release unless <code>gitea.ref_type</code> is <code>tag</code>.</p>
+    <pre><code>name: Release notes
+
+on: [push]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      releases: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Draft a release from the notes
+        env:
+          TOKEN: ${{ secrets.GITEA_TOKEN }}
+          TAG: ${{ gitea.ref_name }}
+          REF_TYPE: ${{ gitea.ref_type }}
+          API: ${{ gitea.api_url }}
+          REPO: ${{ gitea.repository }}
+        run: |
+          if [ "$REF_TYPE" != "tag" ]; then
+            echo "Not a tag push."
+            exit 0
+          fi
+          curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+          chmod +x relnote
+          ./relnote --no-bots --output notes.md --quiet
+          python3 -c 'import json, os, pathlib; pathlib.Path("release.json").write_text(json.dumps({"tag_name": os.environ["TAG"], "target_commitish": os.environ["TAG"], "name": os.environ["TAG"], "body": pathlib.Path("notes.md").read_text(encoding="utf-8"), "draft": True}), encoding="utf-8")'
+          curl -fsS -X POST \
+            -H "Authorization: token $TOKEN" \
+            -H "Content-Type: application/json" \
+            --data-binary @release.json \
+            "$API/repos/$REPO/releases"</code></pre>
+    <p>Save that as <code>.gitea/workflows/release-notes.yaml</code>. Because <code>HEAD</code> is the pushed tag, the notes run from the previous tag to that tag, as in the sample above. The JSON fields are the <a href="https://docs.gitea.com/api/operations/repo-create-release/">create-release</a> body: <code>tag_name</code> (required), <code>target_commitish</code>, <code>name</code>, <code>body</code>, and <code>draft</code>. <code>draft: true</code> leaves the release unpublished. The operation responds <code>201</code> when the release is created and <code>409</code> when a release for that tag already exists, so a second run of the same tag fails the job. Set <code>"draft": False</code> in the JSON to publish immediately. The notes go through <code>notes.md</code> and a JSON file so commit subjects are not expanded by the shell.</p>
+    <p><code>uses: loki-inu/relnote@v0.3.7</code> is the GitHub composite action. Gitea downloads short <code>uses:</code> names from <code>gitea.gitea_default_actions_url</code> (the variables page example is <code>https://github.com</code>, and an administrator can change it). This job does not depend on that. It downloads the zipapp from the <a href="single-file.html">single-file install</a>. The CLI exits 1 when the range is empty (<code>relnote: no commits in range SINCE..UNTIL</code>). <code>has-changes</code> is a GitHub Action output, not a CLI flag. See the <a href="github-action.html">GitHub Action guide</a>.</p>
+
+    <h2>Forgejo Actions, including Codeberg</h2>
+    <p>Forgejo reads workflows from <code>.forgejo/workflows</code>. The <a href="https://forgejo.org/docs/latest/user/actions/reference/">workflow reference</a> triggers on a pushed tag with <code>on.push.tags</code> (the documented example is <code>'v1.*'</code>; <code>'v*'</code> is the same kind of list). <code>runs-on: docker</code> is the label in the <a href="https://forgejo.org/docs/latest/user/actions/basic-concepts/">basic concepts</a> example; it has to match a runner. A short <code>uses:</code> name is prefixed with <code>DEFAULT_ACTIONS_URL</code>, <code>https://data.forgejo.org</code> by default, and the docs recommend a full URL. <code>uses: loki-inu/relnote@v0.3.7</code> would look on that host, not on GitHub. Checkout is the Forgejo mirror of <code>actions/checkout</code>, whose readme uses <code>fetch-depth: 0</code> for all history for all branches and tags:</p>
+    <pre><code>name: Release notes
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: docker
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Draft a release from the notes
+        env:
+          TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          TAG: ${{ forgejo.ref_name }}
+          API: ${{ forgejo.api_url }}
+          REPO: ${{ forgejo.repository }}
+        run: |
+          curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+          chmod +x relnote
+          ./relnote --no-bots --output notes.md --quiet
+          python3 -c 'import json, os, pathlib; pathlib.Path("release.json").write_text(json.dumps({"tag_name": os.environ["TAG"], "target_commitish": os.environ["TAG"], "name": os.environ["TAG"], "body": pathlib.Path("notes.md").read_text(encoding="utf-8"), "draft": True}), encoding="utf-8")'
+          curl -fsS -X POST \
+            -H "Authorization: token $TOKEN" \
+            -H "Content-Type: application/json" \
+            --data-binary @release.json \
+            "$API/repos/$REPO/releases"</code></pre>
+    <p>Save that as <code>.forgejo/workflows/release-notes.yaml</code>. <code>secrets.FORGEJO_TOKEN</code> is the automatic token; <code>secrets.GITHUB_TOKEN</code>, <code>forgejo.token</code>, and <code>github.token</code> are the same value. The basic-concepts page says that token can write to the repository of the workflow, and that a <code>pull_request</code> from a fork does not get write permission. A tag push is not that case. <code>forgejo.api_url</code> is the instance API (for example <code>https://codeberg.org/api/v1</code>), so the URL is <code>POST /repos/{owner}/{repo}/releases</code>, the endpoint on Forgejo's releases page. The <code>Authorization: token</code> header is the one Gitea documents for this API, which Forgejo serves.</p>
+    <p><a href="https://docs.codeberg.org/ci/">Codeberg</a> runs Forgejo. Its CI docs describe Forgejo Actions with your own runner, and a limited hosted offering, and they point at Forgejo's documentation. The workflow file and the API call above are that path. <code>forgejo.server_url</code> on Codeberg is the Codeberg host. Codeberg also documents Woodpecker; this page does not.</p>
+    <p>The image on the <code>docker</code> label needs Python 3.11+, git, and curl. If the checkout is shallow, finish it with the <a href="ci.html">CI page</a> fetch before <code>./relnote</code>. An empty range exits 1, same as on Gitea.</p>
+
+    <h2>FAQ</h2>
+    <h3>Does relnote call the Gitea or Forgejo API?</h3>
+    <p>No. relnote reads the local git history and writes a file or stdout. Creating the release is a separate step: the web form, tea, or POST /repos/{owner}/{repo}/releases.</p>
+    <h3>Why is there no Full changelog link?</h3>
+    <p>The compare URL is built only when origin matches a github.com remote (https://github.com/owner/repo, git@github.com:owner/repo, or ssh://git@github.com/owner/repo). A codeberg.org, gitea.com, or other Gitea or Forgejo origin produces the range line and no compare link.</p>
+    <h3>Can Forgejo Actions use the relnote GitHub Action?</h3>
+    <p>No. uses: loki-inu/relnote@v0.3.7 is the composite action for GitHub Actions. Forgejo prefixes a short uses name with DEFAULT_ACTIONS_URL, https://data.forgejo.org by default, so that line does not load this repository. Download the zipapp and run the CLI. The CLI exits 1 when the range is empty. has-changes exists only on the GitHub Action.</p>
+    <h3>Does (#41) become a pull request link?</h3>
+    <p>In the release body, no. Stdout and --output keep (#41) as text on every remote. --changelog rewrites (#41) into a https://github.com/owner/repo/pull/41 link only when origin is github.com. On Gitea or Forgejo the changelog bullet keeps (#41).</p>
+    <h3>What happens when there is nothing to release?</h3>
+    <p>The CLI exits 1 and prints relnote: no commits in range SINCE..UNTIL. A Gitea Actions or Forgejo Actions step that runs the zipapp fails on that status. The GitHub Action turns the same line into has-changes false unless fail-on-empty is true.</p>
+
+    <footer>
+      <p><a href="./">relnote docs</a> · <a href="ci.html">GitLab CI, Jenkins or any CI</a> · <a href="github-action.html">GitHub Action</a> · <a href="single-file.html">Single-file install</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="https://github.com/loki-inu/relnote">Source (MIT)</a></p>
+    </footer>
+  </main>
+</body>
+</html>

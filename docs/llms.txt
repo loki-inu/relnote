@@ -20,6 +20,20 @@ relnote has no --check flag and no --dry-run flag. A hook runs the CLI, and the 
 
 Download the single file in the job and run it; the clone must have full history and tags (GitLab: GIT_DEPTH: 0). GitLab example: a tag-pipeline job in python:3.12 writes notes.md as an artifact, and a job in registry.gitlab.com/gitlab-org/cli:latest publishes it with the release keyword (description: notes.md) or glab release create TAG --notes-file notes.md. A manual or scheduled job can use --next-version to pick the tag. Guide: https://loki-inu.github.io/relnote/ci.html
 
+## Gitea and Forgejo (including Codeberg)
+
+relnote does not call the Gitea or Forgejo API. It reads local git history and prints Markdown (--format github, the default) or plain text (--format plain). Paste that file into the release description, or publish it.
+
+A compare link (Full changelog: https://github.com/owner/repo/compare/SINCE...UNTIL) is added only when origin is a github.com remote (https://github.com/owner/repo, git@github.com:owner/repo, or ssh://git@github.com/owner/repo). A Codeberg, gitea.com, or other Gitea/Forgejo origin gets the range line and no compare link. --changelog rewrites (#41) into a github.com/owner/repo/pull/41 link only in that same case, and only in CHANGELOG.md. On any other origin the (#41) text stays. Stdout and --output keep (#41) either way.
+
+Locally, with HEAD tagged v1.3.0: python3 -m relnote. Before the tag, python3 -m relnote --next-version prints the next tag and does not create it. python3 -m relnote --output notes.md --quiet writes the file. The CLI exits 1 when nothing is left after filters (relnote: no commits in range SINCE..UNTIL). There is no has-changes output; that output belongs to the GitHub Action.
+
+tea releases create --tag TAG --title TAG --note-file notes.md --draft --repo owner/name publishes the file. --note-file ignores --note. If the tag does not exist yet, tea's help says Gitea creates it. The tea repository (https://gitea.com/gitea/tea) says tea is replaced by gt (https://gitea.com/gitea/cli). This page documents tea's flags, not gt's.
+
+Gitea Actions: .gitea/workflows/*.yaml, on: [push], runs-on: ubuntu-latest (the label must exist), actions/checkout@v4 with fetch-depth: 0. The job image needs Python 3.11+, git, and curl. Download the v0.3.7 zipapp. Skip the publish unless gitea.ref_type is tag. POST $API/repos/$REPO/releases where API is gitea.api_url (it already ends in /api/v1), TOKEN is secrets.GITEA_TOKEN, header Authorization: token. JSON fields: tag_name, target_commitish, name, body, draft. permissions: contents: read and releases: write. The create-release operation returns 201, or 409 when that tag already has a release. Checkout may fail for SHA256 repositories or when Gitea is served from a subpath.
+
+Forgejo Actions, including Codeberg: .forgejo/workflows/*.yaml. on.push.tags is documented (example 'v1.*'). runs-on: docker must match a runner. Checkout: https://data.forgejo.org/actions/checkout@v7 with fetch-depth: 0. A short uses: name is prefixed with DEFAULT_ACTIONS_URL (https://data.forgejo.org by default), so uses: loki-inu/relnote@v0.3.7 does not load this repository. Token: secrets.FORGEJO_TOKEN, also secrets.GITHUB_TOKEN and forgejo.token. Same POST with forgejo.api_url. The automatic token can write to that repository except on pull_request from a fork. Codeberg documents Forgejo Actions (self-hosted runners, limited hosted offering) at https://docs.codeberg.org/ci/actions/ and also documents Woodpecker, which this page does not. Guide: https://loki-inu.github.io/relnote/gitea-forgejo.html
+
 ## standard-version alternative
 
 standard-version is deprecated. examples/release.sh (bash, in the relnote repo) replaces npx standard-version locally: relnote --next-version (or --release-as TAG), --bump-file package.json/pyproject.toml/Cargo.toml (first version line), relnote --changelog CHANGELOG.md, commit chore(release): vX.Y.Z, annotated tag. --dry-run, --skip-commit, --skip-tag, --tag-prefix, --exec CMD (v0.3.7+, e.g. cargo update --workspace; changed tracked files are committed); nothing pushed. No prerelease bumps or .versionrc (use commit-and-tag-version for those). Guide: https://loki-inu.github.io/relnote/standard-version-alternative.html
@@ -106,6 +120,7 @@ gh relnote prints the notes; gh relnote create TAG [gh release create flags] [--
 - GitHub Action guide (tag-push draft Release, has-changes gating, monorepo matrix): https://loki-inu.github.io/relnote/github-action.html
 - Monorepo release notes (per-package tags api/v1.2.0 or @scope/pkg@1.2.0, per-package CHANGELOG.md, GitHub Actions matrix): https://loki-inu.github.io/relnote/monorepo.html
 - GitLab CI, Jenkins or any CI (single-file download): https://loki-inu.github.io/relnote/ci.html
+- Release notes for Gitea and Forgejo, including Codeberg (local notes, Gitea Actions, Forgejo Actions, releases API, tea; GitHub compare link only when origin is github.com): https://loki-inu.github.io/relnote/gitea-forgejo.html
 - Release notes with pre-commit / git hooks (pre-push preview or check, .pre-commit-hooks.yaml, exit statuses 0/1/2, no --check flag): https://loki-inu.github.io/relnote/pre-commit.html
 - standard-version alternative (examples/release.sh): https://loki-inu.github.io/relnote/standard-version-alternative.html
 - release-please alternative without a release PR (workflow_dispatch: bump version file, CHANGELOG.md, chore(release) commit, tag, gh release create; tested example): https://loki-inu.github.io/relnote/release-please-alternative.html

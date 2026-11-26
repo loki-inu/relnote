@@ -140,7 +140,7 @@
 </head>
 <body>
   <main>
-    <p class="tag"><a href="./">relnote docs</a> · <a href="single-file.html">Single-file install</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="compare.html">Compare</a> · <a href="gh-extension.html">gh relnote</a> · <a href="pre-commit.html">pre-commit / git hooks</a></p>
+    <p class="tag"><a href="./">relnote docs</a> · <a href="single-file.html">Single-file install</a> · <a href="changelog.html">CHANGELOG.md</a> · <a href="next-version.html">Next version</a> · <a href="compare.html">Compare</a> · <a href="gh-extension.html">gh relnote</a> · <a href="pre-commit.html">pre-commit / git hooks</a> · <a href="gitea-forgejo.html">Gitea and Forgejo</a></p>
     <h1>Release notes in GitLab CI, Jenkins or any CI</h1>
     <p class="tag">relnote ships as one file: a Python zipapp attached to every GitHub Release. Download it in a job, run it, and hand the notes to whatever creates your release. No pip, no clone, no Node. It needs Python 3.11+ and git, which most CI images already have.</p>
     <div class="links">
@@ -306,7 +306,7 @@ chmod +x relnote
 #   gh release create "$TAG" --notes-file notes.md
 #   glab release create "$TAG" --notes-file notes.md
 #   relnote --changelog CHANGELOG.md --changelog-title "$TAG" -q</code></pre>
-    <p>Pass <code>--since v1.2.0 --until v1.3.0</code> for an explicit range, or <code>--repo /path</code> if the checkout is not the working directory. On GitHub Actions use the <a href="./">action</a> instead; it is the same code.</p>
+    <p>Pass <code>--since v1.2.0 --until v1.3.0</code> for an explicit range, or <code>--repo /path</code> if the checkout is not the working directory. On GitHub Actions use the <a href="./">action</a> instead; it is the same code. On Gitea, Forgejo, or Codeberg, the same zipapp is the notes step, and the release body is published with their API or with tea: <a href="gitea-forgejo.html">release notes for Gitea and Forgejo</a>.</p>
 
     <h2>Flags you will want in CI</h2>
     <div class="table-wrap">

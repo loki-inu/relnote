@@ -51,7 +51,7 @@ Keep using `gh release create --generate-notes` when you want GitHub's official,
 
 [swapnanil/relnotes](https://github.com/swapnanil/relnotes) is another stdlib Python conventional-commit notes CLI. Pick relnote for the GitHub Action and zero-config CI (`--quiet` / `--output`); pick that CLI if you want an optional `.relnotes.toml` or inferred semver bump.
 
-Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · GitLab CI / Jenkins / any CI: https://loki-inu.github.io/relnote/ci.html · pre-commit / git hooks: https://loki-inu.github.io/relnote/pre-commit.html · Monorepo (per-package tags): https://loki-inu.github.io/relnote/monorepo.html · Windows / PowerShell: https://loki-inu.github.io/relnote/windows.html · OSSDrop: https://ossdrop.com/tool/relnote
+Docs: https://loki-inu.github.io/relnote/ · Compare: https://loki-inu.github.io/relnote/compare.html · GitLab CI / Jenkins / any CI: https://loki-inu.github.io/relnote/ci.html · Gitea / Forgejo (including Codeberg): https://loki-inu.github.io/relnote/gitea-forgejo.html · pre-commit / git hooks: https://loki-inu.github.io/relnote/pre-commit.html · Monorepo (per-package tags): https://loki-inu.github.io/relnote/monorepo.html · Windows / PowerShell: https://loki-inu.github.io/relnote/windows.html · OSSDrop: https://ossdrop.com/tool/relnote
 
 ## Install
 
@@ -312,6 +312,8 @@ Pass outputs to `run:` steps through `env:` as above, not as `${{ … }}` inside
 A copy-paste workflow that opens a **draft** GitHub Release on tag push is in [examples/draft-release.yml](examples/draft-release.yml). Walkthrough (tag-push drafts, `has-changes` gating, monorepo matrix, CHANGELOG.md, FAQ): [GitHub Action guide](https://loki-inu.github.io/relnote/github-action.html).
 
 Not on GitHub Actions? Download the single file and run it in GitLab CI, Jenkins, Buildkite, or CircleCI: [Release notes in GitLab CI, Jenkins or any CI](https://loki-inu.github.io/relnote/ci.html).
+
+On Gitea or Forgejo, including Codeberg? [Release notes for Gitea and Forgejo](https://loki-inu.github.io/relnote/gitea-forgejo.html) writes the same file locally or in Gitea Actions / Forgejo Actions. Publish it with the releases API or with tea. A compare link is added only when `origin` is a `github.com` remote.
 
 Want the notes from a git hook before the push? [Release notes with pre-commit / git hooks](https://loki-inu.github.io/relnote/pre-commit.html) runs `relnote` at `pre-push`. Exit 0 writes the notes. Exit 1 is an empty range, including a range whose only new commit is `chore(release): ...`. Exit 2 is `--quiet` without `--output` or `--changelog`, or an extra argument. There is no `--check` flag. `.pre-commit-hooks.yaml` is the pre-commit framework hook (`repo: https://github.com/loki-inu/relnote`); pin a commit that contains that file. It is not in the v0.3.7 tag.
 
