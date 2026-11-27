@@ -35,7 +35,7 @@
       "about": {
         "@type": "SoftwareApplication",
         "name": "relnote",
-        "softwareVersion": "0.3.7",
+        "softwareVersion": "0.3.8",
         "url": "https://github.com/loki-inu/relnote"
       }
     },
@@ -63,7 +63,7 @@
         {
           "@type": "HowToStep",
           "name": "Install the zipapp",
-          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release. No gem install of github_changelog_generator, no .github_changelog_generator file, and no CHANGELOG_GITHUB_TOKEN."
+          "text": "curl the relnote zipapp from the v0.3.8 GitHub Release. No gem install of github_changelog_generator, no .github_changelog_generator file, and no CHANGELOG_GITHUB_TOKEN."
         },
         {
           "@type": "HowToStep",
@@ -73,7 +73,7 @@
         {
           "@type": "HowToStep",
           "name": "Publish with the existing GitHub Action workflows",
-          "text": "On a tag push, loki-inu/relnote@v0.3.7 plus softprops/action-gh-release@v2 opens a draft, or gh release create --draft receives the notes through env. A workflow_dispatch job gates on has-changes and runs gh release create with next-version. The relnote step does not call the GitHub API."
+          "text": "On a tag push, loki-inu/relnote@v0.3.8 plus softprops/action-gh-release@v2 opens a draft, or gh release create --draft receives the notes through env. A workflow_dispatch job gates on has-changes and runs gh release create with next-version. The relnote step does not call the GitHub API."
         }
       ]
     },
@@ -117,7 +117,7 @@
           "name": "Should I pin versions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7). The github-changelog-generator facts here are from the published 1.18.0 README, gemspec, and parser, not from an unreleased change."
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.8). The github-changelog-generator facts here are from the published 1.18.0 README, gemspec, and parser, not from an unreleased change."
           }
         }
       ]
@@ -220,7 +220,7 @@
     <p class="tag"><a href="https://github.com/github-changelog-generator/github-changelog-generator">github-changelog-generator</a> (Ruby gem <a href="https://rubygems.org/gems/github_changelog_generator"><code>github_changelog_generator</code></a>, repository <code>github-changelog-generator/github-changelog-generator</code>) rebuilds a changelog from GitHub tags, closed issues, and merged pull requests. The published gem is 1.18.0. If the commits already follow conventional commits and you want a GitHub Release body plus one new <code>CHANGELOG.md</code> section, relnote does that from the local git log: no Ruby gem, no config file, and no token to generate the notes.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
-      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/release.sh">examples/release.sh (v0.3.8)</a>
       · <a href="changelog.html">CHANGELOG.md guide</a>
       · <a href="github-action.html">GitHub Action guide</a>
       · <a href="single-file.html">Zipapp install</a>
@@ -252,9 +252,9 @@
     <pre><code>gem install github_changelog_generator
 github_changelog_generator -u USER -p PROJECT</code></pre>
     <p>The same README says you may need <code>sudo gem install github_changelog_generator</code> on Linux. A Gemfile development group is the other install it documents: <code>gem 'github_changelog_generator', require: false</code>.</p>
-    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page. Remove <code>github_changelog_generator</code> from the Gemfile when nothing else loads it. relnote does not read <code>.github_changelog_generator</code>.</p>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.8 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page. Remove <code>github_changelog_generator</code> from the Gemfile when nothing else loads it. relnote does not read <code>.github_changelog_generator</code>.</p>
     <pre><code>mkdir -p ~/.local/bin
-curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.8/relnote
 chmod +x ~/.local/bin/relnote</code></pre>
 
     <h2>Release body, next version, CHANGELOG section</h2>
@@ -297,21 +297,21 @@ Range: `v1.3.2` → `HEAD`.
 
     <h2>Migration</h2>
     <ol>
-      <li>Install the zipapp above and pin it to <code>v0.3.7</code>. Stop running <code>github_changelog_generator</code> in CI and locally. You can drop <code>CHANGELOG_GITHUB_TOKEN</code> from the job that only generated the changelog.</li>
+      <li>Install the zipapp above and pin it to <code>v0.3.8</code>. Stop running <code>github_changelog_generator</code> in CI and locally. You can drop <code>CHANGELOG_GITHUB_TOKEN</code> from the job that only generated the changelog.</li>
       <li>Leave the current <code>CHANGELOG.md</code> in the repo. The next <code>--changelog</code> run inserts one section before the first <code>## </code> heading. Older sections are not rewritten. relnote does not read <code>HISTORY.md</code> and does not append <code>--base</code>. If the gem already folded <code>HISTORY.md</code> into <code>CHANGELOG.md</code>, that text stays where it is.</li>
       <li>Remove the gem. The 1.18.0 README's Gemfile example is <code>gem 'github_changelog_generator', require: false</code> inside a <code>:development</code> group. Delete a <code>GitHubChangelogGenerator::RakeTask</code> from the Rakefile if that task only existed to refresh the changelog. <code>.github_changelog_generator</code> is unused after that. Delete it once nothing else reads it.</li>
       <li>Publish the GitHub Release with the workflows on the <a href="github-action.html">Action guide</a>, copied below. relnote still does not push. The gem's own release example (<code>gh release create</code> with <code>--notes-file</code>) is a separate step you no longer need for the notes file it wrote.</li>
     </ol>
     <p><code>examples/release.sh</code> is the local stand-in for choosing the version, prepending the section, committing, and tagging. <code>--dry-run</code> prints the plan and writes nothing. <code>--bump-file package.json</code> sets the first <code>version</code> line. Nothing in the script is pushed. The gem's <code>--future-release</code> only names the unreleased section. It does not edit a version file.</p>
-    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.8/examples/release.sh
 chmod +x release.sh
 ./release.sh --dry-run --bump-file package.json
 ./release.sh --bump-file package.json</code></pre>
-    <p>That URL is <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh"><code>examples/release.sh</code> on the v0.3.7 tag</a>. The v0.3.7 release assets are <code>relnote</code>, <code>relnote.pyz</code>, and <code>SHA256SUMS</code>, so the script is not a release asset. It calls <code>relnote</code> on <code>PATH</code>.</p>
+    <p>That URL is <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/release.sh"><code>examples/release.sh</code> on the v0.3.8 tag</a>. The v0.3.8 release assets are <code>relnote</code>, <code>relnote.pyz</code>, and <code>SHA256SUMS</code>, so the script is not a release asset. It calls <code>relnote</code> on <code>PATH</code>.</p>
     <p>Monorepos: the gem takes one <code>--user</code> and one <code>--project</code>, which is one GitHub repository. relnote does not split a GitHub repository into packages by itself. Pass <code>--path</code> and <code>--tag-prefix</code> (or <code>release.sh --tag-prefix</code>) so notes and <code>--next-version</code> only see one package. Guide: <a href="monorepo.html">monorepo release notes</a>.</p>
 
     <h2>Draft a Release when the tag is pushed</h2>
-    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. There is no <code>github_changelog_generator</code> step and no Ruby install.</p>
+    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. There is no <code>github_changelog_generator</code> step and no Ruby install.</p>
     <pre><code>name: Draft release
 
 on:
@@ -329,7 +329,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - uses: softprops/action-gh-release@v2
         with:
           draft: true
@@ -357,7 +357,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - if: steps.relnote.outputs.has-changes == 'true'
         run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
         env:
@@ -398,10 +398,10 @@ jobs:
     <h3>How is this different from the Release Drafter and auto-changelog pages?</h3>
     <p>The <a href="release-drafter-alternative.html">Release Drafter page</a> is for a GitHub Action that updates a draft Release from pull request labels. The <a href="auto-changelog-alternative.html">auto-changelog page</a> is for the npm package that rebuilds <code>CHANGELOG.md</code> from local semver tags. This page is for the Ruby gem <code>github_changelog_generator</code>, which rebuilds <code>CHANGELOG.md</code> from GitHub issues and pull requests and needs a token because of the API rate limit.</p>
     <h3>Should I pin versions?</h3>
-    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). The github-changelog-generator facts here are from the published 1.18.0 README, gemspec, and parser, not from an unreleased change. Floating <code>latest</code> on the relnote zipapp can change behaviour under you.</p>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.8</code>). The github-changelog-generator facts here are from the published 1.18.0 README, gemspec, and parser, not from an unreleased change. Floating <code>latest</code> on the relnote zipapp can change behaviour under you.</p>
 
     <footer>
-      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.8">v0.3.8</a> · <a href="llms.txt">llms.txt</a></p>
     </footer>
   </main>
 </body>

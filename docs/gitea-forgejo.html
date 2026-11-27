@@ -28,7 +28,7 @@
       "name": "Release notes for Gitea and Forgejo — relnote",
       "description": "Write release notes for a Gitea or Forgejo project, including Codeberg, from conventional commits. Generate them locally or in Gitea Actions or Forgejo Actions, then paste the file or publish it with the releases API or tea. A GitHub compare link is added only when origin is github.com.",
       "isPartOf": {"@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/"},
-      "about": {"@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.7", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+      "about": {"@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.8", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS, Windows", "url": "https://github.com/loki-inu/relnote", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
     },
     {
       "@type": "BreadcrumbList",
@@ -62,7 +62,7 @@
         {
           "@type": "Question",
           "name": "Can Forgejo Actions use the relnote GitHub Action?",
-          "acceptedAnswer": {"@type": "Answer", "text": "No. uses: loki-inu/relnote@v0.3.7 is the composite action for GitHub Actions. Forgejo prefixes a short uses name with DEFAULT_ACTIONS_URL, https://data.forgejo.org by default, so that line does not load this repository. Download the zipapp and run the CLI. The CLI exits 1 when the range is empty. has-changes exists only on the GitHub Action."}
+          "acceptedAnswer": {"@type": "Answer", "text": "No. uses: loki-inu/relnote@v0.3.8 is the composite action for GitHub Actions. Forgejo prefixes a short uses name with DEFAULT_ACTIONS_URL, https://data.forgejo.org by default, so that line does not load this repository. Download the zipapp and run the CLI. The CLI exits 1 when the range is empty. has-changes exists only on the GitHub Action."}
         },
         {
           "@type": "Question",
@@ -303,7 +303,7 @@ jobs:
             echo "Not a tag push."
             exit 0
           fi
-          curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+          curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.8/relnote
           chmod +x relnote
           ./relnote --no-bots --output notes.md --quiet
           python3 -c 'import json, os, pathlib; pathlib.Path("release.json").write_text(json.dumps({"tag_name": os.environ["TAG"], "target_commitish": os.environ["TAG"], "name": os.environ["TAG"], "body": pathlib.Path("notes.md").read_text(encoding="utf-8"), "draft": True}), encoding="utf-8")'
@@ -313,10 +313,10 @@ jobs:
             --data-binary @release.json \
             "$API/repos/$REPO/releases"</code></pre>
     <p>Save that as <code>.gitea/workflows/release-notes.yaml</code>. Because <code>HEAD</code> is the pushed tag, the notes run from the previous tag to that tag, as in the sample above. The JSON fields are the <a href="https://docs.gitea.com/api/operations/repo-create-release/">create-release</a> body: <code>tag_name</code> (required), <code>target_commitish</code>, <code>name</code>, <code>body</code>, and <code>draft</code>. <code>draft: true</code> leaves the release unpublished. The operation responds <code>201</code> when the release is created and <code>409</code> when a release for that tag already exists, so a second run of the same tag fails the job. Set <code>"draft": False</code> in the JSON to publish immediately. The notes go through <code>notes.md</code> and a JSON file so commit subjects are not expanded by the shell.</p>
-    <p><code>uses: loki-inu/relnote@v0.3.7</code> is the GitHub composite action. Gitea downloads short <code>uses:</code> names from <code>gitea.gitea_default_actions_url</code> (the variables page example is <code>https://github.com</code>, and an administrator can change it). This job does not depend on that. It downloads the zipapp from the <a href="single-file.html">single-file install</a>. The CLI exits 1 when the range is empty (<code>relnote: no commits in range SINCE..UNTIL</code>). <code>has-changes</code> is a GitHub Action output, not a CLI flag. See the <a href="github-action.html">GitHub Action guide</a>.</p>
+    <p><code>uses: loki-inu/relnote@v0.3.8</code> is the GitHub composite action. Gitea downloads short <code>uses:</code> names from <code>gitea.gitea_default_actions_url</code> (the variables page example is <code>https://github.com</code>, and an administrator can change it). This job does not depend on that. It downloads the zipapp from the <a href="single-file.html">single-file install</a>. The CLI exits 1 when the range is empty (<code>relnote: no commits in range SINCE..UNTIL</code>). <code>has-changes</code> is a GitHub Action output, not a CLI flag. See the <a href="github-action.html">GitHub Action guide</a>.</p>
 
     <h2>Forgejo Actions, including Codeberg</h2>
-    <p>Forgejo reads workflows from <code>.forgejo/workflows</code>. The <a href="https://forgejo.org/docs/latest/user/actions/reference/">workflow reference</a> triggers on a pushed tag with <code>on.push.tags</code> (the documented example is <code>'v1.*'</code>; <code>'v*'</code> is the same kind of list). <code>runs-on: docker</code> is the label in the <a href="https://forgejo.org/docs/latest/user/actions/basic-concepts/">basic concepts</a> example; it has to match a runner. A short <code>uses:</code> name is prefixed with <code>DEFAULT_ACTIONS_URL</code>, <code>https://data.forgejo.org</code> by default, and the docs recommend a full URL. <code>uses: loki-inu/relnote@v0.3.7</code> would look on that host, not on GitHub. Checkout is the Forgejo mirror of <code>actions/checkout</code>, whose readme uses <code>fetch-depth: 0</code> for all history for all branches and tags:</p>
+    <p>Forgejo reads workflows from <code>.forgejo/workflows</code>. The <a href="https://forgejo.org/docs/latest/user/actions/reference/">workflow reference</a> triggers on a pushed tag with <code>on.push.tags</code> (the documented example is <code>'v1.*'</code>; <code>'v*'</code> is the same kind of list). <code>runs-on: docker</code> is the label in the <a href="https://forgejo.org/docs/latest/user/actions/basic-concepts/">basic concepts</a> example; it has to match a runner. A short <code>uses:</code> name is prefixed with <code>DEFAULT_ACTIONS_URL</code>, <code>https://data.forgejo.org</code> by default, and the docs recommend a full URL. <code>uses: loki-inu/relnote@v0.3.8</code> would look on that host, not on GitHub. Checkout is the Forgejo mirror of <code>actions/checkout</code>, whose readme uses <code>fetch-depth: 0</code> for all history for all branches and tags:</p>
     <pre><code>name: Release notes
 
 on:
@@ -338,7 +338,7 @@ jobs:
           API: ${{ forgejo.api_url }}
           REPO: ${{ forgejo.repository }}
         run: |
-          curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+          curl -fsSL -o relnote https://github.com/loki-inu/relnote/releases/download/v0.3.8/relnote
           chmod +x relnote
           ./relnote --no-bots --output notes.md --quiet
           python3 -c 'import json, os, pathlib; pathlib.Path("release.json").write_text(json.dumps({"tag_name": os.environ["TAG"], "target_commitish": os.environ["TAG"], "name": os.environ["TAG"], "body": pathlib.Path("notes.md").read_text(encoding="utf-8"), "draft": True}), encoding="utf-8")'
@@ -357,7 +357,7 @@ jobs:
     <h3>Why is there no Full changelog link?</h3>
     <p>The compare URL is built only when origin matches a github.com remote (https://github.com/owner/repo, git@github.com:owner/repo, or ssh://git@github.com/owner/repo). A codeberg.org, gitea.com, or other Gitea or Forgejo origin produces the range line and no compare link.</p>
     <h3>Can Forgejo Actions use the relnote GitHub Action?</h3>
-    <p>No. uses: loki-inu/relnote@v0.3.7 is the composite action for GitHub Actions. Forgejo prefixes a short uses name with DEFAULT_ACTIONS_URL, https://data.forgejo.org by default, so that line does not load this repository. Download the zipapp and run the CLI. The CLI exits 1 when the range is empty. has-changes exists only on the GitHub Action.</p>
+    <p>No. uses: loki-inu/relnote@v0.3.8 is the composite action for GitHub Actions. Forgejo prefixes a short uses name with DEFAULT_ACTIONS_URL, https://data.forgejo.org by default, so that line does not load this repository. Download the zipapp and run the CLI. The CLI exits 1 when the range is empty. has-changes exists only on the GitHub Action.</p>
     <h3>Does (#41) become a pull request link?</h3>
     <p>In the release body, no. Stdout and --output keep (#41) as text on every remote. --changelog rewrites (#41) into a https://github.com/owner/repo/pull/41 link only when origin is github.com. On Gitea or Forgejo the changelog bullet keeps (#41).</p>
     <h3>What happens when there is nothing to release?</h3>

@@ -28,7 +28,7 @@
       "name": "Release notes with pre-commit / git hooks — relnote",
       "description": "Print or check GitHub release notes from a pre-push hook or the pre-commit framework. relnote reads commits already in the repository, from the latest tag to HEAD. Exit 0 writes the notes, exit 1 is an empty range or a bad ref, and exit 2 is a bad --quiet or an extra argument. There is no --check flag.",
       "isPartOf": {"@type": "WebSite", "name": "relnote", "url": "https://loki-inu.github.io/relnote/"},
-      "about": {"@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.7", "url": "https://github.com/loki-inu/relnote"}
+      "about": {"@type": "SoftwareApplication", "name": "relnote", "softwareVersion": "0.3.8", "url": "https://github.com/loki-inu/relnote"}
     },
     {
       "@type": "BreadcrumbList",
@@ -43,7 +43,7 @@
       "step": [
         {"@type": "HowToStep", "name": "Read the exit status", "text": "relnote has no --check flag. Exit 0 means notes were written. Exit 1 means the range has no commits left after filters, the directory is not a git repository, or a ref is unknown. Exit 2 means --quiet was set without --output or --changelog, or an unexpected argument was passed."},
         {"@type": "HowToStep", "name": "Preview from pre-push", "text": "Install relnote on PATH. A .git/hooks/pre-push script runs relnote and then exits 0, so the push continues when the range is empty. The script reads HEAD. It does not read the refs listed on the hook's standard input."},
-        {"@type": "HowToStep", "name": "Check with pre-commit", "text": "The repository's .pre-commit-hooks.yaml defines id relnote with language python, entry relnote, pass_filenames false, always_run true, and stages pre-push and manual. Pin rev to a commit that contains that file. pre-commit install --hook-type pre-push installs the git hook. A non-zero relnote status fails the push."}
+        {"@type": "HowToStep", "name": "Check with pre-commit", "text": "The repository's .pre-commit-hooks.yaml defines id relnote with language python, entry relnote, pass_filenames false, always_run true, and stages pre-push and manual. Pin rev to v0.3.8. That tag contains .pre-commit-hooks.yaml. The v0.3.7 tag does not contain that file. pre-commit install --hook-type pre-push installs the git hook. A non-zero relnote status fails the push."}
       ]
     },
     {
@@ -94,7 +94,7 @@
           "name": "Can I set rev to the v0.3.7 tag?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. pre-commit clones the rev you pin and reads .pre-commit-hooks.yaml there. The v0.3.7 tag does not contain that file. Pin the full commit SHA of a revision that contains it. A branch name such as main is a moving target; pre-commit warns and does not keep updating it."
+            "text": "No. pre-commit clones the rev you pin and reads .pre-commit-hooks.yaml there. The v0.3.7 tag does not contain that file. Pin rev to v0.3.8. A branch name such as main is a moving target; pre-commit warns and does not keep updating it."
           }
         }
       ]
@@ -368,11 +368,11 @@ repos:
   stages: [pre-push, manual]
   verbose: true
   minimum_pre_commit_version: &quot;3.2.0&quot;</code></pre>
-    <p>Pin <code>rev</code> to the full commit SHA of a revision that contains that file. The v0.3.7 tag does not contain it, so that tag cannot be the rev. A branch name such as <code>main</code> moves; pre-commit warns that a mutable rev is not updated after the first install.</p>
+    <p>Pin <code>rev</code> to <code>v0.3.8</code>. That tag contains <code>.pre-commit-hooks.yaml</code>. The v0.3.7 tag does not contain that file, so that tag cannot be the rev. A branch name such as <code>main</code> moves; pre-commit warns that a mutable rev is not updated after the first install.</p>
     <pre><code>default_install_hook_types: [pre-push]
 repos:
   - repo: https://github.com/loki-inu/relnote
-    rev: &lt;commit that contains .pre-commit-hooks.yaml&gt;
+    rev: v0.3.8
     hooks:
       - id: relnote</code></pre>
     <p><code>minimum_pre_commit_version</code> is 3.2.0 because the stage names are <code>pre-push</code> and <code>manual</code>. The hook fails when relnote exits non-zero, including <code>relnote: no commits in range v1.2.0..HEAD</code>. To print the notes and let the push continue, use the shell script in section 4 or the <code>ignore-exit-code</code> hook in section 7.</p>
@@ -389,7 +389,7 @@ repos:
     <h3>Does an empty range fail the GitHub Action too?</h3>
     <p>The CLI exits 1 and prints relnote: no commits in range SINCE..UNTIL. The GitHub Action treats that line as success and sets has-changes to false, unless fail-on-empty is true. A hook runs the CLI.</p>
     <h3>Can I set rev to the v0.3.7 tag?</h3>
-    <p>No. pre-commit clones the rev you pin and reads .pre-commit-hooks.yaml there. The v0.3.7 tag does not contain that file. Pin the full commit SHA of a revision that contains it. A branch name such as main is a moving target; pre-commit warns and does not keep updating it.</p>
+    <p>No. pre-commit clones the rev you pin and reads .pre-commit-hooks.yaml there. The v0.3.7 tag does not contain that file. Pin rev to v0.3.8. A branch name such as main is a moving target; pre-commit warns and does not keep updating it.</p>
 
     <footer>
       <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/latest">Latest release</a> · <a href="llms.txt">llms.txt</a></p>

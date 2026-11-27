@@ -35,7 +35,7 @@
       "about": {
         "@type": "SoftwareApplication",
         "name": "relnote",
-        "softwareVersion": "0.3.7",
+        "softwareVersion": "0.3.8",
         "url": "https://github.com/loki-inu/relnote"
       }
     },
@@ -63,7 +63,7 @@
         {
           "@type": "HowToStep",
           "name": "Install the zipapp",
-          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release. No .github/release-drafter.yml and no release-drafter action."
+          "text": "curl the relnote zipapp from the v0.3.8 GitHub Release. No .github/release-drafter.yml and no release-drafter action."
         },
         {
           "@type": "HowToStep",
@@ -73,7 +73,7 @@
         {
           "@type": "HowToStep",
           "name": "Publish with the existing GitHub Action workflows",
-          "text": "On a tag push, loki-inu/relnote@v0.3.7 plus softprops/action-gh-release@v2 opens a draft, or gh release create --draft receives the notes through env. A workflow_dispatch job gates on has-changes and runs gh release create with next-version. The relnote step does not call the GitHub API."
+          "text": "On a tag push, loki-inu/relnote@v0.3.8 plus softprops/action-gh-release@v2 opens a draft, or gh release create --draft receives the notes through env. A workflow_dispatch job gates on has-changes and runs gh release create with next-version. The relnote step does not call the GitHub API."
         }
       ]
     },
@@ -109,7 +109,7 @@
           "name": "Should I pin versions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7)."
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.8)."
           }
         }
       ]
@@ -212,7 +212,7 @@
     <p class="tag"><a href="https://github.com/release-drafter/release-drafter">Release Drafter</a> (<code>release-drafter/release-drafter</code>) drafts the next GitHub Release as pull requests merge. Its example workflow runs on push to the default branch, and <code>.github/release-drafter.yml</code> groups those pull requests by labels. If the commits already follow conventional commits, relnote builds the Release body from the local git log: no labels to maintain, no config file, and no token to generate the notes.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
-      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml">examples/draft-release.yml (v0.3.7)</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/draft-release.yml">examples/draft-release.yml (v0.3.8)</a>
       · <a href="github-action.html">GitHub Action guide</a>
       · <a href="offline-github-release-notes.html">Offline release notes</a>
       · <a href="single-file.html">Zipapp install</a>
@@ -235,9 +235,9 @@
     <p>Keep Release Drafter when the team labels pull requests and does not use conventional commits, when the draft should update on every push to the default branch, or when you want <a href="https://github.com/release-drafter/release-drafter#autolabeler">Autolabeler</a> (<code>release-drafter/release-drafter/autolabeler</code>) to add labels from the title, branch, files, or body. That action needs <code>pull-requests: write</code>. The <code>release-drafter</code> npm package also has a CLI (<code>npx release-drafter owner/repo</code>); it still needs a forge token and the config file, and it does not read the local git log.</p>
 
     <h2>Install</h2>
-    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page.</p>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.8 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page.</p>
     <pre><code>mkdir -p ~/.local/bin
-curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.8/relnote
 chmod +x ~/.local/bin/relnote</code></pre>
 
     <h2>Release body, next version, CHANGELOG section</h2>
@@ -279,7 +279,7 @@ Range: `v1.3.2` → `HEAD`.
     <p>Both blocks come from running those three commands against a scratch repository in relnote's test suite (<code>tests/test_release_drafter_docs.py</code>). Your hashes and the date differ. A squash-merged pull request whose title is already <code>feat: … (#12)</code> is one commit, so it shows up as one line. Merge commits are omitted. Details: <a href="squash-merge.html">squash-merged PR titles</a>.</p>
 
     <h2>Draft a Release when the tag is pushed</h2>
-    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. It does not refresh a draft on every merge to the default branch.</p>
+    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. It does not refresh a draft on every merge to the default branch.</p>
     <pre><code>name: Draft release
 
 on:
@@ -297,7 +297,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - uses: softprops/action-gh-release@v2
         with:
           draft: true
@@ -325,7 +325,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - if: steps.relnote.outputs.has-changes == 'true'
         run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
         env:
@@ -363,10 +363,10 @@ jobs:
     <h3>How is this different from the git-cliff and release-please pages?</h3>
     <p>The <a href="git-cliff-alternative.html">git-cliff alternative</a> replaces a Rust changelog binary and <code>cliff.toml</code>. The <a href="release-please-alternative.html">release-please alternative</a> replaces a release pull request, including the version bump and tag via <code>examples/release.sh</code>. This page replaces label-based draft notes. The publish steps are the ones already on the <a href="github-action.html">Action guide</a>.</p>
     <h3>Should I pin versions?</h3>
-    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). Floating <code>latest</code> can change behaviour under you.</p>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.8</code>). Floating <code>latest</code> can change behaviour under you.</p>
 
     <footer>
-      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.8">v0.3.8</a> · <a href="llms.txt">llms.txt</a></p>
     </footer>
   </main>
 </body>

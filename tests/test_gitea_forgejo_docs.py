@@ -132,8 +132,8 @@ class GiteaForgejoPageStaticTests(unittest.TestCase):
     def test_version_matches_package(self) -> None:
         text = PAGE.read_text(encoding="utf-8")
         self.assertIn(f"releases/download/v{__version__}/relnote", text)
-        self.assertNotIn("loki-inu/relnote@v0.3.8", text)
-        self.assertEqual(__version__, "0.3.7")
+        self.assertNotIn("loki-inu/relnote@v0.3.9", text)
+        self.assertEqual(__version__, "0.3.8")
 
     def test_commands_match_the_cli(self) -> None:
         parser = build_parser()

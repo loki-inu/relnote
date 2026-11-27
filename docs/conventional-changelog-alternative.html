@@ -35,7 +35,7 @@
       "about": {
         "@type": "SoftwareApplication",
         "name": "relnote",
-        "softwareVersion": "0.3.7",
+        "softwareVersion": "0.3.8",
         "url": "https://github.com/loki-inu/relnote"
       }
     },
@@ -63,7 +63,7 @@
         {
           "@type": "HowToStep",
           "name": "Pin the zipapp",
-          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release into ~/.local/bin, and download examples/release.sh from the same tag. No npm install and no conventional-changelog-* or cz-* plugins."
+          "text": "curl the relnote zipapp from the v0.3.8 GitHub Release into ~/.local/bin, and download examples/release.sh from the same tag. No npm install and no conventional-changelog-* or cz-* plugins."
         },
         {
           "@type": "HowToStep",
@@ -236,7 +236,7 @@
     <p class="tag"><code>conventional-changelog</code> (and the <code>conventional-changelog-*</code> presets) turns conventional commits into <code>CHANGELOG.md</code>. <code>commitizen</code> and <code>cz-cli</code> prompt for the commit message. Neither command bumps a version file and tags. If you want that changelog — and the bump, commit, and tag — from commits you already wrote, without Node plugins for the release tooling, the relnote zipapp and <code>examples/release.sh</code> do it offline.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
-      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/release.sh">examples/release.sh (v0.3.8)</a>
       · <a href="single-file.html">Zipapp install</a>
       · <a href="changelog.html">CHANGELOG.md guide</a>
     </div>
@@ -259,11 +259,11 @@
     <p>Keep commitizen if you want the questions. Keep a <code>conventional-changelog-*</code> preset if you depend on its writer options. This page replaces the changelog command and the separate bumper, not the prompt.</p>
 
     <h2>Pin the zipapp</h2>
-    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release (same pin as the <a href="single-file.html">single-file install</a>), plus <code>examples/release.sh</code> from that tag. No npm packages.</p>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.8 zipapp from the GitHub Release (same pin as the <a href="single-file.html">single-file install</a>), plus <code>examples/release.sh</code> from that tag. No npm packages.</p>
     <pre><code>mkdir -p ~/.local/bin
-curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.8/relnote
 chmod +x ~/.local/bin/relnote
-curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.8/examples/release.sh
 chmod +x release.sh</code></pre>
     <p>Put <code>~/.local/bin</code> on <code>PATH</code>. Commit <code>release.sh</code> into the repo (for example <code>scripts/release.sh</code>) so the release command does not depend on the raw URL next time. It is plain bash; read it before you run it.</p>
 
@@ -294,11 +294,11 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - name: Install relnote and release.sh
         if: steps.relnote.outputs.has-changes == &#x27;true&#x27;
         env:
-          V: v0.3.7
+          V: v0.3.8
         run: |
           mkdir -p &quot;$HOME/.local/bin&quot;
           curl -fsSL -o &quot;$HOME/.local/bin/relnote&quot; &quot;https://github.com/loki-inu/relnote/releases/download/$V/relnote&quot;
@@ -384,7 +384,7 @@ Range: `v1.3.2` → `v1.4.0`.
     <p>Only for the product, not for this release tooling. The zipapp and release.sh stay free of Node plugins. For an npm package, pass --bump-file package.json, and if you keep a package-lock.json add --exec &quot;npm install --package-lock-only --ignore-scripts --silent&quot; so the lock tracks the new version. See the <a href="npm-package.html">npm package guide</a>.</p>
 
     <footer>
-      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.8">v0.3.8</a> · <a href="llms.txt">llms.txt</a></p>
     </footer>
   </main>
 </body>

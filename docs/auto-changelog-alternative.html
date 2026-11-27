@@ -35,7 +35,7 @@
       "about": {
         "@type": "SoftwareApplication",
         "name": "relnote",
-        "softwareVersion": "0.3.7",
+        "softwareVersion": "0.3.8",
         "url": "https://github.com/loki-inu/relnote"
       }
     },
@@ -63,7 +63,7 @@
         {
           "@type": "HowToStep",
           "name": "Install the zipapp",
-          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release. No npm install of auto-changelog, no .auto-changelog file, and no package.json auto-changelog key."
+          "text": "curl the relnote zipapp from the v0.3.8 GitHub Release. No npm install of auto-changelog, no .auto-changelog file, and no package.json auto-changelog key."
         },
         {
           "@type": "HowToStep",
@@ -73,7 +73,7 @@
         {
           "@type": "HowToStep",
           "name": "Replace the npm version hook and publish",
-          "text": "Drop auto-changelog -p from the package.json version script. examples/release.sh --bump-file package.json bumps that file, prepends CHANGELOG.md, commits chore(release), and tags. On a tag push, loki-inu/relnote@v0.3.7 plus softprops/action-gh-release@v2 opens a draft, or a workflow_dispatch job gates on has-changes and runs gh release create."
+          "text": "Drop auto-changelog -p from the package.json version script. examples/release.sh --bump-file package.json bumps that file, prepends CHANGELOG.md, commits chore(release), and tags. On a tag push, loki-inu/relnote@v0.3.8 plus softprops/action-gh-release@v2 opens a draft, or a workflow_dispatch job gates on has-changes and runs gh release create."
         }
       ]
     },
@@ -117,7 +117,7 @@
           "name": "Should I pin versions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7). The auto-changelog facts here are from the published 2.7.0 README and npm package, not from an unreleased major."
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.8). The auto-changelog facts here are from the published 2.7.0 README and npm package, not from an unreleased major."
           }
         }
       ]
@@ -220,7 +220,7 @@
     <p class="tag"><a href="https://github.com/cookpete/auto-changelog">auto-changelog</a> (<a href="https://www.npmjs.com/package/auto-changelog"><code>auto-changelog</code> on npm</a>, <code>cookpete/auto-changelog</code>) generates a changelog from git tags and commit history. The published package is 2.7.0. Its README says it is used by Modernizr, Netlify, Neutrino, and Velocity.js. If the commits already follow conventional commits and you want a GitHub Release body plus one new <code>CHANGELOG.md</code> section, relnote does that from the local git log: no Node package, no Handlebars template, and no config file.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
-      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/release.sh">examples/release.sh (v0.3.8)</a>
       · <a href="changelog.html">CHANGELOG.md guide</a>
       · <a href="npm-package.html">npm package guide</a>
       · <a href="single-file.html">Zipapp install</a>
@@ -251,9 +251,9 @@
     <pre><code>npm install -g auto-changelog
 auto-changelog</code></pre>
     <p>Or as a dev dependency, which is the README's other install: <code>npm install auto-changelog --save-dev</code>.</p>
-    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page. Remove <code>auto-changelog</code> from <code>devDependencies</code> when nothing else imports it. relnote does not read <code>.auto-changelog</code> or the <code>package.json</code> key.</p>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.8 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page. Remove <code>auto-changelog</code> from <code>devDependencies</code> when nothing else imports it. relnote does not read <code>.auto-changelog</code> or the <code>package.json</code> key.</p>
     <pre><code>mkdir -p ~/.local/bin
-curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.8/relnote
 chmod +x ~/.local/bin/relnote</code></pre>
 
     <h2>Release body, next version, CHANGELOG section</h2>
@@ -296,21 +296,21 @@ Range: `v1.3.2` → `HEAD`.
 
     <h2>Migration</h2>
     <ol>
-      <li>Install the zipapp above and pin it to <code>v0.3.7</code>. Stop running <code>auto-changelog</code> in CI and locally.</li>
+      <li>Install the zipapp above and pin it to <code>v0.3.8</code>. Stop running <code>auto-changelog</code> in CI and locally.</li>
       <li>Leave the current <code>CHANGELOG.md</code> in the repo. The next <code>--changelog</code> run inserts one section before the first <code>## </code> heading. Older sections are not rewritten, and there is no commit-limit of 3 on that section. The <code>&lt;!-- auto-changelog-above --&gt;</code> comment is ordinary preamble to relnote; it stays above the new section. Delete the comment once you no longer regenerate the file.</li>
       <li>Remove <code>auto-changelog</code> from the <code>version</code> script. The 2.7.0 README's example is <code>auto-changelog -p &amp;&amp; git add CHANGELOG.md</code>. <code>npm version</code> will no longer refresh the changelog. Two replacements: keep <code>npm version</code> for the bump and run the three relnote commands yourself, or use <code>examples/release.sh</code> for the bump, the section, the commit, and the tag.</li>
       <li>Publish the GitHub Release with the workflows on the <a href="github-action.html">Action guide</a>, copied below. relnote still does not push.</li>
     </ol>
     <p><code>examples/release.sh</code> is the local stand-in for that version script plus the tag. <code>--dry-run</code> prints the plan and writes nothing. <code>--bump-file package.json</code> sets the first <code>version</code> line. For an npm package that also commits <code>package-lock.json</code>, the <a href="npm-package.html">npm package guide</a> adds <code>--exec</code>. Nothing in the script is pushed.</p>
-    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.8/examples/release.sh
 chmod +x release.sh
 ./release.sh --dry-run --bump-file package.json
 ./release.sh --bump-file package.json</code></pre>
-    <p>That URL is <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh"><code>examples/release.sh</code> on the v0.3.7 tag</a>. The v0.3.7 release assets are <code>relnote</code>, <code>relnote.pyz</code>, and <code>SHA256SUMS</code>, so the script is not a release asset. It calls <code>relnote</code> on <code>PATH</code>.</p>
+    <p>That URL is <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/release.sh"><code>examples/release.sh</code> on the v0.3.8 tag</a>. The v0.3.8 release assets are <code>relnote</code>, <code>relnote.pyz</code>, and <code>SHA256SUMS</code>, so the script is not a release asset. It calls <code>relnote</code> on <code>PATH</code>.</p>
     <p>Monorepos: auto-changelog 2.7.0 ships <code>--autodetect-monorepo-disabled</code>, which defaults to true, so detection is off. <code>--no-autodetect-monorepo-disabled</code> turns it on. The README says a detected package (a <code>repository.directory</code> field, or an ancestor <code>package.json</code> with npm <code>workspaces</code>) takes its tag prefix from the package <code>name</code> unless one is already set, and strips that prefix from headings. The option is documented to default to false in the next major. relnote does not autodetect workspaces. Pass <code>--path</code> and <code>--tag-prefix</code> (or <code>release.sh --tag-prefix</code>). Guide: <a href="monorepo.html">monorepo release notes</a>.</p>
 
     <h2>Draft a Release when the tag is pushed</h2>
-    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. There is no auto-changelog step and no <code>npm install</code>.</p>
+    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. There is no auto-changelog step and no <code>npm install</code>.</p>
     <pre><code>name: Draft release
 
 on:
@@ -328,7 +328,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - uses: softprops/action-gh-release@v2
         with:
           draft: true
@@ -356,7 +356,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - if: steps.relnote.outputs.has-changes == 'true'
         run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
         env:
@@ -396,10 +396,10 @@ jobs:
     <h3>How is this different from the conventional-changelog and git-cliff pages?</h3>
     <p>The <a href="conventional-changelog-alternative.html">conventional-changelog page</a> is for <code>conventional-changelog</code> presets and commitizen prompts. The <a href="git-cliff-alternative.html">git-cliff page</a> is for a Rust binary, <code>cliff.toml</code>, and Tera templates. This page is for the npm package auto-changelog: a Handlebars changelog rebuilt from semver tags, with a default commit-limit of 3.</p>
     <h3>Should I pin versions?</h3>
-    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). The auto-changelog facts here are from the published 2.7.0 README and npm package, not from an unreleased major. Floating <code>latest</code> on the relnote zipapp can change behaviour under you.</p>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.8</code>). The auto-changelog facts here are from the published 2.7.0 README and npm package, not from an unreleased major. Floating <code>latest</code> on the relnote zipapp can change behaviour under you.</p>
 
     <footer>
-      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.8">v0.3.8</a> · <a href="llms.txt">llms.txt</a></p>
     </footer>
   </main>
 </body>
