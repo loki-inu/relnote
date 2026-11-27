@@ -254,7 +254,7 @@ docs: install with pipx
 fix: read config files as UTF-8 on Windows
 feat(cli): add --json output</code></pre>
     <p>Install relnote (<code>pipx install git+https://github.com/loki-inu/relnote.git</code>, <code>brew install loki-inu/tap/relnote</code>, or the <a href="single-file.html">single file</a>), then run the release script pinned to a version:</p>
-    <pre><code>curl -fsSLO https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+    <pre><code>curl -fsSLO https://raw.githubusercontent.com/loki-inu/relnote/v0.3.8/examples/release.sh
 bash release.sh --bump-file pyproject.toml</code></pre>
     <pre><code>next: v1.3.0
 changelog: CHANGELOG.md
@@ -311,7 +311,7 @@ jobs:
           fi
       - run: python -m pip install build &amp;&amp; python -m build
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - name: Save notes
         env:
           NOTES: ${{ steps.relnote.outputs.notes }}

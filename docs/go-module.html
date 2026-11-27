@@ -42,7 +42,7 @@
       "name": "Release notes for a Go module from git tags",
       "step": [
         {"@type": "HowToStep", "name": "Notes between two tags", "text": "Run python3 -m relnote --since v1.2.0 --until v1.3.0. The notes are the commits after the first tag up to the second. When HEAD is already the new tag, python3 -m relnote with no flags uses the previous tag through that tag."},
-        {"@type": "HowToStep", "name": "Create the GitHub Release on tag push", "text": "A workflow on push of v* tags checks out with fetch-depth 0, runs loki-inu/relnote@v0.3.7, writes the notes output to a file through env, and runs gh release create with --notes-file."},
+        {"@type": "HowToStep", "name": "Create the GitHub Release on tag push", "text": "A workflow on push of v* tags checks out with fetch-depth 0, runs loki-inu/relnote@v0.3.8, writes the notes output to a file through env, and runs gh release create with --notes-file."},
         {"@type": "HowToStep", "name": "Optional GoReleaser", "text": "Write the same notes to a file and pass goreleaser release --clean --release-notes=notes.md. GoReleaser skips its own changelog and uses the file. changelog.disable ignores that flag."}
       ]
     },
@@ -264,7 +264,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -298,7 +298,7 @@ jobs:
         with:
           go-version: stable
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - name: Write notes
         env:
           NOTES: ${{ steps.relnote.outputs.notes }}

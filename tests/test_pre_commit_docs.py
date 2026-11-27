@@ -90,6 +90,7 @@ class PreCommitPageStaticTests(unittest.TestCase):
         self.assertIn("pass_filenames: false", text)
         self.assertIn("always_run: true", text)
         self.assertIn("The v0.3.7 tag does not contain that file.", text)
+        self.assertIn("rev: v0.3.8", text)
         self.assertNotIn("rev: v0.3.7", text)
         lowered = text.lower()
         for banned in (

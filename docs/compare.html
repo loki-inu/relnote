@@ -87,7 +87,7 @@
             "name": "How do I generate conventional-commit release notes in a GitHub Action?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Use loki-inu/relnote@v0.3.7 after actions/checkout with fetch-depth: 0. The action writes grouped notes to an output. A draft-release example is in the repo."
+              "text": "Use loki-inu/relnote@v0.3.8 after actions/checkout with fetch-depth: 0. The action writes grouped notes to an output. A draft-release example is in the repo."
             }
           },
           {
@@ -229,7 +229,7 @@
     <div class="links">
       <a href="./">Docs</a>
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
-      <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a>
+      <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.8">v0.3.8</a>
       <a href="https://loki-inu.itch.io/relnote">itch.io download</a>
       <a href="https://ossdrop.com/tool/relnote">OSSDrop</a>
       <a href="gitea-forgejo.html">Gitea and Forgejo release notes</a>
@@ -319,7 +319,7 @@
           </tr>
           <tr>
             <td>CI hook</td>
-            <td><code>loki-inu/relnote@v0.3.7</code>. Draft-release example in the repo.</td>
+            <td><code>loki-inu/relnote@v0.3.8</code>. Draft-release example in the repo.</td>
             <td>Call <code>gh release create --generate-notes</code> in a workflow.</td>
             <td>Community Action and native CLI in CI.</td>
           </tr>
@@ -344,7 +344,7 @@
     <h2>Install relnote</h2>
     <pre><code>pip install git+https://github.com/loki-inu/relnote.git
 relnote --help</code></pre>
-    <p>Python 3.11+, git on PATH, no third-party packages. Or from a checkout: <code>python3 -m relnote</code>. For CI, the GitHub Action is <code>loki-inu/relnote@v0.3.7</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>.</p>
+    <p>Python 3.11+, git on PATH, no third-party packages. Or from a checkout: <code>python3 -m relnote</code>. For CI, the GitHub Action is <code>loki-inu/relnote@v0.3.8</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>.</p>
 
     <h2>What relnote will not do</h2>
     <ul>
@@ -367,7 +367,7 @@ relnote --help</code></pre>
     <h3>Is there a stdlib Python changelog CLI for conventional commits?</h3>
     <p>Yes. relnote is a stdlib Python changelog CLI: Python 3.11+, git on PATH, no third-party packages. It prints offline conventional-commit release notes from local git history.</p>
     <h3>How do I generate conventional-commit release notes in a GitHub Action?</h3>
-    <p>Use <code>loki-inu/relnote@v0.3.7</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>. The action writes grouped notes to an output. A draft-release example is in the repo.</p>
+    <p>Use <code>loki-inu/relnote@v0.3.8</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>. The action writes grouped notes to an output. A draft-release example is in the repo.</p>
     <h3>Is relnote a Release Drafter alternative?</h3>
     <p>Yes, when commits already use conventional commits and you want the Release body from local git history. Keep Release Drafter when you label pull requests, want the draft updated on every merge, or use Autolabeler. Guide: <a href="release-drafter-alternative.html">Release Drafter alternative</a>.</p>
     <h3>Is relnote an auto-changelog alternative?</h3>

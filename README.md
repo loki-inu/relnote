@@ -65,13 +65,13 @@ Each GitHub Release ships `relnote`, a self-contained Python [zipapp](https://do
 mkdir -p ~/.local/bin
 curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/latest/download/relnote
 chmod +x ~/.local/bin/relnote
-relnote --version   # relnote 0.3.7
+relnote --version   # relnote 0.3.8
 ```
 
-Pin a version with `releases/download/v0.3.7/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
+Pin a version with `releases/download/v0.3.8/relnote` instead of `releases/latest/download/relnote`. The same release has `SHA256SUMS` to check the download, and `relnote.pyz` (identical bytes) for `python relnote.pyz` on Windows:
 
 ```bash
-curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.7/SHA256SUMS
+curl -fsSL -O https://github.com/loki-inu/relnote/releases/download/v0.3.8/SHA256SUMS
 grep ' relnote$' SHA256SUMS | sha256sum -c -
 ```
 
@@ -206,7 +206,7 @@ Paste stdout into a GitHub Release. If `origin` is a `github.com` remote, the fo
 | `--date YYYY-MM-DD` | today (UTC) | section date for `--changelog` |
 | `--quiet` / `-q` | off | with `--output` or `--changelog`, do not print notes to stdout |
 | `--help` | | this explanation |
-| `--version` | | print `relnote 0.3.7` |
+| `--version` | | print `relnote 0.3.8` |
 
 Exit `1` if the path is not a git repo, a ref does not exist, nothing remains after filters, `--output` / `--changelog` points at a missing parent directory, the changelog already has a section with that title, or `--next-version` finds a base tag that is not `x.y.z`. Exit `2` if `--quiet` is set without `--output` or `--changelog`.
 
@@ -263,7 +263,7 @@ Releasing a Go module? [Release notes for a Go module from git tags](https://lok
 
 ## GitHub Action
 
-Use this repository from another workflow. Pin `loki-inu/relnote@v0.3.7` (any tag from v0.3.3 loads; v0.3.4 names a tag-push range after the pushed tag, so the compare link ends at `v1.4.0` instead of `HEAD`). In v0.1.1–v0.3.2, `action.yml` had an unquoted `: ` in an input description, and the runner refuses to load it ("Mapping values are not allowed in this context"); v0.3.3 fixes that, and CI now runs the action itself on Linux and Windows. The CLI in those tags is fine.
+Use this repository from another workflow. Pin `loki-inu/relnote@v0.3.8` (any tag from v0.3.3 loads; v0.3.4 names a tag-push range after the pushed tag, so the compare link ends at `v1.4.0` instead of `HEAD`). In v0.1.1–v0.3.2, `action.yml` had an unquoted `: ` in an input description, and the runner refuses to load it ("Mapping values are not allowed in this context"); v0.3.3 fixes that, and CI now runs the action itself on Linux and Windows. The CLI in those tags is fine.
 
 ```yaml
 name: Release notes
@@ -279,7 +279,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - name: Print notes
         env:
           NEXT: ${{ steps.relnote.outputs.next-version }}
@@ -295,7 +295,7 @@ Optional inputs: `since`, `until`, `max`, `format` (default `github`), `no-bots`
 
 ```yaml
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
         with:
           path: packages/api
           tag-prefix: api/v
@@ -315,7 +315,7 @@ Not on GitHub Actions? Download the single file and run it in GitLab CI, Jenkins
 
 On Gitea or Forgejo, including Codeberg? [Release notes for Gitea and Forgejo](https://loki-inu.github.io/relnote/gitea-forgejo.html) writes the same file locally or in Gitea Actions / Forgejo Actions. Publish it with the releases API or with tea. A compare link is added only when `origin` is a `github.com` remote.
 
-Want the notes from a git hook before the push? [Release notes with pre-commit / git hooks](https://loki-inu.github.io/relnote/pre-commit.html) runs `relnote` at `pre-push`. Exit 0 writes the notes. Exit 1 is an empty range, including a range whose only new commit is `chore(release): ...`. Exit 2 is `--quiet` without `--output` or `--changelog`, or an extra argument. There is no `--check` flag. `.pre-commit-hooks.yaml` is the pre-commit framework hook (`repo: https://github.com/loki-inu/relnote`); pin a commit that contains that file. It is not in the v0.3.7 tag.
+Want the notes from a git hook before the push? [Release notes with pre-commit / git hooks](https://loki-inu.github.io/relnote/pre-commit.html) runs `relnote` at `pre-push`. Exit 0 writes the notes. Exit 1 is an empty range, including a range whose only new commit is `chore(release): ...`. Exit 2 is `--quiet` without `--output` or `--changelog`, or an extra argument. There is no `--check` flag. `.pre-commit-hooks.yaml` is the pre-commit framework hook (`repo: https://github.com/loki-inu/relnote`); pin `rev: v0.3.8`. That tag contains the file. It is not in the v0.3.7 tag.
 
 ## What it is not
 

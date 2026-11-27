@@ -235,7 +235,7 @@ docs: document the --json flag
 fix: handle empty input without panicking
 feat(cli): add --json output</code></pre>
     <p>Install relnote (<code>pipx install git+https://github.com/loki-inu/relnote.git</code>, <code>brew install loki-inu/tap/relnote</code>, or the <a href="single-file.html">single file</a>), then run the release script pinned to a version:</p>
-    <pre><code>curl -fsSLO https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+    <pre><code>curl -fsSLO https://raw.githubusercontent.com/loki-inu/relnote/v0.3.8/examples/release.sh
 bash release.sh --bump-file package.json --exec &quot;npm install --package-lock-only --ignore-scripts --silent&quot;</code></pre>
     <pre><code>next: v1.3.0
 changelog: CHANGELOG.md
@@ -300,7 +300,7 @@ jobs:
       - run: npm test
       - run: npm publish --access public
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

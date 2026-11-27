@@ -35,7 +35,7 @@
       "about": {
         "@type": "SoftwareApplication",
         "name": "relnote",
-        "softwareVersion": "0.3.7",
+        "softwareVersion": "0.3.8",
         "url": "https://github.com/loki-inu/relnote"
       }
     },
@@ -63,7 +63,7 @@
         {
           "@type": "HowToStep",
           "name": "Install the zipapp",
-          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release. No pip install of towncrier, no newsfragments directory, and no towncrier.toml or [tool.towncrier] table."
+          "text": "curl the relnote zipapp from the v0.3.8 GitHub Release. No pip install of towncrier, no newsfragments directory, and no towncrier.toml or [tool.towncrier] table."
         },
         {
           "@type": "HowToStep",
@@ -73,7 +73,7 @@
         {
           "@type": "HowToStep",
           "name": "Publish with the existing GitHub Action workflows",
-          "text": "On a tag push, loki-inu/relnote@v0.3.7 plus softprops/action-gh-release@v2 opens a draft, or gh release create --draft receives the notes through env. A workflow_dispatch job gates on has-changes and runs gh release create with next-version. The relnote step reads the checkout."
+          "text": "On a tag push, loki-inu/relnote@v0.3.8 plus softprops/action-gh-release@v2 opens a draft, or gh release create --draft receives the notes through env. A workflow_dispatch job gates on has-changes and runs gh release create with next-version. The relnote step reads the checkout."
         }
       ]
     },
@@ -117,7 +117,7 @@
           "name": "Should I pin versions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7). The towncrier facts here are from the Towncrier 26.9.0 documentation (tutorial, command line reference, and configuration reference), not from an unreleased change."
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.8). The towncrier facts here are from the Towncrier 26.9.0 documentation (tutorial, command line reference, and configuration reference), not from an unreleased change."
           }
         }
       ]
@@ -221,7 +221,7 @@
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
       · <a href="https://towncrier.readthedocs.io/en/stable/">Towncrier 26.9.0 docs</a>
-      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/release.sh">examples/release.sh (v0.3.8)</a>
       · <a href="changelog.html">CHANGELOG.md guide</a>
       · <a href="python-package.html">Python package guide</a>
       · <a href="github-action.html">GitHub Action guide</a>
@@ -242,12 +242,12 @@
           <tr><td>What happens to the inputs</td><td><code>towncrier build</code> is the default when no command is passed. Processed fragments are removed by default. For fragments already committed, <code>git rm</code> is used. <code>--keep</code> leaves them. <code>--yes</code> skips the confirmation (the CLI reference says this is useful for automated tasks). <code>--draft</code> prints fragments to stdout, does not write files, and does not check versions. The tutorial's production command stages the news file with <code>git add</code> and leaves the commit to you</td><td>Nothing is deleted and nothing is committed. <code>--output notes.md --quiet</code> writes the Release body and prints nothing. <code>--changelog</code> only edits the changelog file</td></tr>
           <tr><td>Requiring a fragment</td><td><code>towncrier check</code> checks that a feature branch adds at least one news fragment. The check is skipped when the news file itself is modified on the branch. The default comparison is <code>origin/main</code>, with a fallback to <code>origin/master</code>. <code>--compare-with</code> and <code>--staged</code> change that</td><td>No fragment check. A conventional commit in the range is the note. An empty range exits with status 1 (the step still succeeds in the GitHub Action unless <code>fail-on-empty</code> is set)</td></tr>
           <tr><td>Runtime</td><td>A Python package. The 26.9.0 homepage says the CLI requires Python, and that it is usable with any project type on any platform if you do not use Python-specific version detection. The configuration reference's minimal non-Python file is a <code>towncrier.toml</code> that sets <code>name</code></td><td>Python 3.11+ and git on <code>PATH</code>. No third-party packages. The same CLI reads a Python, Rust, or other repository. The notes come from local git</td></tr>
-          <tr><td>GitHub Release</td><td>The 26.9.0 tutorial and command line reference describe the news file. They do not describe creating a GitHub Release</td><td>The CLI does not create the Release. The <a href="github-action.html">Action guide</a> does, with <code>gh</code> or <code>softprops/action-gh-release</code>. One step after a full checkout is <code>loki-inu/relnote@v0.3.7</code></td></tr>
+          <tr><td>GitHub Release</td><td>The 26.9.0 tutorial and command line reference describe the news file. They do not describe creating a GitHub Release</td><td>The CLI does not create the Release. The <a href="github-action.html">Action guide</a> does, with <code>gh</code> or <code>softprops/action-gh-release</code>. One step after a full checkout is <code>loki-inu/relnote@v0.3.8</code></td></tr>
         </tbody>
       </table>
     </div>
     <p>Keep towncrier when you want that curated fragment: the 26.9.0 homepage calls it news written for the people who hear it, separate from the developer log. Keep it when <code>towncrier check</code> should require a fragment on each branch, and when you want the Python integration those docs describe (version from package metadata or <code>__version__</code>, fragments in the package's <code>newsfragments</code> directory, <code>[tool.towncrier]</code> in <code>pyproject.toml</code>). Custom fragment types, sections, and templates are part of that config. The homepage also says towncrier works best where merges close an issue.</p>
-    <p>relnote fits when you do not want a fragment file per change and the commits are already conventional, including a squash-merged title such as <code>feat: … (#12)</code>. That includes a repository that is not a Python package: towncrier can run there too, with <code>name</code> set and <code>--version</code> passed when the version cannot be detected, and the reason to switch is the fragment workflow. The CI form is one step, <code>loki-inu/relnote@v0.3.7</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>, or <code>python3 -m relnote --output notes.md --quiet</code> wherever Python 3.11+ and git are already installed. It is a poor fit when the note you want is a sentence that never appears in the commit subject: relnote never sees those fragment files.</p>
+    <p>relnote fits when you do not want a fragment file per change and the commits are already conventional, including a squash-merged title such as <code>feat: … (#12)</code>. That includes a repository that is not a Python package: towncrier can run there too, with <code>name</code> set and <code>--version</code> passed when the version cannot be detected, and the reason to switch is the fragment workflow. The CI form is one step, <code>loki-inu/relnote@v0.3.8</code> after <code>actions/checkout</code> with <code>fetch-depth: 0</code>, or <code>python3 -m relnote --output notes.md --quiet</code> wherever Python 3.11+ and git are already installed. It is a poor fit when the note you want is a sentence that never appears in the commit subject: relnote never sees those fragment files.</p>
 
     <h2>Install</h2>
     <p>What you are leaving, from the 26.9.0 tutorial and command line reference:</p>
@@ -255,9 +255,9 @@
 towncrier create 1234.bugfix.rst
 towncrier build --draft
 towncrier check</code></pre>
-    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page. relnote does not read <code>towncrier.toml</code> or <code>[tool.towncrier]</code>.</p>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.8 zipapp from the GitHub Release, the same pin as the <a href="single-file.html">single-file install</a>. From a checkout, <code>python3 -m relnote</code> is the same CLI. <code>pip install git+https://github.com/loki-inu/relnote.git</code> is the other install on the <a href="offline-github-release-notes.html">offline release notes</a> page. relnote does not read <code>towncrier.toml</code> or <code>[tool.towncrier]</code>.</p>
     <pre><code>mkdir -p ~/.local/bin
-curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.8/relnote
 chmod +x ~/.local/bin/relnote</code></pre>
 
     <h2>Release body, next version, CHANGELOG section</h2>
@@ -300,21 +300,21 @@ Range: `v1.3.2` → `HEAD`.
 
     <h2>Migration</h2>
     <ol>
-      <li>Install the zipapp above and pin it to <code>v0.3.7</code>. Stop running <code>towncrier build</code> and <code>towncrier check</code> in CI and locally.</li>
+      <li>Install the zipapp above and pin it to <code>v0.3.8</code>. Stop running <code>towncrier build</code> and <code>towncrier check</code> in CI and locally.</li>
       <li>If fragment files for this release are still in the tree, run <code>towncrier</code> once so the tutorial's production step folds them into the news file, or copy the sentences you still want. relnote does not read those files.</li>
       <li>Leave the existing news file in the repo. relnote's <code>--changelog</code> writes a Markdown section (<code>## [TITLE] - DATE</code>) and does not look for <code>.. towncrier release notes start</code> or the Markdown comment. If the towncrier file is <code>NEWS.rst</code>, keep it as history and point <code>--changelog</code> at a <code>CHANGELOG.md</code>. If it is already Markdown with <code>## </code> headings, the next run inserts one section before the first of those headings. Older text stays. The command does not <code>git rm</code> fragments and does not commit.</li>
       <li>Remove the <code>towncrier</code> dependency when nothing else imports it. <code>towncrier.toml</code> and <code>[tool.towncrier]</code> are unused after that. Delete the fragments directory once it no longer holds notes you need.</li>
       <li>Publish the GitHub Release with the workflows on the <a href="github-action.html">Action guide</a>, copied below. relnote still does not push.</li>
     </ol>
     <p>A Python package that also wants the version in <code>pyproject.toml</code> bumped, the changelog section committed, and an annotated tag can use <code>examples/release.sh</code>. <code>--dry-run</code> prints the plan and writes nothing. Nothing in the script is pushed. Guide: <a href="python-package.html">Python package releases</a>.</p>
-    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.8/examples/release.sh
 chmod +x release.sh
 ./release.sh --dry-run --bump-file pyproject.toml
 ./release.sh --bump-file pyproject.toml</code></pre>
-    <p>That URL is <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh"><code>examples/release.sh</code> on the v0.3.7 tag</a>. The v0.3.7 release assets are <code>relnote</code>, <code>relnote.pyz</code>, and <code>SHA256SUMS</code>, so the script is not a release asset. It calls <code>relnote</code> on <code>PATH</code>.</p>
+    <p>That URL is <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/release.sh"><code>examples/release.sh</code> on the v0.3.8 tag</a>. The v0.3.8 release assets are <code>relnote</code>, <code>relnote.pyz</code>, and <code>SHA256SUMS</code>, so the script is not a release asset. It calls <code>relnote</code> on <code>PATH</code>.</p>
 
     <h2>Draft a Release when the tag is pushed</h2>
-    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. There is no <code>towncrier build</code> step and no news fragment to collect.</p>
+    <p>This is the tag-push workflow from the <a href="github-action.html">GitHub Action guide</a> and from <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/draft-release.yml"><code>examples/draft-release.yml</code></a>. Copy it to <code>.github/workflows/draft-release.yml</code>. Push a tag such as <code>v1.4.0</code> and a draft Release appears with the notes since the previous tag. You review it and press Publish. There is no <code>towncrier build</code> step and no news fragment to collect.</p>
     <pre><code>name: Draft release
 
 on:
@@ -332,7 +332,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - uses: softprops/action-gh-release@v2
         with:
           draft: true
@@ -360,7 +360,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - if: steps.relnote.outputs.has-changes == 'true'
         run: gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes "$NOTES"
         env:
@@ -376,7 +376,7 @@ jobs:
       <table>
         <thead><tr><th>towncrier 26.9.0</th><th>relnote</th></tr></thead>
         <tbody>
-          <tr><td><code>python3 -m pip install towncrier</code></td><td>The v0.3.7 zipapp above, or <code>python3 -m relnote</code> from a checkout</td></tr>
+          <tr><td><code>python3 -m pip install towncrier</code></td><td>The v0.3.8 zipapp above, or <code>python3 -m relnote</code> from a checkout</td></tr>
           <tr><td><code>towncrier create 1234.bugfix.rst</code></td><td>A commit subject such as <code>fix: handle empty config (#13)</code>. No fragment file</td></tr>
           <tr><td><code>towncrier create +.feature.rst</code> (orphan fragment; the issue id must not contain <code>.</code>)</td><td>No orphan file. The commit subject is the bullet</td></tr>
           <tr><td><code>towncrier</code> or <code>towncrier build</code> (removes fragments by default, stages the news file, leaves the commit to you)</td><td><code>python3 -m relnote --changelog CHANGELOG.md --changelog-title v1.4.0</code>. One new section. Older sections stay. Does not <code>git rm</code> or <code>git add</code></td></tr>
@@ -402,10 +402,10 @@ jobs:
     <h3>How is this different from the Changesets page?</h3>
     <p>The <a href="changesets-alternative.html">Changesets page</a> is for <code>.changeset</code> markdown files in a JavaScript monorepo, with per-package tags. This page is for towncrier news fragments, often one news file for a Python project. The <a href="github-changelog-generator-alternative.html">github-changelog-generator page</a> rebuilds <code>CHANGELOG.md</code> from the GitHub API. relnote, on all three, reads the local git log instead of those extra files or API calls.</p>
     <h3>Should I pin versions?</h3>
-    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). The towncrier facts here are from the Towncrier 26.9.0 documentation (tutorial, command line reference, and configuration reference), not from an unreleased change. Floating <code>latest</code> on the relnote zipapp can change behaviour under you.</p>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.8</code>). The towncrier facts here are from the Towncrier 26.9.0 documentation (tutorial, command line reference, and configuration reference), not from an unreleased change. Floating <code>latest</code> on the relnote zipapp can change behaviour under you.</p>
 
     <footer>
-      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.8">v0.3.8</a> · <a href="llms.txt">llms.txt</a></p>
     </footer>
   </main>
 </body>

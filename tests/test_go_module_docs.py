@@ -122,7 +122,7 @@ class GoModulePageStaticTests(unittest.TestCase):
     def test_version_matches_package(self) -> None:
         text = PAGE.read_text(encoding="utf-8")
         self.assertIn(f"loki-inu/relnote@v{__version__}", text)
-        self.assertNotIn("loki-inu/relnote@v0.3.8", text)
+        self.assertNotIn("loki-inu/relnote@v0.3.9", text)
 
     def test_commands_match_the_cli_and_action(self) -> None:
         parser = build_parser()

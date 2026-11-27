@@ -35,7 +35,7 @@
       "about": {
         "@type": "SoftwareApplication",
         "name": "relnote",
-        "softwareVersion": "0.3.7",
+        "softwareVersion": "0.3.8",
         "url": "https://github.com/loki-inu/relnote"
       }
     },
@@ -63,7 +63,7 @@
         {
           "@type": "HowToStep",
           "name": "Pin the zipapp",
-          "text": "curl the relnote zipapp from the v0.3.7 GitHub Release into ~/.local/bin, and download examples/release.sh from the same tag. No cargo install, no cliff.toml, and no Tera templates."
+          "text": "curl the relnote zipapp from the v0.3.8 GitHub Release into ~/.local/bin, and download examples/release.sh from the same tag. No cargo install, no cliff.toml, and no Tera templates."
         },
         {
           "@type": "HowToStep",
@@ -133,7 +133,7 @@
           "name": "Should I pin versions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.7). Floating latest can change behaviour under you."
+            "text": "Yes. Pin the curl URL and the loki-inu/relnote action to the same tag (this page uses v0.3.8). Floating latest can change behaviour under you."
           }
         }
       ]
@@ -236,7 +236,7 @@
     <p class="tag"><a href="https://git-cliff.org/">git-cliff</a> (oratorio-rs/git-cliff) is a Rust changelog generator: install the binary, keep a <code>cliff.toml</code>, and write Tera templates that rebuild <code>CHANGELOG.md</code> from history. If what you want is a GitHub Release body from conventional commits — plus one Keep a Changelog section prepended per release, and an optional bump/tag via <code>examples/release.sh</code> — the offline stdlib Python relnote zipapp does that with no config file, no <code>cargo install</code>, and no template language.</p>
     <div class="links">
       <a href="https://github.com/loki-inu/relnote">GitHub</a>
-      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.7/examples/release.sh">examples/release.sh (v0.3.7)</a>
+      · <a href="https://github.com/loki-inu/relnote/blob/v0.3.8/examples/release.sh">examples/release.sh (v0.3.8)</a>
       · <a href="compare.html">Short comparison table</a>
       · <a href="single-file.html">Zipapp install</a>
       · <a href="changelog.html">CHANGELOG.md guide</a>
@@ -252,7 +252,7 @@
           <tr><td>CHANGELOG.md</td><td>Rebuilds (or appends) from history via templates</td><td>Prepends <strong>one</strong> Keep a Changelog section for the new release; older entries untouched</td></tr>
           <tr><td>Release body</td><td>Possible with a custom template / stdout</td><td>Default: prints a GitHub Release body grouped by conventional-commit type</td></tr>
           <tr><td>Next-version bump</td><td>Built-in bump / <code>--bumped-version</code> (config-driven)</td><td><code>relnote --next-version</code>; <code>release.sh --bump-file</code> sets <code>package.json</code> / <code>pyproject.toml</code> / <code>Cargo.toml</code></td></tr>
-          <tr><td>GitHub Action</td><td>Community / self-hosted wrappers around the binary</td><td><code>loki-inu/relnote@v0.3.7</code> (notes, next-version, has-changes)</td></tr>
+          <tr><td>GitHub Action</td><td>Community / self-hosted wrappers around the binary</td><td><code>loki-inu/relnote@v0.3.8</code> (notes, next-version, has-changes)</td></tr>
           <tr><td>Monorepo</td><td>Path filters / include-path in config</td><td><code>--path DIR</code> / <code>--tag-prefix PREFIX</code> (CLI and action)</td></tr>
           <tr><td>Network</td><td>Offline for local history; optional remote contrib</td><td>Offline until you push or <code>gh release create</code></td></tr>
           <tr><td>Install size</td><td>Compiled Rust binary + config you maintain</td><td>~single-file zipapp from the GitHub Release; no third-party packages</td></tr>
@@ -262,11 +262,11 @@
     <p>Keep git-cliff when you need a full-history rebuild, custom Tera sections, or remote contributor metadata. This page replaces the zero-config Release-body path — and the one-section CHANGELOG plus bump/tag via <code>release.sh</code>.</p>
 
     <h2>Pin the zipapp</h2>
-    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.7 zipapp from the GitHub Release (same pin as the <a href="single-file.html">single-file install</a>), plus <code>examples/release.sh</code> from that tag. No <code>cargo install git-cliff</code> and no <code>cliff.toml</code>.</p>
+    <p>Python 3.11+ and git on <code>PATH</code>. The download is the v0.3.8 zipapp from the GitHub Release (same pin as the <a href="single-file.html">single-file install</a>), plus <code>examples/release.sh</code> from that tag. No <code>cargo install git-cliff</code> and no <code>cliff.toml</code>.</p>
     <pre><code>mkdir -p ~/.local/bin
-curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.7/relnote
+curl -fsSL -o ~/.local/bin/relnote https://github.com/loki-inu/relnote/releases/download/v0.3.8/relnote
 chmod +x ~/.local/bin/relnote
-curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.8/examples/release.sh
 chmod +x release.sh</code></pre>
     <p>Put <code>~/.local/bin</code> on <code>PATH</code>. Commit <code>release.sh</code> into the repo (for example <code>scripts/release.sh</code>) so the release command does not depend on the raw URL next time. It is plain bash; read it before you run it.</p>
 
@@ -297,11 +297,11 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - name: Install relnote and release.sh
         if: steps.relnote.outputs.has-changes == &#x27;true&#x27;
         env:
-          V: v0.3.7
+          V: v0.3.8
         run: |
           mkdir -p &quot;$HOME/.local/bin&quot;
           curl -fsSL -o &quot;$HOME/.local/bin/relnote&quot; &quot;https://github.com/loki-inu/relnote/releases/download/$V/relnote&quot;
@@ -383,10 +383,10 @@ Range: `v1.3.2` → `v1.4.0`.
     <h3>What about Windows?</h3>
     <p>Each release ships <code>relnote.pyz</code> (same bytes as the zipapp). Run it with <code>py -3 relnote.pyz</code>. Scoop: <code>scoop bucket add loki-inu https://github.com/loki-inu/scoop-bucket</code> then <code>scoop install relnote</code>. See the <a href="windows.html">Windows guide</a> for PowerShell redirection and UTF-8.</p>
     <h3>Should I pin versions?</h3>
-    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.7</code>). Floating <code>latest</code> can change behaviour under you.</p>
+    <p>Yes. Pin the curl URL and the <code>loki-inu/relnote</code> action to the same tag (this page uses <code>v0.3.8</code>). Floating <code>latest</code> can change behaviour under you.</p>
 
     <footer>
-      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.7">v0.3.7</a> · <a href="llms.txt">llms.txt</a></p>
+      <p>relnote is MIT licensed. <a href="https://github.com/loki-inu/relnote">Source</a> · <a href="https://github.com/loki-inu/relnote/releases/tag/v0.3.8">v0.3.8</a> · <a href="llms.txt">llms.txt</a></p>
     </footer>
   </main>
 </body>

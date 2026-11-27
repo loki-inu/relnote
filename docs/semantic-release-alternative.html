@@ -35,7 +35,7 @@
       "about": {
         "@type": "SoftwareApplication",
         "name": "relnote",
-        "softwareVersion": "0.3.7",
+        "softwareVersion": "0.3.8",
         "url": "https://github.com/loki-inu/relnote"
       }
     },
@@ -68,7 +68,7 @@
         {
           "@type": "HowToStep",
           "name": "Install the zipapp and release.sh",
-          "text": "curl the pinned relnote zipapp and examples/release.sh from the v0.3.7 tag. No npm install for the release tooling."
+          "text": "curl the pinned relnote zipapp and examples/release.sh from the v0.3.8 tag. No npm install for the release tooling."
         },
         {
           "@type": "HowToStep",
@@ -280,11 +280,11 @@ jobs:
         with:
           fetch-depth: 0
       - id: relnote
-        uses: loki-inu/relnote@v0.3.7
+        uses: loki-inu/relnote@v0.3.8
       - name: Install relnote and release.sh
         if: steps.relnote.outputs.has-changes == &#x27;true&#x27;
         env:
-          V: v0.3.7
+          V: v0.3.8
         run: |
           mkdir -p &quot;$HOME/.local/bin&quot;
           curl -fsSL -o &quot;$HOME/.local/bin/relnote&quot; &quot;https://github.com/loki-inu/relnote/releases/download/$V/relnote&quot;
@@ -357,7 +357,7 @@ Range: `v1.3.2` → `v1.4.0`.
     <p>The CHANGELOG.md section and Release body are produced by running the workflow&#x27;s last step against a scratch repository in relnote&#x27;s test suite (<code>tests/test_semantic_release_docs.py</code>, with <code>gh</code> stubbed); your hashes and dates differ.</p>
 
     <h2>Local dry-run (no CI)</h2>
-    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.7/examples/release.sh
+    <pre><code>curl -fsSL -o release.sh https://raw.githubusercontent.com/loki-inu/relnote/v0.3.8/examples/release.sh
 chmod +x release.sh
 ./release.sh --dry-run --bump-file pyproject.toml</code></pre>
     <p>Same script as the <a href="standard-version-alternative.html">standard-version alternative</a>; nothing is written until you drop <code>--dry-run</code>.</p>
